@@ -3,6 +3,10 @@
 #include "libs\ntdll\ntdll.h"
 
 #include <QMutex>
+#include <QFileInfo>
+#include <QFileIconProvider>
+#include <QDateTime>
+
 static QMutex mxAppendThread;
 static QMutex mxAppendModule;
 
@@ -15,15 +19,21 @@ SProcess::SProcess(const PROCESSENTRY32& entry)
 	, _Handle(NULL)
 {
 	_Name = QString::fromWCharArray(entry.szExeFile);
+	//qDebug(_Name.toUtf8().data());
 }
 
 SProcess::~SProcess()
 {
+	Close();
 }
 
-BOOL SProcess::Open(DWORD dwPID)
+BOOL SProcess::Open()
 {
-	_ID = dwPID;
+	if (IsOpen())
+	{
+		return TRUE;
+	}
+
 	_Handle = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, _ID);
 	if (_Handle == NULL)
 	{
@@ -36,19 +46,23 @@ BOOL SProcess::Open(DWORD dwPID)
 	return TRUE;
 }
 
-BOOL SProcess::NtOpen(DWORD dwPID)
+BOOL SProcess::NtOpen()
 {
+	if (IsOpen())
+	{
+		return TRUE;
+	}
+
 	NTSTATUS status;
 	OBJECT_ATTRIBUTES objectAttributes;
 	CLIENT_ID clientId;
 
-	_ID = dwPID;
 	/* If we don't have a PID, look it up */
 	//if (dwProcessId == MAXDWORD) dwProcessId = (DWORD_PTR)CsrGetProcessId();
 
 	/* Open a handle to the process */
 	clientId.UniqueThread = NULL;
-	clientId.UniqueProcess = UlongToHandle(dwPID);
+	clientId.UniqueProcess = UlongToHandle(_ID);
 	InitializeObjectAttributes(&objectAttributes, NULL, 0, NULL, NULL);
 	status = NtOpenProcess(&_Handle,
 		PROCESS_CREATE_THREAD | PROCESS_VM_OPERATION |
@@ -74,7 +88,12 @@ BOOL SProcess::IsOpen()
 
 BOOL SProcess::Close()
 {
-	return NT_SUCCESS(NtClose(_Handle));
+	if (_Handle == NULL)
+		return TRUE;
+
+	NT_SUCCESS(NtClose(_Handle));
+	_Handle = NULL;
+	return TRUE;
 }
 
 BOOL SProcess::IsWow64()
@@ -89,6 +108,47 @@ BOOL SProcess::IsWow64()
 quint64 SProcess::GetID()
 {
 	return _ID;
+}
+
+QString SProcess::GetFileName()
+{
+	return _Name;
+}
+
+QString SProcess::GetFilePath()
+{
+	if (_FilePath.length() > 0)
+	{
+		return _FilePath;
+	}
+
+	if (!NtOpen())
+	{
+		return QString();
+	}
+
+	TCHAR szFilePath[MAX_FILE_PATH_SIZE];
+	if (!GetModuleFileNameEx(_Handle, NULL, szFilePath, MAX_FILE_PATH_SIZE))
+	{
+		return QString();
+	}
+
+	_FilePath = QString::fromWCharArray(szFilePath);
+
+	Close();
+	return _FilePath;
+}
+
+
+QIcon SProcess::GetIcon()
+{
+	auto begTime = QDateTime::currentMSecsSinceEpoch();
+	QFileInfo fileInfo(GetFilePath());
+	QFileIconProvider provider;
+	auto icon = provider.icon(fileInfo);
+	auto elapse = QDateTime::currentMSecsSinceEpoch() - begTime;
+	qDebug("进程[%08d]获取图标耗时:%d(ms)", _ID, elapse);
+	return icon;
 }
 
 void SProcess::AppendModule(SModule* pModule)
@@ -152,7 +212,7 @@ bool SProcess::LoadVMRegions()
 {
 	if (!IsOpen())
 	{
-		qWarning("���̻�û�й���.");
+		qWarning("进程还没有关联.");
 		return false;
 	}
 
@@ -167,8 +227,8 @@ bool SProcess::LoadVMRegions()
 
 		bool bMapped = (mbi.Type == MEM_MAPPED);
 		bool bReserved = (mbi.State == MEM_RESERVE);
-		bool bPrevReserved = (_MemoryRegionLst.length() > 0)
-			? _MemoryRegionLst.last().Content.State == MEM_RESERVE
+		bool bPrevReserved = (_MemRegionList.length() > 0)
+			? _MemRegionList.last().Content.State == MEM_RESERVE
 			: false;
 
 		if (bReserved || bPrevReserved || ulAllocBase != quint64(mbi.AllocationBase))
@@ -187,12 +247,12 @@ bool SProcess::LoadVMRegions()
 
 			SMemoryRegion region(mbi, lpModule);
 
-			_MemoryRegionLst.append(region);
+			_MemRegionList.append(region);
 		} 
 		else
 		{
-			if (_MemoryRegionLst.length() > 0)
-				_MemoryRegionLst.last().Content.RegionSize += mbi.RegionSize;
+			if (_MemRegionList.length() > 0)
+				_MemRegionList.last().Content.RegionSize += mbi.RegionSize;
 		}
 
 		quint64 ulNextRegionAddr = (quint64)mbi.BaseAddress + mbi.RegionSize;

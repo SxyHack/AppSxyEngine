@@ -13,6 +13,13 @@ public:
 protected:
 	void SetupToolBar();
 
+protected:
+	void closeEvent(QCloseEvent* event) override;
+
+
+private slots:
+	void OnActionOpenProcess(bool checked);
+
 private:
     Ui::MainWindowClass ui;
 };

@@ -19,6 +19,7 @@ protected:
 	void run() override;
 
 signals:
+	void sgEnumProcess(qint32, SProcess*);
 	void sgEnumProcessDone();
 
 private:

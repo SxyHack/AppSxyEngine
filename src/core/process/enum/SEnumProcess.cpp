@@ -10,6 +10,7 @@ SEnumProcess::SEnumProcess(const QString& filter)
 
 SEnumProcess::~SEnumProcess()
 {
+	qDebug("~");
 }
 
 void SEnumProcess::run()
@@ -39,8 +40,11 @@ void SEnumProcess::run()
 
 		QString processName = QString::fromWCharArray(tlhEntry32.szExeFile);
 
-		if (_Filter.isEmpty() || processName.contains(_Filter)) {
-			SEngine.AppendProcess(new SProcess(tlhEntry32));
+		if (_Filter.isEmpty() || processName.contains(_Filter)) 
+		{
+			auto pProcess = new SProcess(tlhEntry32);
+			SEngine.AppendProcess(pProcess);
+			emit sgEnumProcess(dwRow++, pProcess);
 		}
 	} while (ret = ::Process32Next(hSnap, &tlhEntry32));
 

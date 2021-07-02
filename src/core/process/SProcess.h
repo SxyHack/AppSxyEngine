@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QIcon>
 
 #include "global.h"
 #include "SModule.h"
@@ -15,14 +16,16 @@ public:
 	SProcess(const PROCESSENTRY32& entry);
 	~SProcess();
 
-	BOOL Open(DWORD dwPID);
-	BOOL NtOpen(DWORD dwPID);
+	BOOL Open();
+	BOOL NtOpen();
 	BOOL IsOpen();
 	BOOL Close();
 	BOOL IsWow64();
 
 	quint64 GetID();
-
+	QString GetFileName();
+	QString GetFilePath();
+	QIcon GetIcon();
 	//
 	// 添加模块到Map数据结构
 	//
@@ -52,6 +55,7 @@ protected:
 	quint64 _ID;
 	HANDLE  _Handle;
 	QString _Name;
+	QString _FilePath;
 
 	quint32 _Error;
 	QString _ErrMessage;
@@ -60,7 +64,7 @@ protected:
 	NAME_MAP_MODULE   _ModuleNameMap;
 	QStringList       _ModuleNameList;  // 模块有序列表
 
-	LST_MEMORY_REGION _MemoryRegionLst; // 内存页列表
+	LST_MEMORY_REGION _MemRegionList; // 内存页列表
 };
 
 

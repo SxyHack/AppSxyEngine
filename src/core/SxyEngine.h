@@ -25,18 +25,19 @@ public:
 	void EnumProcess(const QString& filter = QString());
 	void AppendProcess(SProcess* pProcess);  // 
 	void SelectProcess(SProcess* pProcess);
+	void RemoveAllProcess();
 	LST_PROCESS& GetProcessList();
 
 
 signals:
 	//void sgEnumProcessStart();
-	//void sgEnumProcess(qint32, SProcess*);
+	void sgEnumProcess(qint32, SProcess*);
 	void sgEnumProcessDone();
 
 private:
 	SxyEngine();
 
-	LST_PROCESS _LstProcess;
+	LST_PROCESS _ProcessList;
 	SProcess* _AttachProcess;
 };
 

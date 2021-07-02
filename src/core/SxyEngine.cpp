@@ -24,14 +24,15 @@ SxyEngine& SxyEngine::Instance()
 
 void SxyEngine::EnumProcess(const QString& filter)
 {
-	SEnumProcess* pEnumProcess = new SEnumProcess(filter);
-	connect(pEnumProcess, &SEnumProcess::sgEnumProcessDone, this, &SxyEngine::sgEnumProcessDone);
-	pEnumProcess->start(QThread::HighPriority);
+	SEnumProcess* pWork = new SEnumProcess(filter);
+	connect(pWork, &SEnumProcess::sgEnumProcess, this, &SxyEngine::sgEnumProcess);
+	connect(pWork, &SEnumProcess::sgEnumProcessDone, this, &SxyEngine::sgEnumProcessDone);
+	pWork->start(QThread::HighPriority);
 }
 
 void SxyEngine::AppendProcess(SProcess* pProcess)
 {
-	_LstProcess.append(pProcess);
+	_ProcessList.append(pProcess);
 }
 
 void SxyEngine::SelectProcess(SProcess* pProcess)
@@ -39,7 +40,17 @@ void SxyEngine::SelectProcess(SProcess* pProcess)
 	_AttachProcess = pProcess;
 }
 
+void SxyEngine::RemoveAllProcess()
+{
+	for (auto it : _ProcessList)
+	{
+		delete it;
+	}
+
+	_ProcessList.clear();
+}
+
 LST_PROCESS& SxyEngine::GetProcessList()
 {
-	return _LstProcess;
+	return _ProcessList;
 }

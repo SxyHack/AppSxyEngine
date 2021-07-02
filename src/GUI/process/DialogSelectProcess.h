@@ -15,14 +15,20 @@ public:
 
 protected:
 	void SetupProcessTableHead();
-
+	void StartEnum(const QString& filter = QString());
+	void AppendProcessItem(qint32 row, SProcess* pProcess);
 
 protected:
 	void showEvent(QShowEvent* e) override;
 	void hideEvent(QHideEvent* e) override;
 
 private slots:
+	void OnEnumProcess(qint32 row, SProcess* pProcess);
 	void OnEnumProcessDone();
+
+	void OnNameFilterChanged(const QString&);
+	void OnClickOpenProcess();
+	void OnClickCancel();
 
 private:
 	Ui::DialogSelectProcess ui;

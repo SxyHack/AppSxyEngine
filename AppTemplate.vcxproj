@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props" Condition="Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props')" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5711FBFF-AFC4-466C-818E-E373B36BD1F6}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+    <ProjectName>SxyEngine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>5.15.0_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>Qt5.15x64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>true</VcpkgEnabled>
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\extras\NtExtras.cpp" />
+    <ClCompile Include="src\core\memory\SMemoryBlock.cpp" />
+    <ClCompile Include="src\core\module\PE\SPEParser.cpp" />
+    <ClCompile Include="src\core\module\PE\SPESection.cpp" />
+    <ClCompile Include="src\core\module\SModule.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumModuleWorker.cpp" />
+    <ClCompile Include="src\core\process\SProcess.cpp" />
+    <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
+    <ClCompile Include="src\settings\GlobalSettings.cpp" />
+    <ClCompile Include="src\utility\Random.cpp" />
+    <ClCompile Include="themes\dark\DarkStyle.cpp" />
+    <ClCompile Include="themes\dark\framelesswindow\framelesswindow.cpp" />
+    <ClCompile Include="themes\dark\framelesswindow\windowdragger.cpp" />
+    <QtRcc Include="MainWindow.qrc" />
+    <QtRcc Include="themes\dark\darkstyle.qrc" />
+    <QtRcc Include="themes\dark\framelesswindow.qrc" />
+    <QtUic Include="MainWindow.ui" />
+    <QtMoc Include="MainWindow.h" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="main.cpp" />
+    <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="themes\dark\DarkStyle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="themes\dark\framelesswindow\framelesswindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="themes\dark\framelesswindow\windowdragger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="themes\dark\darkstyle\darkstyle.qss" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="themes\dark\darkstyle\icon_branch_closed.png" />
+    <Image Include="themes\dark\darkstyle\icon_branch_end.png" />
+    <Image Include="themes\dark\darkstyle\icon_branch_more.png" />
+    <Image Include="themes\dark\darkstyle\icon_branch_open.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_checked.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_checked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_checked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_indeterminate.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_indeterminate_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_indeterminate_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_unchecked.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_unchecked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_unchecked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_close.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_checked.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_checked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_checked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_unchecked.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_unchecked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_unchecked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_restore.png" />
+    <Image Include="themes\dark\darkstyle\icon_undock.png" />
+    <Image Include="themes\dark\darkstyle\icon_vline.png" />
+    <Image Include="themes\dark\images\icon_window_close.png" />
+    <Image Include="themes\dark\images\icon_window_maximize.png" />
+    <Image Include="themes\dark\images\icon_window_minimize.png" />
+    <Image Include="themes\dark\images\icon_window_restore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\core\process\SProcess.h" />
+    <ClInclude Include="libs\ntdll\ntdll.h" />
+    <ClInclude Include="src\core\extras\NtExtras.h" />
+    <QtMoc Include="src\core\module\SModule.h" />
+    <QtMoc Include="src\core\memory\SMemoryBlock.h" />
+    <ClInclude Include="src\core\module\module_types.h" />
+    <QtMoc Include="src\core\process\enum\SEnumModuleWorker.h" />
+    <QtMoc Include="src\core\module\PE\SPEParser.h" />
+    <QtMoc Include="src\core\module\PE\SPESection.h" />
+    <ClInclude Include="src\global.h" />
+    <ClInclude Include="src\log\CustomLogMessageHandler.h" />
+    <ClInclude Include="src\settings\GlobalSettings.h" />
+    <ClInclude Include="src\utility\assert.h" />
+    <ClInclude Include="src\utility\Random.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets" Condition="Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props'))" />
+    <Error Condition="!Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets'))" />
+  </Target>
+</Project>

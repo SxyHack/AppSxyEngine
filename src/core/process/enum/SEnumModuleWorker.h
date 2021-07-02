@@ -24,7 +24,7 @@ protected:
 	void run() override;
 
 private:
-	SProcess*  _Process;
+	SProcess* _Process;
 	QSemaphore _ExitSemaphore;
 	QSemaphore _InitSemaphore;
 };

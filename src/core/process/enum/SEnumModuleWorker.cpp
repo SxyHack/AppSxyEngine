@@ -61,12 +61,12 @@ void SEnumModuleWorker::run()
 			if (tlh32Entry.th32ProcessID == _Process->GetID())
 			{
 				QString qsModName = QString::fromWCharArray(tlh32Entry.szModule);
-				//if (!_Process->ModuleIsExist(qsModName))
-				//{
-				//	auto pModule = Module::Create(_Process, tlh32Entry);
-				//	_Process->AppendModule(pModule);
-				//	count++;
-				//}
+				if (!_Process->ModuleIsExist(qsModName))
+				{
+					auto pModule = SModule::Create(_Process, tlh32Entry);
+					_Process->AppendModule(pModule);
+					count++;
+				}
 			}
 		} while ((ret = Module32Next(hSnap, &tlh32Entry)) && !isInterruptionRequested());
 		if (count > 0) 

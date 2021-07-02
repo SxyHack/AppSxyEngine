@@ -2,9 +2,19 @@
 #include "core\extras\NtExtras.h"
 #include "libs\ntdll\ntdll.h"
 
-SProcess::SProcess(QObject *parent)
-	: QObject(parent)
+#include <QMutex>
+static QMutex mxAppendThread;
+static QMutex mxAppendModule;
+
+
+SProcess::SProcess(const PROCESSENTRY32& entry)
+	: QObject(nullptr)
+	, Content(entry)
+	, _Error(0)
+	, _ID(entry.th32ProcessID)
+	, _Handle(NULL)
 {
+	_Name = QString::fromWCharArray(entry.szExeFile);
 }
 
 SProcess::~SProcess()
@@ -64,7 +74,7 @@ BOOL SProcess::IsOpen()
 
 BOOL SProcess::Close()
 {
-	NtClose(_Handle);
+	return NT_SUCCESS(NtClose(_Handle));
 }
 
 BOOL SProcess::IsWow64()
@@ -83,25 +93,114 @@ quint64 SProcess::GetID()
 
 void SProcess::AppendModule(SModule* pModule)
 {
+	QMutexLocker lock(&mxAppendModule);
 
+	if (_ModuleNameMap.contains(pModule->FileName))
+		return;
+
+	_ModuleNameList.append(pModule->FileName);
+	_ModuleNameMap.insert(pModule->FileName, pModule);
+	_ModuleRangeMap.insert(QRange(pModule->ModBase, pModule->ModBase + pModule->ModSize - 1), pModule);
 }
 
 bool SProcess::ModuleIsExist(const QString& name)
 {
+	QMutexLocker lock(&mxAppendModule);
 
+	return _ModuleNameMap.contains(name);
 }
 
-quint64 SProcess::GetModuleCount()
+qint32 SProcess::GetModuleCount()
 {
-	return 0;
+	QMutexLocker lock(&mxAppendModule);
+	return _ModuleNameMap.size();
 }
 
-SModule* SProcess::GetModule()
+SModule* SProcess::GetModule(int i)
 {
-	return NULL;
+	QMutexLocker lock(&mxAppendModule);
+	auto key = _ModuleNameList.at(i);
+	return _ModuleNameMap.value(key, nullptr);
+}
+
+SModule* SProcess::GetModule(const QString& name)
+{
+	QMutexLocker lock(&mxAppendModule);
+	return _ModuleNameMap.value(name, nullptr);
+}
+
+SModule* SProcess::GetModuleName(quint64 address, QString& name)
+{
+	QMutexLocker lock(&mxAppendModule);
+	QRange key(address, address);
+
+	if (_ModuleRangeMap.contains(key)) {
+		auto pModule = _ModuleRangeMap.value(key);
+		name = pModule->FileName;
+		return pModule;
+	}
+
+	return nullptr;
 }
 
 SProcess::operator HANDLE()
 {
 	return _Handle;
+}
+
+bool SProcess::LoadVMRegions()
+{
+	if (!IsOpen())
+	{
+		qWarning("进程还没有关联.");
+		return false;
+	}
+
+	quint64 ulQueryAddr = 0;
+	quint64 ulAllocBase = 0;
+	MEMORY_BASIC_INFORMATION mbi;
+	ZeroMemory(&mbi, sizeof(MEMORY_BASIC_INFORMATION));
+
+	while (::VirtualQueryEx(_Handle, (LPCVOID)ulQueryAddr, &mbi, sizeof(mbi)))
+	{
+		if (mbi.State == MEM_FREE) continue;
+
+		bool bMapped = (mbi.Type == MEM_MAPPED);
+		bool bReserved = (mbi.State == MEM_RESERVE);
+		bool bPrevReserved = (_MemoryRegionLst.length() > 0)
+			? _MemoryRegionLst.last().Content.State == MEM_RESERVE
+			: false;
+
+		if (bReserved || bPrevReserved || ulAllocBase != quint64(mbi.AllocationBase))
+		{
+			QString qsModuleName;
+			SModule* lpModule = GetModuleName(ulQueryAddr, qsModuleName);
+			if (lpModule == nullptr)
+			{
+				TCHAR szMappedName[MAX_MODULE_SIZE] = L"";
+				if (bMapped && (GetMappedFileName(_Handle, mbi.AllocationBase, szMappedName, MAX_MODULE_SIZE) != 0))
+				{
+					qsModuleName = QString::fromWCharArray(szMappedName);
+					lpModule = GetModule(qsModuleName);
+				}
+			}
+
+			SMemoryRegion region(mbi, lpModule);
+
+			_MemoryRegionLst.append(region);
+		} 
+		else
+		{
+			if (_MemoryRegionLst.length() > 0)
+				_MemoryRegionLst.last().Content.RegionSize += mbi.RegionSize;
+		}
+
+		quint64 ulNextRegionAddr = (quint64)mbi.BaseAddress + mbi.RegionSize;
+		if (ulNextRegionAddr <= ulQueryAddr)
+			break;
+
+		ulQueryAddr = ulNextRegionAddr;
+	}
+
+	return true;
 }

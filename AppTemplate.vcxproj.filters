@@ -85,6 +85,18 @@
     <ClCompile Include="src\core\module\PE\SPESection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\memory\SMemoryRegion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\SxyEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\process\enum\SEnumProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="themes\dark\DarkStyle.h">
@@ -114,9 +126,24 @@
     <QtMoc Include="src\core\module\PE\SPESection.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="src\core\memory\SMemoryRegion.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\process\DialogSelectProcess.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\SxyEngine.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\process\enum\SEnumProcess.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="src\GUI\process\DialogSelectProcess.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

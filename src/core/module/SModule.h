@@ -17,6 +17,7 @@ public:
 	friend class SPEParser;
 
 	SModule();
+	SModule(const SModule& src);
 	~SModule();
 
 	static SModule* Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry);

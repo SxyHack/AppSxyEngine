@@ -67,12 +67,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -104,11 +104,15 @@
   <ItemGroup>
     <ClCompile Include="src\core\extras\NtExtras.cpp" />
     <ClCompile Include="src\core\memory\SMemoryBlock.cpp" />
+    <ClCompile Include="src\core\memory\SMemoryRegion.cpp" />
     <ClCompile Include="src\core\module\PE\SPEParser.cpp" />
     <ClCompile Include="src\core\module\PE\SPESection.cpp" />
     <ClCompile Include="src\core\module\SModule.cpp" />
     <ClCompile Include="src\core\process\enum\SEnumModuleWorker.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumProcess.cpp" />
     <ClCompile Include="src\core\process\SProcess.cpp" />
+    <ClCompile Include="src\core\SxyEngine.cpp" />
+    <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
     <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
     <ClCompile Include="src\settings\GlobalSettings.cpp" />
     <ClCompile Include="src\utility\Random.cpp" />
@@ -122,6 +126,7 @@
     <QtMoc Include="MainWindow.h" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="src\GUI\process\DialogSelectProcess.ui" />
     <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -172,11 +177,15 @@
     <ClInclude Include="src\core\extras\NtExtras.h" />
     <QtMoc Include="src\core\module\SModule.h" />
     <QtMoc Include="src\core\memory\SMemoryBlock.h" />
+    <QtMoc Include="src\core\memory\SMemoryRegion.h" />
     <ClInclude Include="src\core\module\module_types.h" />
     <QtMoc Include="src\core\process\enum\SEnumModuleWorker.h" />
     <QtMoc Include="src\core\module\PE\SPEParser.h" />
     <QtMoc Include="src\core\module\PE\SPESection.h" />
+    <QtMoc Include="src\core\SxyEngine.h" />
+    <QtMoc Include="src\core\process\enum\SEnumProcess.h" />
     <ClInclude Include="src\global.h" />
+    <QtMoc Include="src\GUI\process\DialogSelectProcess.h" />
     <ClInclude Include="src\log\CustomLogMessageHandler.h" />
     <ClInclude Include="src\settings\GlobalSettings.h" />
     <ClInclude Include="src\utility\assert.h" />

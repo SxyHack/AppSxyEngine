@@ -11,3 +11,6 @@
 #include <tlhelp32.h>
 
 #include "utility/assert.h"
+
+
+#define MAX_FILE_PATH_SIZE 1024

@@ -25,6 +25,28 @@ SModule::SModule()
 {
 }
 
+SModule::SModule(const SModule& src)
+	: QObject(nullptr)
+{
+	ID = src.ID;
+	OwnPID = src.OwnPID;
+	EntryPoint = src.EntryPoint;
+	ModBase = src.ModBase;
+	ModSize = src.ModSize;
+	FileSize = src.FileSize;
+	FileMapBase = src.FileMapBase;
+	Handle = src.Handle;
+	ImageBase = src.ImageBase;
+	ImageDosHeader = src.ImageDosHeader;
+	ImageNtHeaders = src.ImageNtHeaders;
+	ImageFileHeader = src.ImageFileHeader;
+	ImageOptHeader = src.ImageOptHeader;
+	SectionEntry = src.SectionEntry;
+	NumberOfSections = src.NumberOfSections;
+	Machine = src.Machine;
+	Party = src.Party;
+}
+
 SModule::~SModule()
 {
 }
@@ -60,4 +82,5 @@ SModule* SModule::Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry)
 		pModule->FileMapBase = 0;
 	}
 
+	return pModule;
 }

@@ -27,6 +27,7 @@ void SEnumProcess::run()
 		return;
 	}
 
+	SEngine.RemoveAllProcess();
 	ret = ::Process32First(hSnap, &tlhEntry32);
 	do
 	{

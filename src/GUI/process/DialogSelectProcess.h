@@ -27,6 +27,7 @@ private slots:
 	void OnEnumProcessDone();
 
 	void OnNameFilterChanged(const QString&);
+	void OnItemDoubleClicked(QTableWidgetItem*);
 	void OnClickOpenProcess();
 	void OnClickCancel();
 

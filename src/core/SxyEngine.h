@@ -28,6 +28,10 @@ public:
 	void RemoveAllProcess();
 	LST_PROCESS& GetProcessList();
 
+	bool AttachSelectedProcess();
+
+	// ÄÚ´æ
+	
 
 signals:
 	//void sgEnumProcessStart();

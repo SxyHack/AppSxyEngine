@@ -54,3 +54,19 @@ LST_PROCESS& SxyEngine::GetProcessList()
 {
 	return _ProcessList;
 }
+
+bool SxyEngine::AttachSelectedProcess()
+{
+	
+	if (!_AttachProcess->NtOpen())
+	{
+		return false;
+	}
+
+	if (!_AttachProcess->LoadVMRegions())
+	{
+		return false;
+	}
+
+	return true;
+}

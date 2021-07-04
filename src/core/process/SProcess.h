@@ -63,8 +63,7 @@ protected:
 	RANGE_MAP_MOUDLE  _ModuleRangeMap;
 	NAME_MAP_MODULE   _ModuleNameMap;
 	QStringList       _ModuleNameList;  // 模块有序列表
-
-	LST_MEMORY_REGION _MemRegionList; // 内存页列表
+	LST_MEMORY_REGION _MemRegionList;   // 内存页列表
 };
 
 

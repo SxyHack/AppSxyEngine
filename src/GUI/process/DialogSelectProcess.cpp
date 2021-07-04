@@ -9,6 +9,7 @@ DialogSelectProcess::DialogSelectProcess(QWidget* parent)
 	connect(ui.NameFilter, SIGNAL(textChanged(const QString&)), this, SLOT(OnNameFilterChanged(const QString&)));
 	connect(ui.OpenBtn, SIGNAL(clicked()), this, SLOT(OnClickOpenProcess()));
 	connect(ui.CancelBtn, SIGNAL(clicked()), this, SLOT(OnClickCancel()));
+	connect(ui.ProcessList, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(OnItemDoubleClicked(QTableWidgetItem*)));
 }
 
 DialogSelectProcess::~DialogSelectProcess()
@@ -58,11 +59,10 @@ void DialogSelectProcess::AppendProcessItem(qint32 row, SProcess* pProcess)
 	auto item1 = new QTableWidgetItem(pProcess->GetFileName());
 	item1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 	item1->setData(Qt::UserRole, QVariant::fromValue(pProcess));
+	item1->setIcon(pProcess->GetIcon());
 
 	ui.ProcessList->setItem(row, 0, item0);
 	ui.ProcessList->setItem(row, 1, item1);
-
-	item1->setIcon(pProcess->GetIcon());
 }
 
 void DialogSelectProcess::showEvent(QShowEvent* e)
@@ -95,12 +95,32 @@ void DialogSelectProcess::OnNameFilterChanged(const QString& text)
 	StartEnum(text);
 }
 
+void DialogSelectProcess::OnItemDoubleClicked(QTableWidgetItem* item)
+{
+	auto pProcess = item->data(Qt::UserRole).value<SProcess*>();
+	if (pProcess == nullptr)
+		return;
+
+	SEngine.SelectProcess(pProcess);
+	accept();
+}
+
 void DialogSelectProcess::OnClickOpenProcess()
 {
+	auto items = ui.ProcessList->selectedItems();
+	if (items.isEmpty())
+		return;
 
+	auto item = items.first();
+	auto pProcess = item->data(Qt::UserRole).value<SProcess*>();
+	if (pProcess == nullptr)
+		return;
+
+	SEngine.SelectProcess(pProcess);
+	accept();
 }
 
 void DialogSelectProcess::OnClickCancel()
 {
-
+	reject();
 }

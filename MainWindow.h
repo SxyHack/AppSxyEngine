@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_MainWindow.h"
+#include "GUI\memory\QHexView\qhexview.h"
 
 class MainWindow : public QMainWindow
 {
@@ -12,6 +13,7 @@ public:
 
 protected:
 	void SetupToolBar();
+	void SetupHexView();
 
 protected:
 	void closeEvent(QCloseEvent* event) override;
@@ -22,4 +24,5 @@ private slots:
 
 private:
     Ui::MainWindowClass ui;
+	QHexView* _HexView;
 };

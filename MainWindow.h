@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
+#include <QTimer>
+
 #include "ui_MainWindow.h"
 #include "GUI\memory\QHexView\qhexview.h"
 
@@ -21,8 +23,11 @@ protected:
 
 private slots:
 	void OnActionOpenProcess(bool checked);
+	void OnTimeTick();
 
 private:
     Ui::MainWindowClass ui;
 	QHexView* _HexView;
+	QTimer    _Timer;
+	QByteArray _ByteArray;
 };

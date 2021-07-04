@@ -223,7 +223,8 @@ bool SProcess::LoadVMRegions()
 
 	while (::VirtualQueryEx(_Handle, (LPCVOID)ulQueryAddr, &mbi, sizeof(mbi)))
 	{
-		if (mbi.State == MEM_FREE) continue;
+		if (mbi.State == MEM_FREE)
+			goto LOOP_END;
 
 		bool bMapped = (mbi.Type == MEM_MAPPED);
 		bool bReserved = (mbi.State == MEM_RESERVE);
@@ -255,6 +256,7 @@ bool SProcess::LoadVMRegions()
 				_MemRegionList.last().Content.RegionSize += mbi.RegionSize;
 		}
 
+LOOP_END:
 		quint64 ulNextRegionAddr = (quint64)mbi.BaseAddress + mbi.RegionSize;
 		if (ulNextRegionAddr <= ulQueryAddr)
 			break;

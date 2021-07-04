@@ -1,15 +1,18 @@
 #include "MainWindow.h"
 #include "GUI\process\DialogSelectProcess.h"
+#include "GUI\memory\QHexView\document\buffer\qmemorybuffer.h"
 
 #include <QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget* parent)
+	: QMainWindow(parent)
 {
-    ui.setupUi(this);
+	ui.setupUi(this);
 
 	SetupToolBar();
 	SetupHexView();
+
+	connect(&_Timer, &QTimer::timeout, this, &MainWindow::OnTimeTick);
 }
 
 void MainWindow::SetupToolBar()
@@ -29,10 +32,24 @@ void MainWindow::SetupToolBar()
 
 void MainWindow::SetupHexView()
 {
+	for (int i = 0; i < 50; i++)
+	{
+		for (int col = 0; col < 16; col++)
+		{
+			_ByteArray.append('\x00');
+		}
+	}
+
+	QHexDocument* document = QHexDocument::fromMemory<QMemoryBuffer>(_ByteArray);
+	document->setBaseAddress(0);
+
 	_HexView = new QHexView(this);
 	_HexView->setReadOnly(true);
+	_HexView->setDocument(document);
 
 	setCentralWidget(_HexView);
+
+	//_Timer.start(1000);
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -55,6 +72,16 @@ void MainWindow::OnActionOpenProcess(bool checked)
 		QMessageBox::warning(this, "", "关联进程失败");
 		return;
 	}
+}
 
+void MainWindow::OnTimeTick()
+{
+	static int value = 0x01;
+	auto document = _HexView->document();
+	document->replace(2, value);
 
+	QHexMetadata* hexmetadata = document->metadata();
+	hexmetadata->comment(value, 0, 2, "test");
+
+	value++;
 }

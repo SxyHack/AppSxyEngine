@@ -8,7 +8,6 @@
 #include <QtWidgets/QApplication>
 #include <QtDebug>
 
-#pragma warning(disable: 4828)
 
 const QString gWelcome = R"(
  _______ __   __ __   __   _______ __    _ _______ ___ __    _ _______ 
@@ -42,7 +41,7 @@ int main(int argc, char *argv[])
 	mainWindow.setWindowTitle(Random::GenerateString(32));
 	mainWindow.setMinimumWidth(1024);
 	mainWindow.setMinimumHeight(1000);
-	mainWindow.showMaximized();
+	mainWindow.show();
 
 	//mainWindow->showMaximized();
 	// add the mainwindow to our custom frameless window

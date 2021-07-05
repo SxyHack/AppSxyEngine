@@ -20,19 +20,19 @@ bool SPEParser::Execute()
 {
 	if (!NT_SUCCESS(ParseDOSHead()))
 	{
-		qCritical("½âÎöPE-DOSÍ·Ê§°Ü");
+		qCritical("è§£æPE-DOSå¤´å¤±è´¥");
 		return false;
 	}
 
 	if (!NT_SUCCESS(ParseNTHead()))
 	{
-		qCritical("½âÎöPE-NTÍ·Ê§°Ü");
+		qCritical("è§£æPE-NTå¤´å¤±è´¥");
 		return false;
 	}
 
 	if (!NT_SUCCESS(ParseSection()))
 	{
-		qCritical("½âÎöPE-½ÚÇøÊ§°Ü");
+		qCritical("è§£æPE-èŠ‚åŒºå¤±è´¥");
 		return false;
 	}
 

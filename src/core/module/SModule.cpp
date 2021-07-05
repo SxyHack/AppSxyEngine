@@ -59,7 +59,7 @@ SModule* SModule::Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry)
 	pModule->ModBase = quint64(tlh32Entry.modBaseAddr);
 	pModule->ModSize = tlh32Entry.modBaseSize;
 
-	qDebug("Load: %s", pModule->FilePath.toUtf8().data());
+	qDebug("Load: %s [%p, %p]", pModule->FileName.toUtf8().data(), pModule->ModBase, pModule->ModBase + pModule->ModSize);
 
 	QFileInfo fiMod(pModule->FilePath);
 	pModule->FileExt = fiMod.suffix();

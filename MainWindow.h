@@ -4,6 +4,7 @@
 #include "ui_MainWindow.h"
 #include "GUI\memory\QHexView\qhexview.h"
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -25,4 +26,5 @@ private slots:
 private:
     Ui::MainWindowClass ui;
 	QHexView* _HexView;
+	QByteArray _ByteArray;
 };

@@ -7,6 +7,7 @@ static QMutex gMutex;
 
 SxyEngine::SxyEngine()
 	: QObject(nullptr)
+	, _AttachProcess(nullptr)
 {
 }
 
@@ -63,10 +64,11 @@ bool SxyEngine::AttachSelectedProcess()
 		return false;
 	}
 
-	if (!_AttachProcess->LoadVMRegions())
-	{
-		return false;
-	}
+	_AttachProcess->ExecuteEnumModules();
+	//if (!_AttachProcess->LoadVMRegions())
+	//{
+	//	return false;
+	//}
 
 	return true;
 }

@@ -76,7 +76,7 @@
     <ClCompile Include="src\core\memory\SMemoryBlock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\process\enum\SEnumModuleWorker.cpp">
+    <ClCompile Include="src\core\process\enum\SEnumModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\module\PE\SPEParser.cpp">
@@ -95,6 +95,48 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\process\enum\SEnumProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\qhexview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\SMemoryViewWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexcursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexdocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexmetadata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexrenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\hexcommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\insertcommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\removecommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\replacecommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -117,7 +159,7 @@
     <QtMoc Include="src\core\memory\SMemoryBlock.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="src\core\process\enum\SEnumModuleWorker.h">
+    <QtMoc Include="src\core\process\enum\SEnumModule.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\core\module\PE\SPEParser.h">
@@ -136,6 +178,36 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\core\process\enum\SEnumProcess.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\SMemoryViewWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\qhexview.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexcursor.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexdocument.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexmetadata.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexrenderer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -257,6 +329,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\module\module_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\hexcommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\insertcommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\removecommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\replacecommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

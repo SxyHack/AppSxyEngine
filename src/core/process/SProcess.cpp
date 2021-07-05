@@ -17,9 +17,9 @@ SProcess::SProcess(const PROCESSENTRY32& entry)
 	, _Error(0)
 	, _ID(entry.th32ProcessID)
 	, _Handle(NULL)
+	, _EnumModules(this)
 {
 	_Name = QString::fromWCharArray(entry.szExeFile);
-	//qDebug(_Name.toUtf8().data());
 }
 
 SProcess::~SProcess()
@@ -142,12 +142,12 @@ QString SProcess::GetFilePath()
 
 QIcon SProcess::GetIcon()
 {
-	auto begTime = QDateTime::currentMSecsSinceEpoch();
+	//auto begTime = QDateTime::currentMSecsSinceEpoch();
 	QFileInfo fileInfo(GetFilePath());
 	QFileIconProvider provider;
 	auto icon = provider.icon(fileInfo);
-	auto elapse = QDateTime::currentMSecsSinceEpoch() - begTime;
-	qDebug("进程[%08d]获取图标耗时:%d(ms)", _ID, elapse);
+	//auto elapse = QDateTime::currentMSecsSinceEpoch() - begTime;
+	//qDebug("进程[%08d]获取图标耗时:%d(ms)", _ID, elapse);
 	return icon;
 }
 
@@ -160,7 +160,8 @@ void SProcess::AppendModule(SModule* pModule)
 
 	_ModuleNameList.append(pModule->FileName);
 	_ModuleNameMap.insert(pModule->FileName, pModule);
-	_ModuleRangeMap.insert(QRange(pModule->ModBase, pModule->ModBase + pModule->ModSize - 1), pModule);
+	_ModuleRangeMap.insert(std::make_pair(QRange(pModule->ModBase, pModule->ModBase + pModule->ModSize - 1), pModule));
+	//_ModuleRangeMap.insert(QRange(pModule->ModBase, pModule->ModBase + pModule->ModSize - 1), pModule);
 }
 
 bool SProcess::ModuleIsExist(const QString& name)
@@ -194,13 +195,29 @@ SModule* SProcess::GetModuleName(quint64 address, QString& name)
 	QMutexLocker lock(&mxAppendModule);
 	QRange key(address, address);
 
-	if (_ModuleRangeMap.contains(key)) {
-		auto pModule = _ModuleRangeMap.value(key);
-		name = pModule->FileName;
-		return pModule;
+	auto found = _ModuleRangeMap.find(key);
+	if (found != _ModuleRangeMap.end())
+	{
+		name = found->second->FileName;
+		return found->second;
 	}
 
+	//if (_ModuleRangeMap.contains(key)) {
+	//	auto pModule = _ModuleRangeMap.value(key);
+	//	name = pModule->FileName;
+	//	return pModule;
+	//}
+
 	return nullptr;
+}
+
+void SProcess::ExecuteEnumModules()
+{
+	if (_EnumModules.isRunning())
+		return;
+
+	_EnumModules.start(QThread::NormalPriority);
+	_EnumModules.WaitForInit();
 }
 
 SProcess::operator HANDLE()
@@ -216,45 +233,86 @@ bool SProcess::LoadVMRegions()
 		return false;
 	}
 
+	QTime time;
+	time.start();
+
 	quint64 ulQueryAddr = 0;
 	quint64 ulAllocBase = 0;
 	MEMORY_BASIC_INFORMATION mbi;
 	ZeroMemory(&mbi, sizeof(MEMORY_BASIC_INFORMATION));
 
-	while (::VirtualQueryEx(_Handle, (LPCVOID)ulQueryAddr, &mbi, sizeof(mbi)))
+	while (::VirtualQueryEx(_Handle, (LPCVOID)ulQueryAddr, &mbi, sizeof(MEMORY_BASIC_INFORMATION)))
 	{
-		if (mbi.State == MEM_FREE) continue;
+		QString qsModuleName;
+		auto qsAllocMemProtect = FormatMemProtection(mbi.AllocationProtect);
+		auto qsMemProtect = FormatMemProtection(mbi.Protect);
+		auto qsMemState = FormatMemState(mbi.State);
+		auto qsMemType = FormatMemType(mbi.Type);
 
+		if (mbi.State == MEM_FREE)
+			goto LOOP_END;
 		bool bMapped = (mbi.Type == MEM_MAPPED);
 		bool bReserved = (mbi.State == MEM_RESERVE);
 		bool bPrevReserved = (_MemRegionList.length() > 0)
 			? _MemRegionList.last().Content.State == MEM_RESERVE
 			: false;
 
-		if (bReserved || bPrevReserved || ulAllocBase != quint64(mbi.AllocationBase))
+		TCHAR szModuleName[MAX_MODULE_SIZE] = { 0 };
+		::GetModuleBaseName(_Handle, (HMODULE)mbi.AllocationBase, szModuleName, MAX_MODULE_SIZE);
+		qsModuleName = QString::fromWCharArray(szModuleName);
+		qDebug("Region: %s %p %p %p %s %s %s %s", 
+			qsModuleName.toUtf8().data(),
+			mbi.BaseAddress,
+			mbi.AllocationBase,
+			quint64(mbi.BaseAddress) + mbi.RegionSize,
+			qsAllocMemProtect.toUtf8().data(),
+			qsMemProtect.toUtf8().data(),
+			qsMemState.toUtf8().data(),
+			qsMemType.toUtf8().data());
+
+		//BYTE buffer[4] = { 0 };
+		//SIZE_T nReadBufferCount = 0;
+		//if (!ReadProcessMemory(_Handle, mbi.BaseAddress, buffer, 4, &nReadBufferCount))
+		//	goto LOOP_END;
+
+		SModule* lpModule = GetModule(qsModuleName);
+		GetModuleName(ulQueryAddr, qsModuleName);
+		if (lpModule == nullptr)
 		{
-			QString qsModuleName;
-			SModule* lpModule = GetModuleName(ulQueryAddr, qsModuleName);
-			if (lpModule == nullptr)
+			TCHAR szMappedName[MAX_MODULE_SIZE] = L"";
+			if (bMapped && (GetMappedFileName(_Handle, mbi.AllocationBase, szMappedName, MAX_MODULE_SIZE) != 0))
 			{
-				TCHAR szMappedName[MAX_MODULE_SIZE] = L"";
-				if (bMapped && (GetMappedFileName(_Handle, mbi.AllocationBase, szMappedName, MAX_MODULE_SIZE) != 0))
-				{
-					qsModuleName = QString::fromWCharArray(szMappedName);
-					lpModule = GetModule(qsModuleName);
-				}
+				qsModuleName = QString::fromWCharArray(szMappedName);
+				lpModule = GetModule(qsModuleName);
 			}
-
-			SMemoryRegion region(mbi, lpModule);
-
-			_MemRegionList.append(region);
-		} 
-		else
-		{
-			if (_MemRegionList.length() > 0)
-				_MemRegionList.last().Content.RegionSize += mbi.RegionSize;
 		}
 
+		_MemRegionList.append(SMemoryRegion(mbi, lpModule));
+
+		//if (bReserved || bPrevReserved || ulAllocBase != quint64(mbi.AllocationBase))
+		//{
+		//	QString qsModuleName;// = QString::fromWCharArray(szModuleName);
+		//	SModule* lpModule = GetModuleName(ulQueryAddr, qsModuleName);
+		//	if (lpModule == nullptr)
+		//	{
+		//		TCHAR szMappedName[MAX_MODULE_SIZE] = L"";
+		//		if (bMapped && (GetMappedFileName(_Handle, mbi.AllocationBase, szMappedName, MAX_MODULE_SIZE) != 0))
+		//		{
+		//			qsModuleName = QString::fromWCharArray(szMappedName);
+		//			lpModule = GetModule(qsModuleName);
+		//		}
+		//	}
+
+
+		//	_MemRegionList.append(region);
+		//} 
+		//else
+		//{
+		//	if (_MemRegionList.length() > 0)
+		//		_MemRegionList.last().Content.RegionSize += mbi.RegionSize;
+		//}
+
+LOOP_END:
 		quint64 ulNextRegionAddr = (quint64)mbi.BaseAddress + mbi.RegionSize;
 		if (ulNextRegionAddr <= ulQueryAddr)
 			break;
@@ -262,5 +320,6 @@ bool SProcess::LoadVMRegions()
 		ulQueryAddr = ulNextRegionAddr;
 	}
 
+	qDebug("LoadVMRegions: %d(ms)", time.elapsed());
 	return true;
 }

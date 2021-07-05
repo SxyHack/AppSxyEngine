@@ -15,7 +15,7 @@ SEnumProcess::~SEnumProcess()
 
 void SEnumProcess::run()
 {
-	BOOL ret = FALSE;
+	BOOL bRet = FALSE;
 	DWORD dwRow = 0;
 	PROCESSENTRY32 tlhEntry32 = { 0 };
 	tlhEntry32.dwSize = sizeof(PROCESSENTRY32);
@@ -28,14 +28,14 @@ void SEnumProcess::run()
 	}
 
 	SEngine.RemoveAllProcess();
-	ret = ::Process32First(hSnap, &tlhEntry32);
+	bRet = ::Process32First(hSnap, &tlhEntry32);
 	do
 	{
 		// System process and Idle process have special PID.
 		if (tlhEntry32.th32ProcessID == 0 || tlhEntry32.th32ProcessID == 4)
 			continue;
 
-		// �����Լ�
+		// 过滤自己
 		if (tlhEntry32.th32ProcessID == GetCurrentProcessId())
 			continue;
 
@@ -47,9 +47,11 @@ void SEnumProcess::run()
 			SEngine.AppendProcess(pProcess);
 			emit sgEnumProcess(dwRow++, pProcess);
 		}
-	} while (ret = ::Process32Next(hSnap, &tlhEntry32));
+	} while (bRet = ::Process32Next(hSnap, &tlhEntry32));
 
 	CloseHandle(hSnap);
-
 	emit sgEnumProcessDone();
+
+	deleteLater();
+	qDebug("枚举进程完成，线程退出");
 }

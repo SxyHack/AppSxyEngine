@@ -1,20 +1,23 @@
-#include "SEnumModuleWorker.h"
+#include "SEnumModule.h"
 #include "SProcess.h"
 #include "core\extras\NtExtras.h"
 
-SEnumModuleWorker::SEnumModuleWorker(SProcess* process)
+SEnumModule::SEnumModule(SProcess* process)
 	: QThread(nullptr)
 	, _Process(process)
 {
 }
 
-SEnumModuleWorker::~SEnumModuleWorker()
+SEnumModule::~SEnumModule()
 {
 	Stop();
 }
 
-void SEnumModuleWorker::Stop()
+void SEnumModule::Stop()
 {
+	if (!isRunning())
+		return;
+
 	if (isInterruptionRequested()) {
 		qWarning("Already stop.");
 		return;
@@ -29,12 +32,12 @@ void SEnumModuleWorker::Stop()
 	qInfo("Stopped");
 }
 
-void SEnumModuleWorker::WaitForInit()
+void SEnumModule::WaitForInit()
 {
 	_InitSemaphore.acquire();
 }
 
-void SEnumModuleWorker::run()
+void SEnumModule::run()
 {
 	MODULEENTRY32 tlh32Entry;
 	ZeroMemory(&tlh32Entry, sizeof(MODULEENTRY32));

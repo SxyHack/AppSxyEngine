@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <map>
 
 #include "module_types.h"
 #include "SPESection.h"
@@ -54,5 +55,6 @@ protected:
 
 Q_DECLARE_METATYPE(SModule);
 
-typedef QMap<QRange, SModule*> RANGE_MAP_MOUDLE;
+//typedef QMap<QRange, SModule*> RANGE_MAP_MOUDLE;
+typedef std::map<QRange, SModule*, QRangeCompare> RANGE_MAP_MOUDLE;
 typedef QMap<QString, SModule*> NAME_MAP_MODULE;

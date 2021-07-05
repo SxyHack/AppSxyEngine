@@ -6,6 +6,7 @@
 
 #include "global.h"
 #include "SModule.h"
+#include "SEnumModule.h"
 #include "SMemoryRegion.h"
 
 class SProcess : public QObject
@@ -26,6 +27,7 @@ public:
 	QString GetFileName();
 	QString GetFilePath();
 	QIcon GetIcon();
+
 	//
 	// 添加模块到Map数据结构
 	//
@@ -38,6 +40,7 @@ public:
 	SModule* GetModule(int i);
 	SModule* GetModule(const QString& name);
 	SModule* GetModuleName(quint64 address, QString& name);
+	void ExecuteEnumModules();
 	//
 	// 隐式转换, 返回进程句柄
 	// 
@@ -64,6 +67,8 @@ protected:
 	NAME_MAP_MODULE   _ModuleNameMap;
 	QStringList       _ModuleNameList;  // 模块有序列表
 	LST_MEMORY_REGION _MemRegionList;   // 内存页列表
+
+	SEnumModule       _EnumModules;
 };
 
 

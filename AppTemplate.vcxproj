@@ -68,7 +68,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -116,10 +117,24 @@
     <ClCompile Include="src\core\module\PE\SPEParser.cpp" />
     <ClCompile Include="src\core\module\PE\SPESection.cpp" />
     <ClCompile Include="src\core\module\SModule.cpp" />
-    <ClCompile Include="src\core\process\enum\SEnumModuleWorker.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumModule.cpp" />
     <ClCompile Include="src\core\process\enum\SEnumProcess.cpp" />
     <ClCompile Include="src\core\process\SProcess.cpp" />
     <ClCompile Include="src\core\SxyEngine.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\hexcommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\insertcommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\removecommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\replacecommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexcursor.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexdocument.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexmetadata.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexrenderer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\qhexview.cpp" />
+    <ClCompile Include="src\GUI\memory\SMemoryViewWidget.cpp" />
     <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
     <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
     <ClCompile Include="src\settings\GlobalSettings.cpp" />
@@ -187,13 +202,27 @@
     <QtMoc Include="src\core\memory\SMemoryBlock.h" />
     <QtMoc Include="src\core\memory\SMemoryRegion.h" />
     <ClInclude Include="src\core\module\module_types.h" />
-    <QtMoc Include="src\core\process\enum\SEnumModuleWorker.h" />
+    <QtMoc Include="src\core\process\enum\SEnumModule.h" />
     <QtMoc Include="src\core\module\PE\SPEParser.h" />
     <QtMoc Include="src\core\module\PE\SPESection.h" />
     <QtMoc Include="src\core\SxyEngine.h" />
     <QtMoc Include="src\core\process\enum\SEnumProcess.h" />
     <ClInclude Include="src\global.h" />
     <QtMoc Include="src\GUI\process\DialogSelectProcess.h" />
+    <QtMoc Include="src\GUI\memory\SMemoryViewWidget.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\qhexview.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexcursor.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexdocument.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexmetadata.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexrenderer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\hexcommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\insertcommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\removecommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\replacecommand.h" />
     <ClInclude Include="src\log\CustomLogMessageHandler.h" />
     <ClInclude Include="src\settings\GlobalSettings.h" />
     <ClInclude Include="src\utility\assert.h" />

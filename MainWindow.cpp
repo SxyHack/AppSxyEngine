@@ -1,12 +1,13 @@
 #include "MainWindow.h"
 #include "GUI\process\DialogSelectProcess.h"
+#include "GUI\memory\QHexView\document\buffer\qmemorybuffer.h"
 
 #include <QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget* parent)
+	: QMainWindow(parent)
 {
-    ui.setupUi(this);
+	ui.setupUi(this);
 
 	SetupToolBar();
 	SetupHexView();
@@ -29,10 +30,19 @@ void MainWindow::SetupToolBar()
 
 void MainWindow::SetupHexView()
 {
-	_HexView = new QHexView(this);
-	_HexView->setReadOnly(true);
+	//for (int r = 0; r < 200; r++)
+	//{
+	//	for (int c = 0; c < 16; c++)
+	//	{
+	//		_ByteArray.append(0x01);
+	//	}
+	//}
+	//auto document = QHexDocument::fromMemory<QMemoryBuffer>(_ByteArray);
+	//_HexView = new QHexView(this);
+	//_HexView->setReadOnly(true);
+	//_HexView->setDocument(document);
 
-	setCentralWidget(_HexView);
+	//setCentralWidget(_HexView);
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)

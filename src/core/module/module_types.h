@@ -93,14 +93,43 @@ struct PDB_VALIDATION
 //
 // QRange
 //
-class QRange : public QPair<quint64, quint64>
+typedef std::pair<quint64, quint64> QRange;
+
+class QRangeCompare
 {
 public:
-	QRange(quint64 start, quint64 size) : QPair(start, size) {}
-
-	bool operator==(const QRange& b)
+	bool operator()(const QRange& a, const QRange& b) const //a before b?
 	{
-		return this->second < b.first;
+		return a.second < b.first;
 	}
 };
+
+//class QRange : public QPair<quint64, quint64>
+//{
+//public:
+//	QRange(quint64 start, quint64 end) : QPair(start, end) {}
+//
+//	bool operator==(const QRange& b)
+//	{
+//		qDebug("[==] %d < %d", this->second, b.first);
+//		return this->second < b.first;
+//	}
+//
+//	bool operator<(const QRange& b)
+//	{
+//		qDebug("[<] %d < %d", this->second, b.first);
+//		return this->second < b.first;
+//	}
+//
+//	//bool operator<(const QRange& a, const QRange& b)
+//	//{
+//	//	return a.second < b.first;
+//	//}
+//	//static Q_INLINE_TEMPLATE bool operator<(const QRange& p1, const QRange& p2)
+//	//	//noexcept(noexcept(p1.first < p2.first || (!(p2.first < p1.first) && p1.second < p2.second)))
+//	//{
+//	//	qDebug("[<] %d < %d", p1.second, p2.first);
+//	//	return p1.second < p2.first;
+//	//}
+//};
 

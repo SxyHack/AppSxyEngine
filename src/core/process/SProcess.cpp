@@ -100,7 +100,7 @@ BOOL SProcess::Close()
 BOOL SProcess::IsWow64()
 {
 	BOOL bIsWow64 = FALSE;
-	if (!IsWow64Process(_Handle, &bIsWow64))
+	if (!::IsWow64Process(_Handle, &bIsWow64))
 		return FALSE;
 
 	return bIsWow64;

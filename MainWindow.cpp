@@ -73,13 +73,6 @@ void MainWindow::OnActionOpenProcess(bool checked)
 		QMessageBox::warning(this, "关联失败", "打开进程失败");
 		return;
 	}
-}
-
-void MainWindow::OnTimeTick()
-{
-	static int value = 0x01;
-	auto document = _HexView->document();
-	document->replace(2, value);
 
 	auto pProcess = SEngine.GetSelectedProcess();
 	if (pProcess == nullptr)

@@ -25,7 +25,6 @@ protected:
 
 private slots:
 	void OnActionOpenProcess(bool checked);
-	void OnTimeTick();
 
 private:
     Ui::MainWindowClass ui;

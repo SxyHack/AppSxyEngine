@@ -10,3 +10,4 @@ QString FormatMemState(DWORD value);
 QString FormatMemType(DWORD value);
 
 QString GetSystemDir();
+

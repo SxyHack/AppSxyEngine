@@ -68,12 +68,17 @@ void SEnumModule::run()
 				{
 					auto pModule = SModule::Create(_Process, tlh32Entry);
 					_Process->AppendModule(pModule);
+					if (pModule->Party == MODULE_PARTY::USER) {
+						_Process->AppendModuleToWhitelist(pModule);
+					}
 					count++;
 				}
 			}
 		} while ((ret = Module32Next(hSnap, &tlh32Entry)) && !isInterruptionRequested());
+
 		if (count > 0) 
 			qDebug("模块总数: %d", count);
+
 		_InitSemaphore.release();
 		QThread::msleep(500);
 	}

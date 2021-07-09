@@ -21,6 +21,8 @@ public:
 	SModule(const SModule& src);
 	~SModule();
 
+	bool IsCodeRegion(quint64 address);
+
 	static SModule* Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry);
 
 public:

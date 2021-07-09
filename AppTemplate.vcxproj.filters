@@ -73,7 +73,7 @@
     <ClCompile Include="src\core\module\SModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\memory\SMemoryBlock.cpp">
+    <ClCompile Include="src\core\memory\SMemoryBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\process\enum\SEnumModule.cpp">
@@ -98,9 +98,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\memory\QHexView\qhexview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GUI\memory\SMemoryViewWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\memory\QHexView\document\qhexcursor.cpp">
@@ -139,6 +136,33 @@
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\system\SAbstractAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\SMemorySearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\SScanWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\controls\SHeaderView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\find\SFindMethod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\find\SFindMethodExact.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\find\SFindWhat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\find\SFindWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utility\SElapsed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="themes\dark\DarkStyle.h">
@@ -156,7 +180,7 @@
     <QtMoc Include="src\core\module\SModule.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="src\core\memory\SMemoryBlock.h">
+    <QtMoc Include="src\core\memory\SMemoryBuffer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\core\process\enum\SEnumModule.h">
@@ -178,9 +202,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\core\process\enum\SEnumProcess.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="src\GUI\memory\SMemoryViewWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\GUI\memory\QHexView\qhexview.h">
@@ -210,12 +231,33 @@
     <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="src\core\system\SAbstractAction.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\SMemorySearch.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\SScanWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\controls\SHeaderView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\find\SFindMethod.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\find\SFindMethodExact.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="src\GUI\process\DialogSelectProcess.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="src\GUI\memory\SScanWidget.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -341,6 +383,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GUI\memory\QHexView\document\commands\replacecommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\memory\memory_define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\memory\find\SFindWhat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utility\SElapsed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\memory\find\SFindWorker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

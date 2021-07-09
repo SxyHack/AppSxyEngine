@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "GUI\process\DialogSelectProcess.h"
-#include "GUI\memory\QHexView\document\buffer\qmemorybuffer.h"
+//#include "GUI\memory\QHexView\document\buffer\qmemorybuffer.h"
+#include "GUI\memory\SScanWidget.h"
 
 #include <QMessageBox>
 
@@ -10,7 +11,7 @@ MainWindow::MainWindow(QWidget* parent)
 	ui.setupUi(this);
 
 	SetupToolBar();
-	SetupHexView();
+	SetupScanView();
 }
 
 void MainWindow::SetupToolBar()
@@ -45,6 +46,14 @@ void MainWindow::SetupHexView()
 	//setCentralWidget(_HexView);
 }
 
+void MainWindow::SetupScanView()
+{
+	auto pDefaultTab = new SScanWidget(this);
+	auto nDefaultIndex = ui.tabWidget->addTab(pDefaultTab, "默认");
+	ui.tabWidget->setCurrentIndex(nDefaultIndex);
+	ui.tabWidget->setTabBarAutoHide(true);
+}
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 	QMainWindow::closeEvent(event);
@@ -61,10 +70,26 @@ void MainWindow::OnActionOpenProcess(bool checked)
 
 	if (!SEngine.AttachSelectedProcess())
 	{
-		qWarning("关联进程失败");
-		QMessageBox::warning(this, "", "关联进程失败");
+		QMessageBox::warning(this, "关联失败", "打开进程失败");
 		return;
 	}
 
+	auto pProcess = SEngine.GetSelectedProcess();
+	if (pProcess == nullptr)
+	{
+		QMessageBox::warning(this, "关联失败", "选择的进程返回<nullptr>");
+		return;
+	}
 
+	ui.txtProcessName->setVisible(true);
+	ui.txtProcessName->setText(QString("%1(%2)")
+		.arg(pProcess->GetFileName())
+		.arg(pProcess->GetID()));
+
+	auto pTab = (SScanWidget*)ui.tabWidget->currentWidget();
+	if (pTab)
+	{
+		pTab->ShowModules();
+		pTab->ShowStateOpened();
+	}
 }

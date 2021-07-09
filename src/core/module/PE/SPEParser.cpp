@@ -1,7 +1,8 @@
 #include "SPEParser.h"
 #include "SModule.h"
-#include "SMemoryBlock.h"
+#include "SMemoryBuffer.h"
 #include "libs\ntdll\ntdll.h"
+#include "utility\SElapsed.h"
 
 #include <ntstatus.h>
 
@@ -72,7 +73,7 @@ NTSTATUS SPEParser::ParseNTHead()
 	// RtlImageNtHeaderEx verifies that the range does not cross the UM <-> KM boundary here,
 	// but it would cost a syscall to query this address as it varies between OS versions 
 	// TODO: or do we already have this info somewhere?
-	if (!SMemoryBlock::IsCanonicalAddress((quint64)pNtHeaders + sizeof(IMAGE_NT_HEADERS)))
+	if (!SMemoryBuffer::IsCanonicalAddress((quint64)pNtHeaders + sizeof(IMAGE_NT_HEADERS)))
 		return STATUS_INVALID_IMAGE_FORMAT;
 	if (pNtHeaders->Signature != IMAGE_NT_SIGNATURE)
 		return STATUS_INVALID_IMAGE_FORMAT;
@@ -111,25 +112,29 @@ NTSTATUS SPEParser::ParseSection()
 
 	_Module->SectionEntry = pSection;
 
+#if ENABLE_LOG_PE_SECTION
 	QString qsLog = "Sections:\n";
+#endif 
 
 	for (int i = 0; i < _Module->NumberOfSections; i++)
 	{
-		SPESection section(pSection, _Module->ImageBase);
+		SPESection section(pSection, _Module->ModBase);
 
-		qsLog += QString().sprintf("\t%s: Image:%p(%d) Raw:%p(%d)\n",
+#if ENABLE_LOG_PE_SECTION
+		qsLog += QString().sprintf("\t%s: Image:%p(%x) Raw:%p(%x)\n",
 			section.Name.toUtf8().data(),
 			section.ImageAddress,
 			section.ImageSize,
 			section.RawAddress,
 			section.RawSize);
-
+#endif 
 		_Module->Sections.append(section);
 		pSection++;
 	}
 
+#if ENABLE_LOG_PE_SECTION
 	qDebug(qsLog.toUtf8().data());
+#endif
 
 	return STATUS_SUCCESS;
-
 }

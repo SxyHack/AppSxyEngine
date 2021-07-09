@@ -6,7 +6,10 @@
 
 #include "global.h"
 #include "SModule.h"
+#include "SEnumModule.h"
 #include "SMemoryRegion.h"
+#include "SMemorySearch.h"
+#include "utility/SElapsed.h"
 
 class SProcess : public QObject
 {
@@ -26,6 +29,8 @@ public:
 	QString GetFileName();
 	QString GetFilePath();
 	QIcon GetIcon();
+
+
 	//
 	// 添加模块到Map数据结构
 	//
@@ -37,16 +42,53 @@ public:
 	qint32 GetModuleCount();
 	SModule* GetModule(int i);
 	SModule* GetModule(const QString& name);
+	SModule* GetModule(quint64 address);
 	SModule* GetModuleName(quint64 address, QString& name);
+	void ExecuteEnumModules();
+
+	// 
+	// 添加模块到扫描白名单
+	// 
+	void AppendModuleToWhitelist(SModule* pModule);
+	//
+	// 返回模块是否扫描白名单的
+	//
+	bool InWhitelist(const QString& qsModuleName);
+
 	//
 	// 隐式转换, 返回进程句柄
 	// 
 	operator HANDLE();
+	//
+	// 获取进程句柄
+	//
+	HANDLE GetHandle();
 
 	// 
 	// 读取虚拟内存页
 	//
 	bool LoadVMRegions();
+
+	//
+	// 读取虚拟内存
+	// bytes[OUT] 返回字节
+	// base[IN]   要读取的内存地址
+	// length[IN] 要读取的内存长度
+	// return bool 返回函数是否成功
+	//
+	bool ReadMemory(QByteArray& bytes, LPVOID base, quint32 length);
+	//
+	// 返回是否代码页
+	// [IN] address  传入内存开始地址
+	// [IN] length   传入内存的长度
+	// [RETURN] bool 是代码返回true，否则返回false
+	//
+	bool IsCodeRegion(LPVOID address);
+
+	//
+	// 搜索
+	//
+	SMemorySearch& Search();
 
 public:
 	PROCESSENTRY32 Content;
@@ -56,14 +98,19 @@ protected:
 	HANDLE  _Handle;
 	QString _Name;
 	QString _FilePath;
+	QIcon   _FileICON;
 
 	quint32 _Error;
 	QString _ErrMessage;
 
 	RANGE_MAP_MOUDLE  _ModuleRangeMap;
 	NAME_MAP_MODULE   _ModuleNameMap;
-	QStringList       _ModuleNameList;  // 模块有序列表
-	LST_MEMORY_REGION _MemRegionList;   // 内存页列表
+	NAME_MAP_MODULE   _ModuleWhiteList;  // 内存扫描白名单
+	QStringList       _ModuleNameList;   // 模块有序列表
+	LST_MEMORY_REGION _MemRegionList;    // 内存页列表
+
+	SEnumModule       _EnumModules;
+	SMemorySearch     _Search;
 };
 
 

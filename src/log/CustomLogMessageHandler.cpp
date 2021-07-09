@@ -21,6 +21,8 @@ CustomLogMessageHandler::CustomLogMessageHandler()
 #if ENABLE_CONSOLE
 	AllocConsole();
 	freopen_s(&gFile, "CONOUT$", "w", stdout);
+	HWND hWnd = GetConsoleWindow();
+	MoveWindow(hWnd, 0, 0, 800, 1000, TRUE);
 #endif
 }
 

@@ -1,8 +1,12 @@
 #pragma once
 
 #include <QObject>
-#include "SProcess.h"
+#include <QThreadPool>
 
+#include "SProcess.h"
+#include "SMemoryBuffer.h"
+
+class SAbstractAction;
 
 //
 //
@@ -17,24 +21,30 @@ public:
 	static SxyEngine& Instance();
 
 	//
-	// 枚举所有进程, 会发出三个信号 sgListProcessStart, sgListProcess, sgListProcessDone
-	// sgListProcessStart: 在循环开始前发射
+	// 枚举所有进程, 会发出信号: sgEnumProcess, sgEnumProcessDone 
 	// sgListProcess: 每发现一个进程时发射
 	// sgListProcessDone: 遍历循环结束后发射
 	//
 	void EnumProcess(const QString& filter = QString());
-	void AppendProcess(SProcess* pProcess);  // 
+	//
+	// 添加进程到_ProcessList队列
+	//
+	void AppendProcess(SProcess* pProcess);
 	void SelectProcess(SProcess* pProcess);
 	void RemoveAllProcess();
 	LST_PROCESS& GetProcessList();
-
 	bool AttachSelectedProcess();
+	SProcess* GetSelectedProcess();
 
-	// 内存
-	
+	// TODO：枚举窗口
+
+	//
+	// 搜索数值
+	//
+	void Search(EFIND_TYPE type, EFIND_METHOD compare, 
+		const QString& valueA, const QString& valueB = QString());
 
 signals:
-	//void sgEnumProcessStart();
 	void sgEnumProcess(qint32, SProcess*);
 	void sgEnumProcessDone();
 

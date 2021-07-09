@@ -6,9 +6,10 @@
 #include "utility/Random.h"
 
 #include <QtWidgets/QApplication>
+#include <QDesktopWidget>
 #include <QtDebug>
+#include <QScreen>
 
-#pragma warning(disable: 4828)
 
 const QString gWelcome = R"(
  _______ __   __ __   __   _______ __    _ _______ ___ __    _ _______ 
@@ -39,10 +40,18 @@ int main(int argc, char *argv[])
 	framelessWindow.setWindowIcon(a.style()->standardIcon(QStyle::SP_DesktopIcon));
 
 	MainWindow mainWindow;
-	mainWindow.setWindowTitle(Random::GenerateString(32));
-	mainWindow.setMinimumWidth(1024);
-	mainWindow.setMinimumHeight(1000);
-	mainWindow.showMaximized();
+	mainWindow.setWindowTitle(Random::GenerateString(16));
+	mainWindow.setMinimumWidth(1248);
+	mainWindow.setMinimumHeight(950);
+	mainWindow.show();
+
+	// screen
+	auto screens = QGuiApplication::screens();
+	auto screen = screens.count() == 1 
+		? screens.at(0) 
+		: screens.at(1);
+	QRect screenRect = screen->geometry();
+	mainWindow.move(screenRect.x() + screenRect.width() - mainWindow.width(), 0);
 
 	//mainWindow->showMaximized();
 	// add the mainwindow to our custom frameless window

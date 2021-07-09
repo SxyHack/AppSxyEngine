@@ -6,6 +6,7 @@
 #include "ui_MainWindow.h"
 #include "GUI\memory\QHexView\qhexview.h"
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,6 +17,7 @@ public:
 protected:
 	void SetupToolBar();
 	void SetupHexView();
+	void SetupScanView();
 
 protected:
 	void closeEvent(QCloseEvent* event) override;
@@ -28,6 +30,5 @@ private slots:
 private:
     Ui::MainWindowClass ui;
 	QHexView* _HexView;
-	QTimer    _Timer;
 	QByteArray _ByteArray;
 };

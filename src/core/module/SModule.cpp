@@ -1,5 +1,6 @@
 #include "SModule.h"
 #include "core\extras\NtExtras.h"
+#include "PE\SPEParser.h"
 
 #include <QFileInfo>
 
@@ -51,6 +52,20 @@ SModule::~SModule()
 {
 }
 
+bool SModule::IsCodeRegion(quint64 address)
+{
+	for (auto& section : Sections)
+	{
+		quint64 sectionEndAddr = section.ImageAddress + section.ImageSize;
+		if (section.ImageAddress <= address && section.Name.contains(".text", Qt::CaseInsensitive))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 SModule* SModule::Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry)
 {
 	auto pModule = new SModule;
@@ -59,7 +74,9 @@ SModule* SModule::Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry)
 	pModule->ModBase = quint64(tlh32Entry.modBaseAddr);
 	pModule->ModSize = tlh32Entry.modBaseSize;
 
-	qDebug("Load: %s", pModule->FilePath.toUtf8().data());
+#if ENABLE_LOG_MODULE
+	qDebug("Load: %s [%p, %p]", pModule->FileName.toUtf8().data(), pModule->ModBase, pModule->ModBase + pModule->ModSize);
+#endif
 
 	QFileInfo fiMod(pModule->FilePath);
 	pModule->FileExt = fiMod.suffix();
@@ -81,6 +98,8 @@ SModule* SModule::Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry)
 		pModule->FileSize = 0;
 		pModule->FileMapBase = 0;
 	}
+
+	SPEParser parser(pModule);
 
 	return pModule;
 }

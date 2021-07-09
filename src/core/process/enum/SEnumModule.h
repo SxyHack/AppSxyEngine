@@ -6,13 +6,13 @@
 
 class SProcess;
 
-class SEnumModuleWorker : public QThread
+class SEnumModule : public QThread
 {
 	Q_OBJECT
 
 public:
-	SEnumModuleWorker(SProcess* process);
-	~SEnumModuleWorker();
+	SEnumModule(SProcess* process);
+	~SEnumModule();
 
 	void Stop();
 	//

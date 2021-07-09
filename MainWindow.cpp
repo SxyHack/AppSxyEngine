@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "GUI\process\DialogSelectProcess.h"
-#include "GUI\memory\QHexView\document\buffer\qmemorybuffer.h"
+//#include "GUI\memory\QHexView\document\buffer\qmemorybuffer.h"
+#include "GUI\memory\SScanWidget.h"
 
 #include <QMessageBox>
 
@@ -10,9 +11,7 @@ MainWindow::MainWindow(QWidget* parent)
 	ui.setupUi(this);
 
 	SetupToolBar();
-	SetupHexView();
-
-	connect(&_Timer, &QTimer::timeout, this, &MainWindow::OnTimeTick);
+	SetupScanView();
 }
 
 void MainWindow::SetupToolBar()
@@ -32,24 +31,27 @@ void MainWindow::SetupToolBar()
 
 void MainWindow::SetupHexView()
 {
-	for (int i = 0; i < 50; i++)
-	{
-		for (int col = 0; col < 16; col++)
-		{
-			_ByteArray.append('\x00');
-		}
-	}
+	//for (int r = 0; r < 200; r++)
+	//{
+	//	for (int c = 0; c < 16; c++)
+	//	{
+	//		_ByteArray.append(0x01);
+	//	}
+	//}
+	//auto document = QHexDocument::fromMemory<QMemoryBuffer>(_ByteArray);
+	//_HexView = new QHexView(this);
+	//_HexView->setReadOnly(true);
+	//_HexView->setDocument(document);
 
-	QHexDocument* document = QHexDocument::fromMemory<QMemoryBuffer>(_ByteArray);
-	document->setBaseAddress(0);
+	//setCentralWidget(_HexView);
+}
 
-	_HexView = new QHexView(this);
-	_HexView->setReadOnly(true);
-	_HexView->setDocument(document);
-
-	setCentralWidget(_HexView);
-
-	//_Timer.start(1000);
+void MainWindow::SetupScanView()
+{
+	auto pDefaultTab = new SScanWidget(this);
+	auto nDefaultIndex = ui.tabWidget->addTab(pDefaultTab, "默认");
+	ui.tabWidget->setCurrentIndex(nDefaultIndex);
+	ui.tabWidget->setTabBarAutoHide(true);
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -68,8 +70,7 @@ void MainWindow::OnActionOpenProcess(bool checked)
 
 	if (!SEngine.AttachSelectedProcess())
 	{
-		qWarning("关联进程失败");
-		QMessageBox::warning(this, "", "关联进程失败");
+		QMessageBox::warning(this, "关联失败", "打开进程失败");
 		return;
 	}
 }
@@ -80,8 +81,22 @@ void MainWindow::OnTimeTick()
 	auto document = _HexView->document();
 	document->replace(2, value);
 
-	QHexMetadata* hexmetadata = document->metadata();
-	hexmetadata->comment(value, 0, 2, "test");
+	auto pProcess = SEngine.GetSelectedProcess();
+	if (pProcess == nullptr)
+	{
+		QMessageBox::warning(this, "关联失败", "选择的进程返回<nullptr>");
+		return;
+	}
 
-	value++;
+	ui.txtProcessName->setVisible(true);
+	ui.txtProcessName->setText(QString("%1(%2)")
+		.arg(pProcess->GetFileName())
+		.arg(pProcess->GetID()));
+
+	auto pTab = (SScanWidget*)ui.tabWidget->currentWidget();
+	if (pTab)
+	{
+		pTab->ShowModules();
+		pTab->ShowStateOpened();
+	}
 }

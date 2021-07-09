@@ -1,20 +1,23 @@
-#include "SEnumModuleWorker.h"
+#include "SEnumModule.h"
 #include "SProcess.h"
 #include "core\extras\NtExtras.h"
 
-SEnumModuleWorker::SEnumModuleWorker(SProcess* process)
+SEnumModule::SEnumModule(SProcess* process)
 	: QThread(nullptr)
 	, _Process(process)
 {
 }
 
-SEnumModuleWorker::~SEnumModuleWorker()
+SEnumModule::~SEnumModule()
 {
 	Stop();
 }
 
-void SEnumModuleWorker::Stop()
+void SEnumModule::Stop()
 {
+	if (!isRunning())
+		return;
+
 	if (isInterruptionRequested()) {
 		qWarning("Already stop.");
 		return;
@@ -29,12 +32,12 @@ void SEnumModuleWorker::Stop()
 	qInfo("Stopped");
 }
 
-void SEnumModuleWorker::WaitForInit()
+void SEnumModule::WaitForInit()
 {
 	_InitSemaphore.acquire();
 }
 
-void SEnumModuleWorker::run()
+void SEnumModule::run()
 {
 	MODULEENTRY32 tlh32Entry;
 	ZeroMemory(&tlh32Entry, sizeof(MODULEENTRY32));
@@ -65,12 +68,17 @@ void SEnumModuleWorker::run()
 				{
 					auto pModule = SModule::Create(_Process, tlh32Entry);
 					_Process->AppendModule(pModule);
+					if (pModule->Party == MODULE_PARTY::USER) {
+						_Process->AppendModuleToWhitelist(pModule);
+					}
 					count++;
 				}
 			}
 		} while ((ret = Module32Next(hSnap, &tlh32Entry)) && !isInterruptionRequested());
+
 		if (count > 0) 
 			qDebug("模块总数: %d", count);
+
 		_InitSemaphore.release();
 		QThread::msleep(500);
 	}

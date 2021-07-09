@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <map>
 
 #include "module_types.h"
 #include "SPESection.h"
@@ -19,6 +20,8 @@ public:
 	SModule();
 	SModule(const SModule& src);
 	~SModule();
+
+	bool IsCodeRegion(quint64 address);
 
 	static SModule* Create(SProcess* pProc, const MODULEENTRY32& tlh32Entry);
 
@@ -54,5 +57,6 @@ protected:
 
 Q_DECLARE_METATYPE(SModule);
 
-typedef QMap<QRange, SModule*> RANGE_MAP_MOUDLE;
+//typedef QMap<QRange, SModule*> RANGE_MAP_MOUDLE;
+typedef std::map<QRange, SModule*, QRangeCompare> RANGE_MAP_MOUDLE;
 typedef QMap<QString, SModule*> NAME_MAP_MODULE;

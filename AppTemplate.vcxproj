@@ -59,6 +59,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <IntDir>$(Platform)\$(Configuration)\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnabled>true</VcpkgEnabled>
@@ -66,8 +67,9 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\GUI\memory;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -76,10 +78,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\GUI\memory;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ntdll_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -110,15 +115,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core\extras\NtExtras.cpp" />
-    <ClCompile Include="src\core\memory\SMemoryBlock.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindMethod.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindMethodExact.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindWhat.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindWorker.cpp" />
+    <ClCompile Include="src\core\memory\SMemoryBuffer.cpp" />
+    <ClCompile Include="src\core\memory\SMemorySearch.cpp" />
     <ClCompile Include="src\core\memory\SMemoryRegion.cpp" />
     <ClCompile Include="src\core\module\PE\SPEParser.cpp" />
     <ClCompile Include="src\core\module\PE\SPESection.cpp" />
     <ClCompile Include="src\core\module\SModule.cpp" />
-    <ClCompile Include="src\core\process\enum\SEnumModuleWorker.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumModule.cpp" />
     <ClCompile Include="src\core\process\enum\SEnumProcess.cpp" />
     <ClCompile Include="src\core\process\SProcess.cpp" />
     <ClCompile Include="src\core\SxyEngine.cpp" />
+    <ClCompile Include="src\core\system\SAbstractAction.cpp" />
+    <ClCompile Include="src\GUI\controls\SHeaderView.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.cpp" />
@@ -132,11 +144,12 @@
     <ClCompile Include="src\GUI\memory\QHexView\document\qhexmetadata.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\qhexrenderer.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\qhexview.cpp" />
-    <ClCompile Include="src\GUI\memory\SMemoryViewWidget.cpp" />
+    <ClCompile Include="src\GUI\memory\SScanWidget.cpp" />
     <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
     <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
     <ClCompile Include="src\settings\GlobalSettings.cpp" />
     <ClCompile Include="src\utility\Random.cpp" />
+    <ClCompile Include="src\utility\SElapsed.cpp" />
     <ClCompile Include="themes\dark\DarkStyle.cpp" />
     <ClCompile Include="themes\dark\framelesswindow\framelesswindow.cpp" />
     <ClCompile Include="themes\dark\framelesswindow\windowdragger.cpp" />
@@ -147,6 +160,7 @@
     <QtMoc Include="MainWindow.h" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="src\GUI\memory\SScanWidget.ui" />
     <QtUic Include="src\GUI\process\DialogSelectProcess.ui" />
     <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui" />
   </ItemGroup>
@@ -193,21 +207,28 @@
     <Image Include="themes\dark\images\icon_window_restore.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />
     <ClInclude Include="libs\ntdll\ntdll.h" />
     <ClInclude Include="src\core\extras\NtExtras.h" />
     <QtMoc Include="src\core\module\SModule.h" />
-    <QtMoc Include="src\core\memory\SMemoryBlock.h" />
+    <QtMoc Include="src\core\memory\SMemoryBuffer.h" />
     <QtMoc Include="src\core\memory\SMemoryRegion.h" />
+    <QtMoc Include="src\core\memory\SMemorySearch.h" />
+    <QtMoc Include="src\core\memory\find\SFindMethod.h" />
+    <QtMoc Include="src\core\memory\find\SFindMethodExact.h" />
+    <ClInclude Include="src\core\memory\find\SFindWhat.h" />
+    <ClInclude Include="src\core\memory\find\SFindWorker.h" />
+    <ClInclude Include="src\core\memory\memory_define.h" />
     <ClInclude Include="src\core\module\module_types.h" />
-    <QtMoc Include="src\core\process\enum\SEnumModuleWorker.h" />
+    <QtMoc Include="src\core\process\enum\SEnumModule.h" />
     <QtMoc Include="src\core\module\PE\SPEParser.h" />
     <QtMoc Include="src\core\module\PE\SPESection.h" />
     <QtMoc Include="src\core\SxyEngine.h" />
     <QtMoc Include="src\core\process\enum\SEnumProcess.h" />
+    <QtMoc Include="src\core\system\SAbstractAction.h" />
     <ClInclude Include="src\global.h" />
     <QtMoc Include="src\GUI\process\DialogSelectProcess.h" />
-    <QtMoc Include="src\GUI\memory\SMemoryViewWidget.h" />
     <QtMoc Include="src\GUI\memory\QHexView\qhexview.h" />
     <QtMoc Include="src\GUI\memory\QHexView\document\qhexcursor.h" />
     <QtMoc Include="src\GUI\memory\QHexView\document\qhexdocument.h" />
@@ -217,10 +238,12 @@
     <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.h" />
     <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.h" />
     <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.h" />
+    <QtMoc Include="src\GUI\controls\SHeaderView.h" />
     <ClInclude Include="src\GUI\memory\QHexView\document\commands\hexcommand.h" />
     <ClInclude Include="src\GUI\memory\QHexView\document\commands\insertcommand.h" />
     <ClInclude Include="src\GUI\memory\QHexView\document\commands\removecommand.h" />
     <ClInclude Include="src\GUI\memory\QHexView\document\commands\replacecommand.h" />
+    <QtMoc Include="src\GUI\memory\SScanWidget.h" />
     <ClInclude Include="src\log\CustomLogMessageHandler.h" />
     <ClInclude Include="src\settings\GlobalSettings.h" />
     <ClInclude Include="src\utility\assert.h" />

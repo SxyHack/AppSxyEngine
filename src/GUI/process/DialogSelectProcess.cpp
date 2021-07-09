@@ -59,7 +59,7 @@ void DialogSelectProcess::AppendProcessItem(qint32 row, SProcess* pProcess)
 	auto item1 = new QTableWidgetItem(pProcess->GetFileName());
 	item1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 	item1->setData(Qt::UserRole, QVariant::fromValue(pProcess));
-	item1->setIcon(pProcess->GetIcon());
+	//item1->setIcon(pProcess->GetIcon());
 
 	ui.ProcessList->setItem(row, 0, item0);
 	ui.ProcessList->setItem(row, 1, item1);

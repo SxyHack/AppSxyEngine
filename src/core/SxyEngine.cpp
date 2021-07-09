@@ -1,5 +1,6 @@
 #include "SxyEngine.h"
 #include "SEnumProcess.h"
+#include "SAbstractAction.h"
 
 #include <QMutex>
 
@@ -7,6 +8,7 @@ static QMutex gMutex;
 
 SxyEngine::SxyEngine()
 	: QObject(nullptr)
+	, _AttachProcess(nullptr)
 {
 }
 
@@ -63,10 +65,17 @@ bool SxyEngine::AttachSelectedProcess()
 		return false;
 	}
 
-	if (!_AttachProcess->LoadVMRegions())
-	{
-		return false;
-	}
-
+	_AttachProcess->ExecuteEnumModules();
+	//_AttachProcess->LoadVMRegions();
 	return true;
+}
+
+SProcess* SxyEngine::GetSelectedProcess()
+{
+	return _AttachProcess;
+}
+
+void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD compare, const QString& valueA, const QString& valueB /*= QString()*/)
+{
+
 }

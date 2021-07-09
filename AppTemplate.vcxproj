@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props" Condition="Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -34,12 +33,12 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>5.15.0_msvc2019_64</QtInstall>
+    <QtInstall>5.15.2_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>Qt5.15x64</QtInstall>
+    <QtInstall>5.15.2_msvc2019</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
@@ -67,7 +66,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\GUI\memory;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -77,7 +76,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\GUI\memory;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -120,6 +119,20 @@
     <ClCompile Include="src\core\process\enum\SEnumProcess.cpp" />
     <ClCompile Include="src\core\process\SProcess.cpp" />
     <ClCompile Include="src\core\SxyEngine.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\hexcommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\insertcommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\removecommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\replacecommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexcursor.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexdocument.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexmetadata.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexrenderer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\qhexview.cpp" />
+    <ClCompile Include="src\GUI\memory\SMemoryViewWidget.cpp" />
     <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
     <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
     <ClCompile Include="src\settings\GlobalSettings.cpp" />
@@ -194,6 +207,20 @@
     <QtMoc Include="src\core\process\enum\SEnumProcess.h" />
     <ClInclude Include="src\global.h" />
     <QtMoc Include="src\GUI\process\DialogSelectProcess.h" />
+    <QtMoc Include="src\GUI\memory\SMemoryViewWidget.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\qhexview.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexcursor.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexdocument.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexmetadata.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexrenderer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\hexcommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\insertcommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\removecommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\replacecommand.h" />
     <ClInclude Include="src\log\CustomLogMessageHandler.h" />
     <ClInclude Include="src\settings\GlobalSettings.h" />
     <ClInclude Include="src\utility\assert.h" />
@@ -203,14 +230,4 @@
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />
   </ImportGroup>
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets" Condition="Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.props'))" />
-    <Error Condition="!Exists('packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\vcpkg.D.Environment.vcpkg.1.0.0\build\native\vcpkg.D.Environment.vcpkg.targets'))" />
-  </Target>
 </Project>

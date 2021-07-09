@@ -10,7 +10,6 @@ SEnumProcess::SEnumProcess(const QString& filter)
 
 SEnumProcess::~SEnumProcess()
 {
-	qDebug("~");
 }
 
 void SEnumProcess::run()

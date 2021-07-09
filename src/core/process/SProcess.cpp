@@ -331,6 +331,7 @@ bool SProcess::LoadVMRegions()
 
 bool SProcess::ReadMemory(QByteArray& bytes, LPVOID base, quint32 length)
 {
+	//SElapsed elapse("ReadMemory");
 	quint64 nReadedLength = 0;
 	char* pBuffer = new char[length];
 	ZeroMemory(pBuffer, length);

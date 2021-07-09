@@ -68,7 +68,6 @@ NTSTATUS SPEParser::ParseNTHead()
 		(e_lfanew + sizeOfPeSignature + sizeof(IMAGE_FILE_HEADER)) >= _Module->FileSize)
 		return STATUS_INVALID_IMAGE_FORMAT;
 
-
 	PIMAGE_NT_HEADERS pNtHeaders = (PIMAGE_NT_HEADERS)(_Module->FileMapBase + e_lfanew);
 	// RtlImageNtHeaderEx verifies that the range does not cross the UM <-> KM boundary here,
 	// but it would cost a syscall to query this address as it varies between OS versions 

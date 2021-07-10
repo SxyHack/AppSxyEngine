@@ -67,7 +67,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -78,7 +78,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
     </ClCompile>
@@ -147,6 +147,7 @@
     <ClCompile Include="src\GUI\memory\SScanWidget.cpp" />
     <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
     <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
+    <ClCompile Include="src\log\SLogAction.cpp" />
     <ClCompile Include="src\settings\GlobalSettings.cpp" />
     <ClCompile Include="src\utility\Random.cpp" />
     <ClCompile Include="src\utility\SElapsed.cpp" />
@@ -207,6 +208,7 @@
     <Image Include="themes\dark\images\icon_window_restore.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\log\SLogAction.h" />
     <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />
     <ClInclude Include="libs\ntdll\ntdll.h" />

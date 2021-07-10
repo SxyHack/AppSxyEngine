@@ -102,7 +102,6 @@ void SScanWidget::SetupFoundTable()
 		headItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		ui.TableFound->setHorizontalHeaderItem(i, headItem);
 	}
-
 }
 
 void SScanWidget::SetupModuleTable()

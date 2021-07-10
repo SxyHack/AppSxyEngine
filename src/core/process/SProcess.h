@@ -30,7 +30,6 @@ public:
 	QString GetFilePath();
 	QIcon GetIcon();
 
-
 	//
 	// 添加模块到Map数据结构
 	//
@@ -68,13 +67,12 @@ public:
 	// 读取虚拟内存页
 	//
 	bool LoadVMRegions();
-
 	//
 	// 读取虚拟内存
-	// bytes[OUT] 返回字节
-	// base[IN]   要读取的内存地址
-	// length[IN] 要读取的内存长度
-	// return bool 返回函数是否成功
+	// [OUT] bytes 返回字节
+	// [IN] base   要读取的内存地址
+	// [IN] length 要读取的内存长度
+	// [RETURN] bool 返回函数是否成功
 	//
 	bool ReadMemory(QByteArray& bytes, LPVOID base, quint32 length);
 	//
@@ -103,14 +101,14 @@ protected:
 	quint32 _Error;
 	QString _ErrMessage;
 
-	RANGE_MAP_MOUDLE  _ModuleRangeMap;
-	NAME_MAP_MODULE   _ModuleNameMap;
-	NAME_MAP_MODULE   _ModuleWhiteList;  // 内存扫描白名单
-	QStringList       _ModuleNameList;   // 模块有序列表
-	LST_MEMORY_REGION _MemRegionList;    // 内存页列表
+	RANGE_MAP_MOUDLE   _ModuleRangeMap;
+	NAME_MAP_MODULE    _ModuleNameMap;
+	NAME_MAP_MODULE    _ModuleWhiteList;  // 内存扫描白名单
+	LIST_MEMORY_REGION _MemRegionList;    // 内存页列表
+	QStringList        _ModuleNameList;   // 模块有序列表
 
-	SEnumModule       _EnumModules;
-	SMemorySearch     _Search;
+	SEnumModule        _EnumModules;
+	SMemorySearch      _Search;
 };
 
 

@@ -2,6 +2,7 @@
 #include "GUI\process\DialogSelectProcess.h"
 //#include "GUI\memory\QHexView\document\buffer\qmemorybuffer.h"
 #include "GUI\memory\SScanWidget.h"
+#include "log\CustomLogMessageHandler.h"
 
 #include <QMessageBox>
 

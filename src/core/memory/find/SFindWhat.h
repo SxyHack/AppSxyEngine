@@ -43,4 +43,4 @@ protected:
 
 };
 
-typedef QList<SFindWhat> FindWhatList;
+typedef QList<SFindWhat> SWHAT_LIST;

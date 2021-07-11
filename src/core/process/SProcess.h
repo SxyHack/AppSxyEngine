@@ -69,12 +69,12 @@ public:
 	bool LoadVMRegions();
 	//
 	// 读取虚拟内存
-	// [OUT] bytes 返回字节
-	// [IN] base   要读取的内存地址
-	// [IN] length 要读取的内存长度
+	// [OUT] bytes  返回字节
+	// [IN] address 要读取的内存地址
+	// [IN] length  要读取的内存长度
 	// [RETURN] bool 返回函数是否成功
 	//
-	bool ReadMemory(QByteArray& bytes, LPVOID base, quint32 length);
+	bool ReadMemory(QByteArray& bytes, LPVOID address, quint32 length);
 	//
 	// 返回是否代码页
 	// [IN] address  传入内存开始地址

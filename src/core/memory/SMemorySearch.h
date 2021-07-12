@@ -7,6 +7,7 @@
 
 #include "SFindWhat.h"
 #include "SFindMethod.h"
+#include "global.h"
 
 class SProcess;
 
@@ -36,6 +37,7 @@ public:
 	void Cancel();
 	void Reset();
 	bool IsDone();
+	bool IsValidRegion(const MEMORY_BASIC_INFORMATION& mbi);
 
 	SWHAT_LIST& GetWhatList();
 	quint32 GetWhatCount();

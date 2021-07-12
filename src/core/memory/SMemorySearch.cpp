@@ -91,6 +91,32 @@ bool SMemorySearch::IsDone()
 	return _Done;
 }
 
+bool SMemorySearch::IsValidRegion(const MEMORY_BASIC_INFORMATION& mbi)
+{
+	if (mbi.State == MEM_FREE)
+		return false;
+
+	// 如果是MEM_MAPPED，则根据配置是否跳过
+	if (mbi.Type == MEM_MAPPED && !_EnableMapped)
+		return false;
+
+	if (mbi.Protect == 0)
+		return false;
+
+	// 如果是写时拷贝，跳过
+	if ((mbi.Protect & PAGE_WRITECOPY))
+		return false;
+
+	if (mbi.Protect & PAGE_NOCACHE)
+		return false;
+	if (mbi.Protect & PAGE_NOACCESS)
+		return false;
+	if (mbi.Protect & PAGE_GUARD)
+		return false;
+
+	return true;
+}
+
 SWHAT_LIST& SMemorySearch::GetWhatList()
 {
 	return _FindWhats;
@@ -152,13 +178,7 @@ void SMemorySearch::run()
 			bool bMapped = (mbi.Type == MEM_MAPPED);
 			bool bReserved = (mbi.State == MEM_RESERVE);
 
-			if (mbi.State == MEM_FREE) {
-				_ProcessReadedBytes += mbi.RegionSize;
-				goto LOOP_END;
-			}
-
-			// 如果是MEM_MAPPED，则根据配置是否跳过
-			if (bMapped && !_EnableMapped) {
+			if (IsValidRegion(mbi)) {
 				_ProcessReadedBytes += mbi.RegionSize;
 				goto LOOP_END;
 			}
@@ -182,14 +202,12 @@ void SMemorySearch::run()
 
 			// 如果模块不在白名单，不搜索该模块
 			if (!qModuleName.isEmpty() && !_Process->InWhitelist(qModuleName)) {
-				//qCritical("跳过, 模块[%s-%p]不在白名单", qsModuleName.toUtf8().data(), mbi.BaseAddress);
 				_ProcessReadedBytes += mbi.RegionSize;
 				goto LOOP_END;
 			}
 
 			// 如果是代码页，根据配置是否跳过该模块
-			if (_Process->IsCodeRegion(mbi.BaseAddress) && !_EnableCodeRegion) {
-				//qCritical("跳过, 区域[%p]属于代码页", mbi.BaseAddress);
+			if (_Process->IsCodeRegion(mbi) && !_EnableCodeRegion) {
 				_ProcessReadedBytes += mbi.RegionSize;
 				goto LOOP_END;
 			}
@@ -225,10 +243,10 @@ void SMemorySearch::run()
 			}
 
 		LOOP_END:
-			quint64 ulNextRegionAddr = nBegRegionAddr + mbi.RegionSize;
-			if (ulNextRegionAddr <= ulQueryAddr || ulNextRegionAddr >= _ProcessEndAddress)
+			quint64 nNextRegionAddr = nBegRegionAddr + mbi.RegionSize;
+			if (nNextRegionAddr <= ulQueryAddr || nNextRegionAddr >= _ProcessEndAddress)
 				break;
-			ulQueryAddr = ulNextRegionAddr;
+			ulQueryAddr = nNextRegionAddr;
 		}
 	}
 

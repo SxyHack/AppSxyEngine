@@ -4,7 +4,6 @@
 #include <QStringList>
 #include <QIcon>
 
-#include "global.h"
 #include "SModule.h"
 #include "SEnumModule.h"
 #include "SMemoryRegion.h"
@@ -81,7 +80,7 @@ public:
 	// [IN] length   传入内存的长度
 	// [RETURN] bool 是代码返回true，否则返回false
 	//
-	bool IsCodeRegion(LPVOID address);
+	bool IsCodeRegion(const MEMORY_BASIC_INFORMATION& mbi);
 
 	//
 	// 搜索

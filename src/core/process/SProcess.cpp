@@ -329,13 +329,18 @@ bool SProcess::ReadMemory(QByteArray& bytes, LPVOID address, quint32 length)
 	return true;
 }
 
-bool SProcess::IsCodeRegion(LPVOID address)
+bool SProcess::IsCodeRegion(const MEMORY_BASIC_INFORMATION& mbi)
 {
-	auto pModule = GetModule((quint64)address);
+	bool bExecute = (mbi.Protect & PAGE_EXECUTE) ||
+		(mbi.Protect & PAGE_EXECUTE_READ) ||
+		(mbi.Protect & PAGE_EXECUTE_READWRITE) ||
+		(mbi.Protect & PAGE_EXECUTE_WRITECOPY);
+
+	auto pModule = GetModule((quint64)mbi.BaseAddress);
 	if (pModule == nullptr)
 		return false;
 
-	return pModule->IsCodeRegion((quint64)address);
+	return pModule->IsCodeRegion((quint64)mbi.BaseAddress) || bExecute;
 }
 
 void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b)

@@ -103,6 +103,11 @@ SFindWhat::SFindWhat(const SFindWhat& src)
 	Size = src.Size;
 }
 
+SFindWhat::SFindWhat()
+{
+	Size = 0;
+}
+
 SFindWhat::~SFindWhat()
 {
 }
@@ -116,4 +121,29 @@ void SFindWhat::AppendBuff(const SMemoryBuffer& buff)
 long SFindWhat::GetFoundCount()
 {
 	return _FoundAddressList.count();
+}
+
+SFindWhat SFindWhat::Create(const QString& a, const QString& b, EFIND_TYPE type)
+{
+	switch (type)
+	{
+	case EFIND_TYPE::Byte:
+		return SFindWhat((quint8)a.toUInt(), (quint8)b.toUInt());
+	case EFIND_TYPE::Byte_2:
+		return SFindWhat((quint16)a.toUInt(), (quint16)b.toUInt());
+	case EFIND_TYPE::Byte_4:
+		return SFindWhat((quint32)a.toUInt(), (quint32)b.toUInt());
+	case EFIND_TYPE::Byte_8:
+		return SFindWhat((quint64)a.toULong(), (quint64)b.toULong());
+	case EFIND_TYPE::Float:
+		return SFindWhat(a.toFloat(), b.toFloat());
+	case EFIND_TYPE::Double:
+		return SFindWhat(a.toDouble(), b.toDouble());
+	case EFIND_TYPE::String:
+		return SFindWhat(a);
+	case EFIND_TYPE::All:
+		break;
+	}
+
+	return SFindWhat();
 }

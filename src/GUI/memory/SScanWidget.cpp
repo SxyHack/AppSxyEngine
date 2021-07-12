@@ -39,6 +39,7 @@ SScanWidget::SScanWidget(QWidget* parent)
 	connect(ui.ButtonSearch, SIGNAL(clicked()), this, SLOT(OnButtonClickSearch()));
 	connect(ui.ButtonRestart, SIGNAL(clicked()), this, SLOT(OnButtonClickRestart()));
 	connect(ui.ButtonUndo, SIGNAL(clicked()), this, SLOT(OnButtonClickUndo()));
+	connect(&_SearchTimer, SIGNAL(timeout()), this, SLOT(OnTimingSearch()));
 }
 
 SScanWidget::~SScanWidget()
@@ -206,6 +207,17 @@ void SScanWidget::ShowStateOpened()
 	ui.FindMethod->setEnabled(true);
 }
 
+void SScanWidget::SetupSignalSlot()
+{
+	auto pProcess = SEngine.GetSelectedProcess();
+	if (pProcess)
+	{
+		auto& search = pProcess->GetSearch();
+		connect(&search, &SMemorySearch::sgSearchDone,
+			this, &SScanWidget::OnSearchDone, Qt::QueuedConnection);
+	}
+}
+
 void SScanWidget::OnSelectAllModule(bool checked)
 {
 	for (int i = 0; i < ui.TableModule->rowCount(); i++)
@@ -232,6 +244,21 @@ void SScanWidget::OnBaseChanged(QAbstractButton* pButton)
 
 }
 
+void SScanWidget::OnTimingSearch()
+{
+	auto pProcess = SEngine.GetSelectedProcess();
+	if (pProcess == nullptr)
+	{
+		return;
+	}
+
+	quint64 nReadedBytes = 0;
+	quint64 nTotalBytes = 0;
+	pProcess->GetSearchProgress(nReadedBytes, nTotalBytes);
+	quint64 nPercentage = double(nReadedBytes) / double(nTotalBytes) * 100;
+	ui.ScanProgress->setValue(nPercentage);
+}
+
 void SScanWidget::OnButtonClickSearch()
 {
 	auto pProcess = SEngine.GetSelectedProcess();
@@ -242,68 +269,21 @@ void SScanWidget::OnButtonClickSearch()
 	}
 
 	auto type = EFIND_TYPE(ui.FindType->currentData().toInt());
-	auto bc = EFIND_METHOD(ui.FindMethod->currentData().toInt());
+	auto method = EFIND_METHOD(ui.FindMethod->currentData().toInt());
 	auto va = ui.TargetValueA->text();
 	auto vb = ui.TargetValueB->text();
-	auto& search = pProcess->Search();
+	pProcess->Search(type, method, va, vb);
 
-	switch (type)
-	{
-	case EFIND_TYPE::Byte:
-		search.FindWhat(SFindWhat((quint8)va.toUInt(), (quint8)vb.toUInt()));
-		break;
-	case EFIND_TYPE::Byte_2:
-		search.FindWhat(SFindWhat((quint16)va.toUInt(), (quint16)vb.toUInt()));
-		break;
-	case EFIND_TYPE::Byte_4:
-		search.FindWhat(SFindWhat((quint32)va.toUInt(), (quint32)vb.toUInt()));
-		break;
-	case EFIND_TYPE::Byte_8:
-		search.FindWhat(SFindWhat((quint64)va.toULong(), (quint64)vb.toULong()));
-		break;
-	case EFIND_TYPE::Float:
-		search.FindWhat(SFindWhat(va.toFloat(), vb.toFloat()));
-		break;
-	case EFIND_TYPE::Double:
-		search.FindWhat(SFindWhat(va.toDouble(), vb.toDouble()));
-		break;
-	case EFIND_TYPE::String:
-		search.FindWhat(SFindWhat(va));
-		break;
-	case EFIND_TYPE::All:
-		break;
-	}
+	// 启动进度条更新计时器
+	ui.ScanProgress->setValue(0);
+	ui.ScanProgress->setVisible(true);
+	ui.TargetValueA->setEnabled(false);
+	ui.TargetValueB->setEnabled(false);
+	ui.FindType->setEnabled(false);
+	ui.FindMethod->setEnabled(false);
+	ui.ButtonSearch->setEnabled(false);
 
-	switch (bc)
-	{
-	case EFIND_METHOD::Exact:
-		search.FindMethod(new SFindMethodExact());
-		break;
-	case EFIND_METHOD::MoreThan:
-		break;
-	case EFIND_METHOD::LessThan:
-		break;
-	case EFIND_METHOD::Between:
-		break;
-	case EFIND_METHOD::Unknown:
-		break;
-	case EFIND_METHOD::Bigger:
-		break;
-	case EFIND_METHOD::Smaller:
-		break;
-	case EFIND_METHOD::IncreaseN:
-		break;
-	case EFIND_METHOD::DecreaseN:
-		break;
-	case EFIND_METHOD::Changed:
-		break;
-	case EFIND_METHOD::Unchanged:
-		break;
-	case EFIND_METHOD::EqualBase:
-		break;
-	}
-
-	search.start();
+	_SearchTimer.start(10);
 }
 
 void SScanWidget::OnButtonClickRestart()
@@ -314,6 +294,21 @@ void SScanWidget::OnButtonClickRestart()
 void SScanWidget::OnButtonClickUndo()
 {
 
+}
+
+void SScanWidget::OnSearchDone(quint32 count)
+{
+	ui.TargetValueA->setEnabled(true);
+	ui.TargetValueB->setEnabled(true);
+	//ui.FindType->setEnabled(false);
+	ui.FindMethod->setEnabled(true);
+	ui.ButtonSearch->setEnabled(true);
+	ui.ButtonRestart->setEnabled(true);
+
+	ui.FoundCount->setText(QString::number(58426));
+	ui.ScanProgress->setValue(0);
+	//ui.ScanProgress->setVisible(false);
+	_SearchTimer.stop();
 }
 
 void SScanWidget::showEvent(QShowEvent* e)

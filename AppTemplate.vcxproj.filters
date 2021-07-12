@@ -139,7 +139,6 @@
     <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="themes\dark\darkstyle\darkstyle.qss" />
   </ItemGroup>
   <ItemGroup>

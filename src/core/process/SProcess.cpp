@@ -21,6 +21,9 @@ SProcess::SProcess(const PROCESSENTRY32& entry)
 	, _Search(this)
 {
 	_Name = QString::fromWCharArray(entry.szExeFile);
+
+	// connects
+	connect(&_Search, &SMemorySearch::sgSearchDone, this, &SProcess::sgSearchDone);
 }
 
 SProcess::~SProcess()
@@ -299,25 +302,6 @@ bool SProcess::LoadVMRegions()
 			qsMemState.toUtf8().data(),
 			qsMemType.toUtf8().data());
 
-		//BYTE buffer[4] = { 0 };
-		//SIZE_T nReadBufferCount = 0;
-		//if (!ReadProcessMemory(_Handle, mbi.BaseAddress, buffer, 4, &nReadBufferCount))
-		//	goto LOOP_END;
-
-		//SModule* lpModule = GetModule(qsModuleName);
-		//GetModuleName(ulQueryAddr, qsModuleName);
-		//if (lpModule == nullptr)
-		//{
-		//	TCHAR szMappedName[MAX_MODULE_SIZE] = L"";
-		//	if (bMapped && (GetMappedFileName(_Handle, mbi.AllocationBase, szMappedName, MAX_MODULE_SIZE) != 0))
-		//	{
-		//		qsModuleName = QString::fromWCharArray(szMappedName);
-		//		lpModule = GetModule(qsModuleName);
-		//	}
-		//}
-
-		//_MemRegionList.append(SMemoryRegion(mbi, lpModule));
-
 	LOOP_END:
 		quint64 ulNextRegionAddr = (quint64)mbi.BaseAddress + mbi.RegionSize;
 		if (ulNextRegionAddr <= ulQueryAddr)
@@ -329,13 +313,13 @@ bool SProcess::LoadVMRegions()
 	return true;
 }
 
-bool SProcess::ReadMemory(QByteArray& bytes, LPVOID base, quint32 length)
+bool SProcess::ReadMemory(QByteArray& bytes, LPVOID address, quint32 length)
 {
 	//SElapsed elapse("ReadMemory");
 	quint64 nReadedLength = 0;
 	char* pBuffer = new char[length];
 	ZeroMemory(pBuffer, length);
-	if (!::ReadProcessMemory(_Handle, base, pBuffer, length, &nReadedLength))
+	if (!::ReadProcessMemory(_Handle, address, pBuffer, length, &nReadedLength))
 	{
 		return false;
 	}
@@ -354,7 +338,35 @@ bool SProcess::IsCodeRegion(LPVOID address)
 	return pModule->IsCodeRegion((quint64)address);
 }
 
-SMemorySearch& SProcess::Search()
+void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b)
+{
+	if (_Search.IsDone())
+	{
+
+	}
+	else
+	{
+		_Search.FindMethod(SFindMethod::Create(method));
+		if (type == EFIND_TYPE::All)
+		{
+
+		}
+		else
+		{
+			_Search.FindWhat(SFindWhat::Create(a, b, type));
+		}
+
+		_Search.start();
+	}
+}
+
+void SProcess::GetSearchProgress(quint64& readed, quint64& total)
+{
+	readed = _Search.GetReadedBytes();
+	total = _Search.GetTotalBytes();
+}
+
+SMemorySearch& SProcess::GetSearch()
 {
 	return _Search;
 }

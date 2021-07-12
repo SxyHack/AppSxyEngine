@@ -86,7 +86,12 @@ public:
 	//
 	// ËÑË÷
 	//
-	SMemorySearch& Search();
+	void Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b);
+	void GetSearchProgress(quint64& readed, quint64& total);
+	SMemorySearch& GetSearch();
+
+signals:
+	void sgSearchDone(quint32 count);
 
 public:
 	PROCESSENTRY32 Content;

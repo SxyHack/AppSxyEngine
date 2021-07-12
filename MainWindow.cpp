@@ -90,6 +90,7 @@ void MainWindow::OnActionOpenProcess(bool checked)
 	auto pTab = (SScanWidget*)ui.tabWidget->currentWidget();
 	if (pTab)
 	{
+		pTab->SetupSignalSlot();
 		pTab->ShowModules();
 		pTab->ShowStateOpened();
 	}

@@ -11,7 +11,7 @@
 class SProcess;
 
 //
-//
+// 搜索虚拟内存
 //
 class SMemorySearch : public QThread
 {
@@ -34,10 +34,20 @@ public:
 	// 取消当前搜索
 	// 
 	void Cancel();
+	void Reset();
 	bool IsDone();
+
+	SWHAT_LIST& GetWhatList();
+	quint32 GetWhatCount();
+
+	quint64 GetReadedBytes();
+	quint64 GetTotalBytes();
 
 protected:
 	void run() override;
+
+signals:
+	void sgSearchDone(quint32 count);
 
 protected:
 	SWHAT_LIST   _FindWhats;
@@ -45,8 +55,12 @@ protected:
 	SProcess*    _Process;
 	QThreadPool  _ThreadPool;
 	bool         _EnableCodeRegion; // 是否搜索代码页 
-	bool         _EnableMapped;
+	bool         _EnableMapped;     // 是否搜索MEM_MAPPED
 	bool         _Done;
 	QSemaphore   _Stop;
-
+	quint32      _NumberOfProcessors;
+	quint64      _ProcessBegAddress;
+	quint64      _ProcessEndAddress;
+	quint64      _ProcessTotalBytes;
+	quint64      _ProcessReadedBytes;
 };

@@ -14,8 +14,7 @@ static QMutex gMutex;
 static QMutex gLogMutex;
 static FILE*  gFile;
 
-static SQUEUE_LOG gQueue;
-
+//static SQUEUE_LOG gQueue;
 
 CustomLogMessageHandler::CustomLogMessageHandler()
 {
@@ -85,7 +84,7 @@ void CustomLogMessageHandler::handle(QtMsgType type, const QMessageLogContext& c
 	log.append(msg);
 	log.append("\n");
 
-	gQueue.enqueue(new SLogAction(log));
+	//gQueue.enqueue(new SLogAction(log));
 }
 
 void CustomLogMessageHandler::Stop()
@@ -100,18 +99,18 @@ void CustomLogMessageHandler::Stop()
 
 void CustomLogMessageHandler::run()
 {
-	while (!isInterruptionRequested())
-	{
-		if (gQueue.isEmpty())
-		{
-			QThread::msleep(2);
-			continue;
-		}
+	//while (!isInterruptionRequested())
+	//{
+	//	if (gQueue.isEmpty())
+	//	{
+	//		QThread::msleep(2);
+	//		continue;
+	//	}
 
-		auto pAction = gQueue.dequeue();
-		pAction->Execute();
-		delete pAction;
-	}
+	//	auto pAction = gQueue.dequeue();
+	//	pAction->Execute();
+	//	delete pAction;
+	//}
 
-	_ExitSemaphore.release();
+	//_ExitSemaphore.release();
 }

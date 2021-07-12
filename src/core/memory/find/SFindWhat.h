@@ -13,6 +13,7 @@
 class SFindWhat 
 {
 public:
+	SFindWhat();
 	SFindWhat(quint8 v);
 	SFindWhat(quint8 a, quint8 b);
 	SFindWhat(quint16 v);
@@ -31,6 +32,9 @@ public:
 
 	void AppendBuff(const SMemoryBuffer& buff);
 	long GetFoundCount();
+
+public:
+	static SFindWhat Create(const QString& a, const QString& b, EFIND_TYPE type);
 
 public:
 	QVariant A;

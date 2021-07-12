@@ -4,7 +4,7 @@
 #include <QQueue>
 #include <QSemaphore>
 
-#include "SLogAction.h"
+//#include "SLogAction.h"
 
 
 

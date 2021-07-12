@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include <QButtonGroup>
+#include <QTimer>
 
 #include "ui_SScanWidget.h"
 #include "memory_define.h"
@@ -19,6 +20,7 @@ public:
 
 	// States
 	void ShowStateOpened();
+	void SetupSignalSlot();
 
 protected:
 	//
@@ -46,10 +48,14 @@ protected:
 private slots:
 	void OnSelectAllModule(bool checked);
 	void OnBaseChanged(QAbstractButton*);
+	void OnTimingSearch();
 
 	void OnButtonClickSearch();
 	void OnButtonClickRestart();
 	void OnButtonClickUndo();
+
+public slots:
+	void OnSearchDone(quint32 count);
 
 protected:
 	void showEvent(QShowEvent* e) override;
@@ -57,6 +63,7 @@ protected:
 
 private:
 	Ui::SScanWidget ui;
-	QButtonGroup _ButtonGroup;
 	QString      _InputMask;
+	QButtonGroup _ButtonGroup;
+	QTimer       _SearchTimer;
 };

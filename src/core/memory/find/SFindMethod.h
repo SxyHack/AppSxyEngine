@@ -14,4 +14,6 @@ public:
 	~SFindMethod();
 
 	virtual bool Match(const QByteArray& bytes, const SFindWhat& what) = 0;
+
+	static SFindMethod* Create(EFIND_METHOD method);
 };

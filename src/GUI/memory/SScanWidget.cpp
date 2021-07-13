@@ -119,7 +119,7 @@ void SScanWidget::AppendFoundAddress(quint32 row, const SMemoryBuffer& buffer)
 	itemAddr->setData(Qt::UserRole, &buffer);
 	if (nOffset >= 0)
 	{
-		itemAddr->setToolTip(qAddress);
+		itemAddr->setToolTip(QString::number(buffer.Address, 16).toUpper());
 	}
 	ui.TableFound->setItem(row, 0, itemAddr);
 
@@ -339,8 +339,6 @@ void SScanWidget::OnSearchDone(quint32 count)
 	ui.FindMethod->setEnabled(true);
 	ui.ButtonSearch->setEnabled(true);
 	ui.ButtonRestart->setEnabled(true);
-
-	ui.FoundCount->setText(QString::number(count));
 	ui.ScanProgress->setValue(0);
 	//ui.ScanProgress->setVisible(false);
 	_SearchTimer.stop();
@@ -348,14 +346,27 @@ void SScanWidget::OnSearchDone(quint32 count)
 	if (pSearch == nullptr)
 		return;
 
-	ui.TableFound->setRowCount(pSearch->GetWhatCount());
+	const static auto MAX_SHOW_COUNT = 5000;
+	auto nRow = 0;
+	auto nCount = count;
+	if (nCount > MAX_SHOW_COUNT)
+	{
+		ui.FoundCount->setText(QString("显示%1(%2)").arg(MAX_SHOW_COUNT).arg(nCount));
+		nCount = MAX_SHOW_COUNT;
+	} 
+	else
+	{
+		ui.FoundCount->setText(QString::number(nCount));
+	}
 
-	quint32 nRow = 0;
+	ui.TableFound->setRowCount(nCount);
 	for (auto& what : pSearch->GetWhatList())
 	{
 		for (int i = 0; i < what.GetFoundCount(); i++)
 		{
 			AppendFoundAddress(nRow++, what.GetBuffer(i));
+			if (nRow >= nCount)
+				return;
 		}
 	}
 }

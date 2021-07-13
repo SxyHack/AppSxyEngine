@@ -147,7 +147,7 @@
     <ClCompile Include="src\GUI\memory\SScanWidget.cpp" />
     <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
     <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
-    <!-- <ClCompile Include="src\log\SLogAction.cpp" /> -->
+    <ClCompile Include="src\log\SLogAction.cpp" />
     <ClCompile Include="src\settings\GlobalSettings.cpp" />
     <ClCompile Include="src\utility\Random.cpp" />
     <ClCompile Include="src\utility\SElapsed.cpp" />
@@ -207,7 +207,7 @@
     <Image Include="themes\dark\images\icon_window_restore.png" />
   </ItemGroup>
   <ItemGroup>
-    <!-- <ClInclude Include="src\log\SLogAction.h" /> -->
+    <ClInclude Include="src\log\SLogAction.h" />
     <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />
     <ClInclude Include="libs\ntdll\ntdll.h" />

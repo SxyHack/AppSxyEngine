@@ -8,6 +8,6 @@ public:
 	~SElapsed();
 
 private:
-	QTime _Time;
-	QString _Log;
+	QTime   _Time;
+	QString _Message;
 };

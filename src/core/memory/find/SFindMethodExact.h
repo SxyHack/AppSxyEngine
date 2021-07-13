@@ -11,4 +11,7 @@ public:
 	~SFindMethodExact();
 
 	bool Match(const QByteArray& bytes, const SFindWhat& what) override;
+	bool Match(char* pBuffer, const SFindWhat& what) override;
+
+public:
 };

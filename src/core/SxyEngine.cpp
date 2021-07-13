@@ -75,7 +75,24 @@ SProcess* SxyEngine::GetSelectedProcess()
 	return _AttachProcess;
 }
 
-void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD compare, const QString& valueA, const QString& valueB /*= QString()*/)
+void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& valueA, const QString& valueB /*= QString()*/)
 {
+	if (_AttachProcess)
+	{
+		_AttachProcess->Search(type, method, valueA, valueB);
+	}
+}
 
+qint64 SxyEngine::QueryStaticAddress(QString& qModuleName, quint64 address)
+{
+	if (_AttachProcess)
+	{
+		auto pModule = _AttachProcess->GetModuleName(address, qModuleName);
+		if (pModule)
+		{
+			return address - pModule->ModBase;
+		}
+	}
+
+	return -1;
 }

@@ -337,10 +337,10 @@ bool SProcess::IsCodeRegion(const MEMORY_BASIC_INFORMATION& mbi)
 		(mbi.Protect & PAGE_EXECUTE_WRITECOPY);
 
 	auto pModule = GetModule((quint64)mbi.BaseAddress);
-	if (pModule == nullptr)
-		return false;
+	if (pModule)
+		return pModule->IsCodeRegion((quint64)mbi.BaseAddress) || bExecute;
 
-	return pModule->IsCodeRegion((quint64)mbi.BaseAddress) || bExecute;
+	return bExecute;
 }
 
 void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b)

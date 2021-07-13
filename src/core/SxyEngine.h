@@ -41,8 +41,18 @@ public:
 	//
 	// 搜索数值
 	//
-	void Search(EFIND_TYPE type, EFIND_METHOD compare, 
-		const QString& valueA, const QString& valueB = QString());
+	void Search(EFIND_TYPE type, 
+		EFIND_METHOD compare, 
+		const QString& valueA, 
+		const QString& valueB = QString());
+
+	//
+	// 查询地址是否是模块的静态地址
+	// [OUT] qModuleName 返回模块名字，如果为空，则是私有内存页
+	// [IN]  address 输入要查询的地址
+	// [RETURN] 如果是私有内存页返回-1, 否则返回模块镜像的偏移
+	// 
+	qint64 QueryStaticAddress(QString& qModuleName, quint64 address);
 
 signals:
 	void sgEnumProcess(qint32, SProcess*);

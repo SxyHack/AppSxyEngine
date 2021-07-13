@@ -11,7 +11,7 @@ class SFindWorker : public QObject, public QRunnable
 	friend class SMemorySearch;
 
 public:
-	SFindWorker(SMemorySearch* pSearch, SModule* pModule, const SFindWhat& what, quint64 begAddr, quint64 endAddr);
+	SFindWorker(SMemorySearch* pSearch, SModule* pModule, SFindWhat* what, quint64 begAddr, quint64 endAddr);
 	~SFindWorker();
 
 protected:
@@ -21,7 +21,7 @@ protected:
 	SMemorySearch* _Search;
 	quint64   _FindBegAddress;
 	quint64   _FindEndAddress;
-	SFindWhat _What;
+	SFindWhat* _What;
 	SModule*  _Module;
 };
  

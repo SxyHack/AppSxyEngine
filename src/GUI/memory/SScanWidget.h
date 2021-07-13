@@ -6,6 +6,7 @@
 
 #include "ui_SScanWidget.h"
 #include "memory_define.h"
+#include "SMemorySearch.h"
 
 class SScanWidget : public QWidget
 {
@@ -17,6 +18,7 @@ public:
 
 	// Show
 	void ShowModules();
+	void ShowFoundAddress();
 
 	// States
 	void ShowStateOpened();
@@ -41,6 +43,8 @@ protected:
 	void SetupFindMethod();
 	void SetupFoundTable();
 	void SetupModuleTable();
+
+	void AppendFoundAddress(quint32 row, const SMemoryBuffer& buffer);
 
 	EFIND_TYPE GetFindType();
 	EFIND_METHOD GetFindMethod();

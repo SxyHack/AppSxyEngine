@@ -1,12 +1,22 @@
 #include "SMemoryBuffer.h"
 #include "core\module\SModule.h"
+#include "SFindWhat.h"
+#include "SFindMethod.h"
 
-SMemoryBuffer::SMemoryBuffer(quint64 addr, const QByteArray& bytes, SModule* pMod)
+SMemoryBuffer::SMemoryBuffer()
 	: QObject(nullptr)
-	, _Module(pMod)
-	, Address(addr)
-	, Content(bytes)
+	, _Module(nullptr)
+	, Address(0)
 {
+}
+
+SMemoryBuffer::SMemoryBuffer(quint64 nAddr, char* pBuffer, SFindWhat* pWhat, SModule* pModule)
+	: QObject(nullptr)
+	, _Module(pModule)
+	, _What(pWhat)
+	, Address(nAddr)
+{
+	Content = SFindMethod::ToQVariant(pBuffer, *pWhat);
 }
 
 SMemoryBuffer::SMemoryBuffer(const SMemoryBuffer& src)
@@ -16,6 +26,8 @@ SMemoryBuffer::SMemoryBuffer(const SMemoryBuffer& src)
 	Address = src.Address;
 	Content = src.Content;
 }
+
+
 
 SMemoryBuffer::~SMemoryBuffer()
 {
@@ -27,6 +39,11 @@ SMemoryBuffer& SMemoryBuffer::operator=(const SMemoryBuffer& src)
 	Address = src.Address;
 	Content = src.Content;
 	return *this;
+}
+
+QString SMemoryBuffer::ToString() const
+{
+	return Content.toString();
 }
 
 bool SMemoryBuffer::IsCanonicalAddress(quint64 address)

@@ -2,7 +2,6 @@
 #include "SMemoryBuffer.h"
 #include "GUI/controls/SHeaderView.h"
 #include "SxyEngine.h"
-#include "SMemorySearch.h"
 #include "SFindMethodExact.h"
 
 #include <QMessageBox>
@@ -34,7 +33,7 @@ SScanWidget::SScanWidget(QWidget* parent)
 	ui.FindMethod->setEnabled(false);
 
 	// connections
-	connect(&_ButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)), 
+	connect(&_ButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)),
 		this, SLOT(OnBaseChanged(QAbstractButton*)));
 	connect(ui.ButtonSearch, SIGNAL(clicked()), this, SLOT(OnButtonClickSearch()));
 	connect(ui.ButtonRestart, SIGNAL(clicked()), this, SLOT(OnButtonClickRestart()));
@@ -91,7 +90,8 @@ void SScanWidget::SetupFoundTable()
 	QStringList tableHead;
 	tableHead << "地址" << "当前值" << "先前值";
 	ui.TableFound->setColumnCount(tableHead.length());
-	ui.TableFound->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	ui.TableFound->setColumnWidth(0, 150);
+	ui.TableFound->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	ui.TableFound->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 	ui.TableFound->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 	ui.TableFound->setAlternatingRowColors(true);
@@ -104,6 +104,35 @@ void SScanWidget::SetupFoundTable()
 		ui.TableFound->setHorizontalHeaderItem(i, headItem);
 	}
 }
+
+void SScanWidget::AppendFoundAddress(quint32 row, const SMemoryBuffer& buffer)
+{
+	QString qModuleName;
+	auto nOffset = SEngine.QueryStaticAddress(qModuleName, buffer.Address);
+
+	auto qAddress = nOffset >= 0 
+		? QString("%1+%2").arg(qModuleName).arg(QString::number(nOffset, 16)).toUpper()
+		: QString::number(buffer.Address, 16).toUpper();
+	auto itemAddr = new QTableWidgetItem(qAddress);
+	itemAddr->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	itemAddr->setTextColor(nOffset >= 0 ? Qt::green : Qt::white);
+	itemAddr->setData(Qt::UserRole, &buffer);
+	if (nOffset >= 0)
+	{
+		itemAddr->setToolTip(qAddress);
+	}
+	ui.TableFound->setItem(row, 0, itemAddr);
+
+	auto qsValue = buffer.ToString();
+	auto itemValue = new QTableWidgetItem(qsValue);
+	itemAddr->setData(Qt::UserRole, &buffer);
+	ui.TableFound->setItem(row, 1, itemValue);
+
+	auto itemCopy = new QTableWidgetItem(qsValue);
+	itemCopy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	ui.TableFound->setItem(row, 2, itemCopy);
+}
+
 
 void SScanWidget::SetupModuleTable()
 {
@@ -136,8 +165,8 @@ void SScanWidget::SetupModuleTable()
 
 		ui.TableModule->setHorizontalHeaderItem(i, headItem);
 	}
-
 }
+
 
 EFIND_TYPE SScanWidget::GetFindType()
 {
@@ -198,6 +227,11 @@ void SScanWidget::ShowModules()
 		itEndAddr->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		ui.TableModule->setItem(nPos, 2, itEndAddr);
 	}
+}
+
+void SScanWidget::ShowFoundAddress()
+{
+
 }
 
 void SScanWidget::ShowStateOpened()
@@ -298,6 +332,7 @@ void SScanWidget::OnButtonClickUndo()
 
 void SScanWidget::OnSearchDone(quint32 count)
 {
+	SMemorySearch* pSearch = qobject_cast<SMemorySearch*>(QObject::sender());
 	ui.TargetValueA->setEnabled(true);
 	ui.TargetValueB->setEnabled(true);
 	//ui.FindType->setEnabled(false);
@@ -305,10 +340,24 @@ void SScanWidget::OnSearchDone(quint32 count)
 	ui.ButtonSearch->setEnabled(true);
 	ui.ButtonRestart->setEnabled(true);
 
-	ui.FoundCount->setText(QString::number(58426));
+	ui.FoundCount->setText(QString::number(count));
 	ui.ScanProgress->setValue(0);
 	//ui.ScanProgress->setVisible(false);
 	_SearchTimer.stop();
+
+	if (pSearch == nullptr)
+		return;
+
+	ui.TableFound->setRowCount(pSearch->GetWhatCount());
+
+	quint32 nRow = 0;
+	for (auto& what : pSearch->GetWhatList())
+	{
+		for (int i = 0; i < what.GetFoundCount(); i++)
+		{
+			AppendFoundAddress(nRow++, what.GetBuffer(i));
+		}
+	}
 }
 
 void SScanWidget::showEvent(QShowEvent* e)

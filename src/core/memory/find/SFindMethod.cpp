@@ -42,3 +42,26 @@ SFindMethod* SFindMethod::Create(EFIND_METHOD method)
 
 	return nullptr;
 }
+
+QVariant SFindMethod::ToQVariant(char* data, const SFindWhat& what)
+{
+	switch (what.Type)
+	{
+	case EFIND_TYPE::Byte:
+		return QVariant(*(quint8*)data);
+	case EFIND_TYPE::Byte_2:
+		return QVariant(*(quint16*)data);
+	case EFIND_TYPE::Byte_4:
+		return QVariant(*(quint32*)data);
+	case EFIND_TYPE::Byte_8:
+		return QVariant(*(quint64*)data);
+	case EFIND_TYPE::Float:
+		return QVariant(*(float*)data);
+	case EFIND_TYPE::Double:
+		return QVariant(*(double*)data);
+	case EFIND_TYPE::String:
+		return QVariant(QString::fromLocal8Bit(data, what.Size));
+	}
+
+	return QVariant();
+}

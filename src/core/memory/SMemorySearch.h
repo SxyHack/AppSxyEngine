@@ -17,6 +17,8 @@ class SProcess;
 class SMemorySearch : public QThread
 {
 	Q_OBJECT
+public:
+	friend class SMemorySearchFilter;
 
 public:
 	SMemorySearch(SProcess* pProcess);
@@ -65,4 +67,19 @@ protected:
 	quint64      _ProcessEndAddress;
 	quint64      _ProcessTotalBytes;
 	quint64      _ProcessReadedBytes;
+};
+
+
+
+class SMemorySearchFilter : public QThread
+{
+public:
+	SMemorySearchFilter(SMemorySearch* pSearch);
+	~SMemorySearchFilter();
+
+protected:
+	void run() override;
+
+protected:
+	SMemorySearch* _Search;
 };

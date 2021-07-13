@@ -287,3 +287,24 @@ void SMemorySearch::run()
 
 	emit sgSearchDone(GetWhatCount());
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// class SMemorySearchFilter
+// 
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+SMemorySearchFilter::SMemorySearchFilter(SMemorySearch* pSearch)
+{
+
+}
+
+SMemorySearchFilter::~SMemorySearchFilter()
+{
+
+}
+
+void SMemorySearchFilter::run()
+{
+
+}

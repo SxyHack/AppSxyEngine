@@ -83,7 +83,7 @@ void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& valu
 	}
 }
 
-qint64 SxyEngine::QueryStaticAddress(QString& qModuleName, quint64 address)
+qint64 SxyEngine::QueryModuleOffset(QString& qModuleName, quint64 address)
 {
 	if (_AttachProcess)
 	{

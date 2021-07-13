@@ -52,7 +52,7 @@ public:
 	// [IN]  address 输入要查询的地址
 	// [RETURN] 如果是私有内存页返回-1, 否则返回模块镜像的偏移
 	// 
-	qint64 QueryStaticAddress(QString& qModuleName, quint64 address);
+	qint64 QueryModuleOffset(QString& qModuleName, quint64 address);
 
 signals:
 	void sgEnumProcess(qint32, SProcess*);

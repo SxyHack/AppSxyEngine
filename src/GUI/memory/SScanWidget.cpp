@@ -229,11 +229,6 @@ void SScanWidget::ShowModules()
 	}
 }
 
-void SScanWidget::ShowFoundAddress()
-{
-
-}
-
 void SScanWidget::ShowStateOpened()
 {
 	ui.ButtonSearch->setEnabled(true);
@@ -335,12 +330,11 @@ void SScanWidget::OnSearchDone(quint32 count)
 	SMemorySearch* pSearch = qobject_cast<SMemorySearch*>(QObject::sender());
 	ui.TargetValueA->setEnabled(true);
 	ui.TargetValueB->setEnabled(true);
-	//ui.FindType->setEnabled(false);
 	ui.FindMethod->setEnabled(true);
 	ui.ButtonSearch->setEnabled(true);
 	ui.ButtonRestart->setEnabled(true);
 	ui.ScanProgress->setValue(0);
-	//ui.ScanProgress->setVisible(false);
+
 	_SearchTimer.stop();
 
 	if (pSearch == nullptr)

@@ -17,6 +17,16 @@ bool GlobalSettings::IsEnableSearchCodeRegin()
 	return Load("Search", "CodeRegionEnable", false).toBool();
 }
 
+void GlobalSettings::SetSearchBufferSize(long nSize)
+{
+	Save("Search", "BuffSize", nSize);
+}
+
+long GlobalSettings::GetSearchBufferSize()
+{
+	return Load("Search", "BuffSize", 0x2000).toLongLong();
+}
+
 GlobalSettings::GlobalSettings()
 	: mSettings(nullptr)
 {

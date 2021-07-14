@@ -18,7 +18,6 @@ public:
 
 	// Show
 	void ShowModules();
-	void ShowFoundAddress();
 
 	// States
 	void ShowStateOpened();

@@ -1,48 +1,22 @@
 #include "SMemorySearch.h"
 #include "SxyEngine.h"
+#include "SProcess.h"
+
 #include "core\extras\NtExtras.h"
 #include "settings\GlobalSettings.h"
 #include "find\SFindWorker.h"
 
 SMemorySearch::SMemorySearch(SProcess* pProcess)
-	: QThread(nullptr)
-	, _Process(pProcess)
-	, _Method(nullptr)
+	: SMemoryAction(pProcess)
 	, _EnableCodeRegion(false)
 	, _EnableMapped(false)
-	, _Done(false)
-	, _ProcessTotalBytes(0)
-	, _ProcessReadedBytes(0)
 {
-	SYSTEM_INFO si;
-	ZeroMemory(&si, sizeof(si));
-	GetSystemInfo(&si);
-
-	_NumberOfProcessors = qMin(si.dwNumberOfProcessors, (DWORD)10);
 	_ThreadPool.setMaxThreadCount(_NumberOfProcessors);
-
-	_ProcessBegAddress = (quint64)si.lpMinimumApplicationAddress;
-	_ProcessEndAddress = (quint64)si.lpMaximumApplicationAddress;
-	_ProcessTotalBytes = _ProcessEndAddress - _ProcessBegAddress;
 }
 
 SMemorySearch::~SMemorySearch()
 {
-}
-
-void SMemorySearch::FindWhatReset()
-{
-	_FindWhats.clear();
-}
-
-void SMemorySearch::FindWhat(const SFindWhat& what)
-{
-	_FindWhats.append(what);
-}
-
-void SMemorySearch::FindMethod(SFindMethod* pMethod)
-{
-	_Method = pMethod;
+	delete _Method;
 }
 
 void SMemorySearch::EnableCodeRegion(bool enabled)
@@ -75,7 +49,7 @@ void SMemorySearch::FindInRange(quint64 nBegAddr, quint64 nEndAddr, SFindWhat& w
 				char* pOffset = pBuffer + i;
 				if (_Method && _Method->Match(pOffset, what))
 				{
-					what.AppendBuff(SMemoryBuffer(nBegAddr + i, pOffset, &what, pModule));
+					what.AppendBuff(SMemoryBuffer(nBegAddr + i, pOffset, &what, pModule, _Process));
 				}
 			}
 		}
@@ -100,27 +74,16 @@ void SMemorySearch::FindInRange(quint64 nBegAddr, quint64 nEndAddr, SFindWhat& w
 		//}
 
 		nBegAddr += BUFF_SIZE;
-		_ProcessReadedBytes += BUFF_SIZE;
+		_VirtualMemorySearchedSize += BUFF_SIZE;
 	}
 
 	delete[] pBuffer;
 }
 
-void SMemorySearch::Cancel()
-{
-	_Stop.release();
-}
-
 void SMemorySearch::Reset()
 {
-	_Done = false;
-	_ProcessTotalBytes = 0;
-	_ProcessReadedBytes = 0;
-}
-
-bool SMemorySearch::IsDone()
-{
-	return _Done;
+	_VirtualMemorySize = 0;
+	_VirtualMemorySearchedSize = 0;
 }
 
 bool SMemorySearch::IsValidRegion(const MEMORY_BASIC_INFORMATION& mbi)
@@ -141,31 +104,6 @@ bool SMemorySearch::IsValidRegion(const MEMORY_BASIC_INFORMATION& mbi)
 		return _EnableMapped;
 
 	return true;
-}
-
-SWHAT_LIST& SMemorySearch::GetWhatList()
-{
-	return _FindWhats;
-}
-
-quint32 SMemorySearch::GetWhatCount()
-{
-	quint32 nCount = 0;
-	for (auto& what : _FindWhats) {
-		nCount += what.GetFoundCount();
-	}
-
-	return nCount;
-}
-
-quint64 SMemorySearch::GetReadedBytes()
-{
-	return _ProcessReadedBytes;
-}
-
-quint64 SMemorySearch::GetTotalBytes()
-{
-	return _ProcessTotalBytes;
 }
 
 void SMemorySearch::run()
@@ -206,7 +144,7 @@ void SMemorySearch::run()
 			bool bReserved = (mbi.State == MEM_RESERVE);
 
 			if (!IsValidRegion(mbi)) {
-				_ProcessReadedBytes += mbi.RegionSize;
+				_VirtualMemorySearchedSize += mbi.RegionSize;
 				goto LOOP_END;
 			}
 
@@ -229,28 +167,15 @@ void SMemorySearch::run()
 
 			// 如果模块不在白名单，不搜索该模块
 			if (!qModuleName.isEmpty() && !_Process->InWhitelist(qModuleName)) {
-				_ProcessReadedBytes += mbi.RegionSize;
+				_VirtualMemorySearchedSize += mbi.RegionSize;
 				goto LOOP_END;
 			}
 
 			// 如果是代码页，根据配置是否跳过该模块
 			if (_Process->IsCodeRegion(mbi) && !_EnableCodeRegion) {
-				_ProcessReadedBytes += mbi.RegionSize;
+				_VirtualMemorySearchedSize += mbi.RegionSize;
 				goto LOOP_END;
 			}
-
-			// 读取首部(What.Size)个字节，判断这个内存页是否可以读取, 如果失败重试一次
-			// 测试发现没有必要
-			//while (!_Process->ReadMemory(qByteArray, mbi.BaseAddress, what.Size)) {
-			//	if (0 >= nRetryCount--) {
-			//		_ProcessReadedBytes += mbi.RegionSize;
-			//		goto LOOP_END;
-			//	}
-			//}
-			//_ProcessReadedBytes += what.Size;
-			//if (_Method && _Method->Match(qByteArray, what)) {
-			//	what.AppendBuff(SMemoryBuffer(nBegRegionAddr, qByteArray, pModule));
-			//}
 
 			qDebug("搜索内存页:%p:[%s %s %s] (%s)",
 				mbi.BaseAddress,
@@ -259,7 +184,7 @@ void SMemorySearch::run()
 				qsMemType.toUtf8().data(),
 				qModuleName.toUtf8().data());
 
-			quint64 nBegWorkAddr = nBegRegionAddr; // +what.Size;
+			quint64 nBegWorkAddr = nBegRegionAddr;
 			while (nBegWorkAddr < nEndRegionAddr)
 			{
 				quint64 nFixRegionSize = qMin(nWorkSize, mbi.RegionSize);
@@ -283,28 +208,7 @@ void SMemorySearch::run()
 	}
 
 	_ThreadPool.waitForDone();
-	_Done = true;
+	_Process->PushMemoryAction(this);
 
-	emit sgSearchDone(GetWhatCount());
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-// 
-// class SMemorySearchFilter
-// 
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-SMemorySearchFilter::SMemorySearchFilter(SMemorySearch* pSearch)
-{
-
-}
-
-SMemorySearchFilter::~SMemorySearchFilter()
-{
-
-}
-
-void SMemorySearchFilter::run()
-{
-
+	emit sgSearchDone(GetFoundCount());
 }

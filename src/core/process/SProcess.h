@@ -3,12 +3,15 @@
 #include <QObject>
 #include <QStringList>
 #include <QIcon>
+#include <QMutex>
 
 #include "SModule.h"
 #include "SEnumModule.h"
 #include "SMemoryRegion.h"
 #include "SMemorySearch.h"
-#include "utility/SElapsed.h"
+#include "SMemoryFilter.h"
+
+#include "SElapsed.h"
 
 class SProcess : public QObject
 {
@@ -67,7 +70,7 @@ public:
 	//
 	bool LoadVMRegions();
 	//
-	// 读取虚拟内存
+	// @{废弃} 读取虚拟内存
 	// [OUT] bytes  返回字节
 	// [IN] address 要读取的内存地址
 	// [IN] length  要读取的内存长度
@@ -87,7 +90,8 @@ public:
 	//
 	void Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b);
 	void GetSearchProgress(quint64& readed, quint64& total);
-	SMemorySearch& GetSearch();
+	void PushMemoryAction(SMemoryAction* pAction);
+	SMemoryAction* GetPrevAction();
 
 signals:
 	void sgSearchDone(quint32 count);
@@ -110,9 +114,11 @@ protected:
 	NAME_MAP_MODULE    _ModuleWhiteList;  // 内存扫描白名单
 	LIST_MEMORY_REGION _MemRegionList;    // 内存页列表
 	QStringList        _ModuleNameList;   // 模块有序列表
-
 	SEnumModule        _EnumModules;
-	SMemorySearch      _Search;
+
+	// 内存相关
+	SMEMORY_ACTION_LIST _Actions;
+	QMutex _ActionMutex;
 };
 
 

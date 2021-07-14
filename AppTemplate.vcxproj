@@ -67,7 +67,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;.\src\core\memory\filter;.\src\core\memory\action;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -78,7 +78,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;.\src\core\memory\filter;.\src\core\memory\action;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
     </ClCompile>
@@ -115,12 +115,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core\extras\NtExtras.cpp" />
+    <ClCompile Include="src\core\memory\action\SMemoryAction.cpp" />
+    <ClCompile Include="src\core\memory\action\SMemoryFilter.cpp" />
+    <ClCompile Include="src\core\memory\filter\SFilteWorker.cpp" />
     <ClCompile Include="src\core\memory\find\SFindMethod.cpp" />
     <ClCompile Include="src\core\memory\find\SFindMethodExact.cpp" />
     <ClCompile Include="src\core\memory\find\SFindWhat.cpp" />
     <ClCompile Include="src\core\memory\find\SFindWorker.cpp" />
     <ClCompile Include="src\core\memory\SMemoryBuffer.cpp" />
-    <ClCompile Include="src\core\memory\SMemorySearch.cpp" />
+    <ClCompile Include="src\core\memory\action\SMemorySearch.cpp" />
     <ClCompile Include="src\core\memory\SMemoryRegion.cpp" />
     <ClCompile Include="src\core\module\PE\SPEParser.cpp" />
     <ClCompile Include="src\core\module\PE\SPESection.cpp" />
@@ -207,6 +210,9 @@
     <Image Include="themes\dark\images\icon_window_restore.png" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="src\core\memory\filter\SFilteWorker.h" />
+    <QtMoc Include="src\core\memory\action\SMemoryAction.h" />
+    <QtMoc Include="src\core\memory\action\SMemoryFilter.h" />
     <ClInclude Include="src\log\SLogAction.h" />
     <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />
@@ -215,7 +221,7 @@
     <QtMoc Include="src\core\module\SModule.h" />
     <QtMoc Include="src\core\memory\SMemoryBuffer.h" />
     <QtMoc Include="src\core\memory\SMemoryRegion.h" />
-    <QtMoc Include="src\core\memory\SMemorySearch.h" />
+    <QtMoc Include="src\core\memory\action\SMemorySearch.h" />
     <QtMoc Include="src\core\memory\find\SFindMethod.h" />
     <QtMoc Include="src\core\memory\find\SFindMethodExact.h" />
     <ClInclude Include="src\core\memory\find\SFindWhat.h" />

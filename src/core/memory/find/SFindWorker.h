@@ -6,6 +6,9 @@
 
 class SMemorySearch;
 
+//
+// 
+//
 class SFindWorker : public QObject, public QRunnable
 {
 	friend class SMemorySearch;

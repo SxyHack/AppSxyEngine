@@ -108,7 +108,7 @@ void SScanWidget::SetupFoundTable()
 void SScanWidget::AppendFoundAddress(quint32 row, const SMemoryBuffer& buffer)
 {
 	QString qModuleName;
-	auto nOffset = SEngine.QueryStaticAddress(qModuleName, buffer.Address);
+	auto nOffset = SEngine.QueryModuleOffset(qModuleName, buffer.Address);
 
 	auto qAddress = nOffset >= 0 
 		? QString("%1+%2").arg(qModuleName).arg(QString::number(nOffset, 16)).toUpper()
@@ -241,9 +241,8 @@ void SScanWidget::SetupSignalSlot()
 	auto pProcess = SEngine.GetSelectedProcess();
 	if (pProcess)
 	{
-		auto& search = pProcess->GetSearch();
-		connect(&search, &SMemorySearch::sgSearchDone,
-			this, &SScanWidget::OnSearchDone, Qt::QueuedConnection);
+		connect(pProcess, SIGNAL(sgSearchDone(quint32)),
+			this, SLOT(OnSearchDone(quint32)), Qt::QueuedConnection);
 	}
 }
 

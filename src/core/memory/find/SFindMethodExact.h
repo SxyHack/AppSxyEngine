@@ -10,8 +10,6 @@ public:
 	SFindMethodExact();
 	~SFindMethodExact();
 
-	bool Match(const QByteArray& bytes, const SFindWhat& what) override;
 	bool Match(char* pBuffer, const SFindWhat& what) override;
-
-public:
+	bool Match(const SMemoryBuffer& buff, const SFindWhat& what) override;
 };

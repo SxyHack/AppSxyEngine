@@ -2,18 +2,22 @@
 #include "core\module\SModule.h"
 #include "SFindWhat.h"
 #include "SFindMethod.h"
+#include "SProcess.h"
 
 SMemoryBuffer::SMemoryBuffer()
 	: QObject(nullptr)
 	, _Module(nullptr)
+	, _What(nullptr)
+	, _Process(nullptr)
 	, Address(0)
 {
 }
 
-SMemoryBuffer::SMemoryBuffer(quint64 nAddr, char* pBuffer, SFindWhat* pWhat, SModule* pModule)
+SMemoryBuffer::SMemoryBuffer(quint64 nAddr, char* pBuffer, SFindWhat* pWhat, SModule* pModule, SProcess* pProcess)
 	: QObject(nullptr)
 	, _Module(pModule)
 	, _What(pWhat)
+	, _Process(pProcess)
 	, Address(nAddr)
 {
 	Content = SFindMethod::ToQVariant(pBuffer, *pWhat);
@@ -23,6 +27,8 @@ SMemoryBuffer::SMemoryBuffer(const SMemoryBuffer& src)
 	: QObject(nullptr)
 {
 	_Module = src._Module;
+	_What = src._What;
+	_Process = src._Process;
 	Address = src.Address;
 	Content = src.Content;
 }
@@ -35,6 +41,8 @@ SMemoryBuffer::~SMemoryBuffer()
 
 SMemoryBuffer& SMemoryBuffer::operator=(const SMemoryBuffer& src)
 {
+	_What = src._What;
+	_Process = src._Process;
 	_Module = src._Module;
 	Address = src.Address;
 	Content = src.Content;
@@ -44,6 +52,23 @@ SMemoryBuffer& SMemoryBuffer::operator=(const SMemoryBuffer& src)
 QString SMemoryBuffer::ToString() const
 {
 	return Content.toString();
+}
+
+bool SMemoryBuffer::Update()
+{
+	if (_What == nullptr)
+	{
+		qFatal("ÖÂÃü´íÎó");
+		return false;
+	}
+
+	auto nReadedSize = (SIZE_T)0;
+	auto pBuffer = new char[_What->Size];
+
+	if (ReadProcessMemory(_Process->GetHandle(), (LPVOID)Address, pBuffer, _What->Size, &nReadedSize))
+	{
+
+	}
 }
 
 bool SMemoryBuffer::IsCanonicalAddress(quint64 address)

@@ -15,13 +15,6 @@ class SFindWhat
 {
 public:
 	SFindWhat();
-	//SFindWhat(quint8 v);
-	//SFindWhat(quint16 v);
-	//SFindWhat(quint32 v);
-	//SFindWhat(quint64 v);
-	//SFindWhat(float v);
-	//SFindWhat(double v);
-
 	SFindWhat(quint8 a, quint8 b, EFIND_TYPE type);
 	SFindWhat(quint16 a, quint16 b, EFIND_TYPE type);
 	SFindWhat(quint32 a, quint32 b, EFIND_TYPE type);

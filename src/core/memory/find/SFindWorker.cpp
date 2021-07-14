@@ -1,5 +1,5 @@
 #include "SFindWorker.h"
-#include "../SMemorySearch.h"
+#include "../action/SMemorySearch.h"
 
 SFindWorker::SFindWorker(SMemorySearch* pSearch, SModule* pModule, SFindWhat* what, quint64 begAddr, quint64 endAddr)
 	: QObject(nullptr)

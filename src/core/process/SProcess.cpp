@@ -18,12 +18,8 @@ SProcess::SProcess(const PROCESSENTRY32& entry)
 	, _ID(entry.th32ProcessID)
 	, _Handle(NULL)
 	, _EnumModules(this)
-	, _Search(this)
 {
 	_Name = QString::fromWCharArray(entry.szExeFile);
-
-	// connects
-	connect(&_Search, &SMemorySearch::sgSearchDone, this, &SProcess::sgSearchDone);
 }
 
 SProcess::~SProcess()
@@ -220,6 +216,7 @@ SModule* SProcess::GetModuleName(quint64 address, QString& name)
 		return found->second;
 	}
 
+	// TODO: 尝试用QMap实现 _ModuleRangeMap 的功能
 	//if (_ModuleRangeMap.contains(key)) {
 	//	auto pModule = _ModuleRangeMap.value(key);
 	//	name = pModule->FileName;
@@ -345,33 +342,42 @@ bool SProcess::IsCodeRegion(const MEMORY_BASIC_INFORMATION& mbi)
 
 void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b)
 {
-	if (_Search.IsDone())
+	SMemoryAction* pAction = nullptr;
+	if (_Actions.isEmpty())
+		pAction = new SMemorySearch(this);
+	else
+		pAction = new SMemoryFilter(this);
+
+	pAction->FindMethod(SFindMethod::Create(method));
+	if (type == EFIND_TYPE::All)
 	{
 
 	}
 	else
 	{
-		_Search.FindMethod(SFindMethod::Create(method));
-		if (type == EFIND_TYPE::All)
-		{
-
-		}
-		else
-		{
-			_Search.FindWhat(SFindWhat::Create(a, b, type));
-		}
-
-		_Search.start();
+		pAction->FindWhat(SFindWhat::Create(a, b, type));
 	}
+
+	pAction->start();
 }
 
 void SProcess::GetSearchProgress(quint64& readed, quint64& total)
 {
-	readed = _Search.GetReadedBytes();
-	total = _Search.GetTotalBytes();
+	readed = 0; // _Search.GetSearchedSize();
+	total = 0;  // _Search.GetMemorySize();
 }
 
-SMemorySearch& SProcess::GetSearch()
+void SProcess::PushMemoryAction(SMemoryAction* pAction)
 {
-	return _Search;
+	QMutexLocker locker(&_ActionMutex);
+	_Actions.push_back(pAction);
+}
+
+SMemoryAction* SProcess::GetPrevAction()
+{
+	QMutexLocker locker(&_ActionMutex);
+	if (_Actions.isEmpty())
+		return nullptr;
+
+	return _Actions.last();
 }

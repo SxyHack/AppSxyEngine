@@ -7,8 +7,11 @@ class GlobalSettings
 public:
 	static GlobalSettings& Instance();
 
-	void SetSearchCodeRegionEnable(bool bEnable);
+	void EnableCodeRegion(bool bEnable);
 	bool IsEnableSearchCodeRegin();
+
+	void EnableMappedRegion(bool bEnable);
+	bool IsEnableMappedRegion();
 
 	void SetSearchBufferSize(long nSize);
 	long GetSearchBufferSize();

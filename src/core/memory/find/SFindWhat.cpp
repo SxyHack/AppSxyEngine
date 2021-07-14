@@ -1,13 +1,5 @@
 #include "SFindWhat.h"
 
-
-//SFindWhat::SFindWhat(quint8 v)
-//	: A(v)
-//	, B(v)
-//	, Size(sizeof(quint8))
-//{
-//}
-
 SFindWhat::SFindWhat(quint8 a, quint8 b, EFIND_TYPE type)
 	: A(a)
 	, B(b)
@@ -15,13 +7,6 @@ SFindWhat::SFindWhat(quint8 a, quint8 b, EFIND_TYPE type)
 	, Type(type)
 {
 }
-//
-//SFindWhat::SFindWhat(quint16 v)
-//	: A(v)
-//	, B(v)
-//	, Size(sizeof(quint16))
-//{
-//}
 
 SFindWhat::SFindWhat(quint16 a, quint16 b, EFIND_TYPE type)
 	: A(a)
@@ -31,13 +16,6 @@ SFindWhat::SFindWhat(quint16 a, quint16 b, EFIND_TYPE type)
 {
 }
 
-//SFindWhat::SFindWhat(quint32 v)
-//	: A(v)
-//	, B(v)
-//	, Size(sizeof(quint32))
-//{
-//}
-
 SFindWhat::SFindWhat(quint32 a, quint32 b, EFIND_TYPE type)
 	: A(a)
 	, B(b)
@@ -45,13 +23,6 @@ SFindWhat::SFindWhat(quint32 a, quint32 b, EFIND_TYPE type)
 	, Type(type)
 {
 }
-
-//SFindWhat::SFindWhat(quint64 v)
-//	: A(v)
-//	, B(v)
-//	, Size(sizeof(quint64))
-//{
-//}
 
 SFindWhat::SFindWhat(quint64 a, quint64 b, EFIND_TYPE type)
 	: A(a)
@@ -62,14 +33,6 @@ SFindWhat::SFindWhat(quint64 a, quint64 b, EFIND_TYPE type)
 
 }
 
-//SFindWhat::SFindWhat(float v)
-//	: A(v)
-//	, B(v)
-//	, Size(sizeof(float))
-//{
-//
-//}
-
 SFindWhat::SFindWhat(float a, float b, EFIND_TYPE type)
 	: A(a)
 	, B(b)
@@ -78,14 +41,6 @@ SFindWhat::SFindWhat(float a, float b, EFIND_TYPE type)
 {
 
 }
-
-//SFindWhat::SFindWhat(double v)
-//	: A(v)
-//	, B(v)
-//	, Size(sizeof(double))
-//{
-//
-//}
 
 SFindWhat::SFindWhat(double a, double b, EFIND_TYPE type)
 	: A(a)

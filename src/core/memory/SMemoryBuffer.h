@@ -27,7 +27,7 @@ public:
 	QString ToString() const;
 
 	//
-	//
+	// 重新读取内存数值
 	//
 	bool Update();
 

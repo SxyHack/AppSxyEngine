@@ -56,7 +56,7 @@ QString SMemoryBuffer::ToString() const
 
 bool SMemoryBuffer::Update()
 {
-	if (_What == nullptr)
+	if (_What == nullptr || _Process == nullptr)
 	{
 		qFatal("ÖÂÃü´íÎó");
 		return false;
@@ -67,8 +67,14 @@ bool SMemoryBuffer::Update()
 
 	if (ReadProcessMemory(_Process->GetHandle(), (LPVOID)Address, pBuffer, _What->Size, &nReadedSize))
 	{
-
+		Content = SFindMethod::ToQVariant(pBuffer, *_What);
 	}
+	else
+	{
+		Content = "??";
+	}
+
+	delete[] pBuffer;
 }
 
 bool SMemoryBuffer::IsCanonicalAddress(quint64 address)

@@ -56,10 +56,16 @@ bool SModule::IsCodeRegion(quint64 address)
 {
 	for (auto& section : Sections)
 	{
-		quint64 sectionEndAddr = section.ImageAddress + section.ImageSize;
-		if (section.ImageAddress <= address && section.Name.contains(".text", Qt::CaseInsensitive))
+		if (section.Name.contains(".text", Qt::CaseInsensitive)) // || 
+		//	section.Name.contains(".rsrc", Qt::CaseInsensitive) || // 资源
+		//	section.Name.contains(".reloc", Qt::CaseInsensitive))  // 基重定位数据
 		{
-			return true;
+			quint64 sectionEndAddr = section.ImageAddress + section.GetFixedSize();
+			if (section.ImageAddress <= address && address < sectionEndAddr)
+			{
+				return true;
+			}
+			break;
 		}
 	}
 

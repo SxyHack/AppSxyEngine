@@ -4,6 +4,7 @@
 #include "SFindMethod.h"
 #include "SProcess.h"
 
+
 SMemoryBuffer::SMemoryBuffer()
 	: QObject(nullptr)
 	, _Module(nullptr)
@@ -71,10 +72,11 @@ bool SMemoryBuffer::Update()
 	}
 	else
 	{
-		Content = "??";
+		Content.clear();
 	}
 
 	delete[] pBuffer;
+	return true;
 }
 
 bool SMemoryBuffer::IsCanonicalAddress(quint64 address)
@@ -93,19 +95,20 @@ bool SMemoryBuffer::IsCanonicalAddress(quint64 address)
 #endif //_WIN64
 }
 
-long SMemoryBuffer::GetBufferLength(EFIND_TYPE value)
-{
-	switch (value)
-	{
-	case EFIND_TYPE::Byte: return 1;
-	case EFIND_TYPE::Byte_2: return 2;
-	case EFIND_TYPE::Byte_4: return 4;
-	case EFIND_TYPE::Byte_8: return 8;
-	case EFIND_TYPE::Float:  return sizeof(FLOAT);
-	case EFIND_TYPE::Double: return sizeof(DOUBLE);
-	case EFIND_TYPE::String: return 1;
-	case EFIND_TYPE::All:    return 1;
-	}
-
-	return 0;
-}
+//
+//long SMemoryBuffer::GetBufferLength(EFIND_TYPE value)
+//{
+//	switch (value)
+//	{
+//	case EFIND_TYPE::Byte: return 1;
+//	case EFIND_TYPE::Byte_2: return 2;
+//	case EFIND_TYPE::Byte_4: return 4;
+//	case EFIND_TYPE::Byte_8: return 8;
+//	case EFIND_TYPE::Float:  return sizeof(FLOAT);
+//	case EFIND_TYPE::Double: return sizeof(DOUBLE);
+//	case EFIND_TYPE::String: return 1;
+//	case EFIND_TYPE::All:    return 1;
+//	}
+//
+//	return 0;
+//}

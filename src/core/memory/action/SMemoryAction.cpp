@@ -1,10 +1,10 @@
 #include "SMemoryAction.h"
+#include "SProcess.h"
 
 SMemoryAction::SMemoryAction(SProcess* pProcess)
 	: QThread()
 	, _Method(nullptr)
 	, _Process(pProcess)
-	, _VirtualMemorySearchedSize(0)
 {
 	SYSTEM_INFO si;
 	ZeroMemory(&si, sizeof(si));
@@ -13,8 +13,7 @@ SMemoryAction::SMemoryAction(SProcess* pProcess)
 
 	_ProcessBegAddress = (quint64)si.lpMinimumApplicationAddress;
 	_ProcessEndAddress = (quint64)si.lpMaximumApplicationAddress;
-	_VirtualMemorySize = _ProcessEndAddress - _ProcessBegAddress;
-
+	_Process->NumberOfVirtualMemory = _ProcessEndAddress - _ProcessBegAddress;
 }
 
 SMemoryAction::~SMemoryAction()
@@ -54,14 +53,4 @@ quint32 SMemoryAction::GetFoundCount()
 	}
 
 	return nCount;
-}
-
-quint64 SMemoryAction::GetSearchedSize()
-{
-	return _VirtualMemorySearchedSize;
-}
-
-quint64 SMemoryAction::GetMemorySize()
-{
-	return _VirtualMemorySize;
 }

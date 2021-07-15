@@ -31,17 +31,20 @@ public:
 	//
 	bool Update();
 
+
+public:
 	static bool IsCanonicalAddress(quint64 address);
-	static long GetBufferLength(EFIND_TYPE value);
 
 public:
 	quint64  Address;
 	QVariant Content;
 
 protected:
+	SProcess*  _Process;
 	SModule*   _Module;
 	SFindWhat* _What;
-	SProcess* _Process;
 };
 
 typedef QMap<quint64, SMemoryBuffer> MEMORY_BUFF_MAP;
+
+Q_DECLARE_METATYPE(SMemoryBuffer);

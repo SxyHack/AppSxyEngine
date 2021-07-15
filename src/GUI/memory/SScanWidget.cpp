@@ -35,10 +35,14 @@ SScanWidget::SScanWidget(QWidget* parent)
 	// connections
 	connect(&_ButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)),
 		this, SLOT(OnBaseChanged(QAbstractButton*)));
+	connect(ui.FindMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(OnFindMethodChanged(int)));
 	connect(ui.ButtonSearch, SIGNAL(clicked()), this, SLOT(OnButtonClickSearch()));
 	connect(ui.ButtonRestart, SIGNAL(clicked()), this, SLOT(OnButtonClickRestart()));
 	connect(ui.ButtonUndo, SIGNAL(clicked()), this, SLOT(OnButtonClickUndo()));
+
+	// Timer
 	connect(&_SearchTimer, SIGNAL(timeout()), this, SLOT(OnTimingSearch()));
+	connect(&_FoundUpdateTimer, SIGNAL(timeout()), this, SLOT(OnTimingUpdateFound()));
 }
 
 SScanWidget::~SScanWidget()
@@ -76,6 +80,7 @@ void SScanWidget::SetupFindWhat()
 
 void SScanWidget::SetupFindMethod()
 {
+	ui.FindMethod->clear();
 	ui.FindMethod->addItem("精确数值", (qint32)EFIND_METHOD::Exact);
 	ui.FindMethod->addItem("大于输入值", (qint32)EFIND_METHOD::MoreThan);
 	ui.FindMethod->addItem("小于输入值", (qint32)EFIND_METHOD::LessThan);
@@ -90,7 +95,7 @@ void SScanWidget::SetupFoundTable()
 	QStringList tableHead;
 	tableHead << "地址" << "当前值" << "先前值";
 	ui.TableFound->setColumnCount(tableHead.length());
-	ui.TableFound->setColumnWidth(0, 150);
+	ui.TableFound->setColumnWidth(0, 200);
 	ui.TableFound->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	ui.TableFound->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 	ui.TableFound->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
@@ -105,18 +110,18 @@ void SScanWidget::SetupFoundTable()
 	}
 }
 
-void SScanWidget::AppendFoundAddress(quint32 row, const SMemoryBuffer& buffer)
+void SScanWidget::AppendFoundAddress(quint32 row, SMemoryBuffer& buffer)
 {
 	QString qModuleName;
 	auto nOffset = SEngine.QueryModuleOffset(qModuleName, buffer.Address);
 
-	auto qAddress = nOffset >= 0 
+	auto qAddress = nOffset >= 0
 		? QString("%1+%2").arg(qModuleName).arg(QString::number(nOffset, 16)).toUpper()
 		: QString::number(buffer.Address, 16).toUpper();
 	auto itemAddr = new QTableWidgetItem(qAddress);
 	itemAddr->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	itemAddr->setTextColor(nOffset >= 0 ? Qt::green : Qt::white);
-	itemAddr->setData(Qt::UserRole, &buffer);
+	itemAddr->setTextColor(nOffset >= 0 ? Qt::darkGreen : Qt::white);
+	itemAddr->setData(Qt::UserRole, QVariant::fromValue(buffer));
 	if (nOffset >= 0)
 	{
 		itemAddr->setToolTip(QString::number(buffer.Address, 16).toUpper());
@@ -125,7 +130,7 @@ void SScanWidget::AppendFoundAddress(quint32 row, const SMemoryBuffer& buffer)
 
 	auto qsValue = buffer.ToString();
 	auto itemValue = new QTableWidgetItem(qsValue);
-	itemAddr->setData(Qt::UserRole, &buffer);
+	itemValue->setData(Qt::UserRole, QVariant::fromValue(buffer));
 	ui.TableFound->setItem(row, 1, itemValue);
 
 	auto itemCopy = new QTableWidgetItem(qsValue);
@@ -232,8 +237,25 @@ void SScanWidget::ShowModules()
 void SScanWidget::ShowStateOpened()
 {
 	ui.ButtonSearch->setEnabled(true);
+	ui.ButtonRestart->setEnabled(false);
+	ui.ButtonUndo->setEnabled(false);
+
 	ui.FindType->setEnabled(true);
 	ui.FindMethod->setEnabled(true);
+	ui.TableFound->clearContents();
+	ui.TableFound->setRowCount(0);
+}
+
+void SScanWidget::ShowStateSearchDone()
+{
+	ui.FindMethod->removeItem(ui.FindMethod->count() - 1);
+	ui.FindMethod->addItem("数值增加了N", (qint32)EFIND_METHOD::IncreaseN);
+	ui.FindMethod->addItem("数值减少了N", (qint32)EFIND_METHOD::DecreaseN);
+	ui.FindMethod->addItem("增加的数值", (qint32)EFIND_METHOD::Bigger);
+	ui.FindMethod->addItem("减少的数值", (qint32)EFIND_METHOD::Smaller);
+	ui.FindMethod->addItem("变动的数值", (qint32)EFIND_METHOD::Changed);
+	ui.FindMethod->addItem("未变的数值", (qint32)EFIND_METHOD::Unchanged);
+	ui.FindMethod->addItem("等于首次扫描", (qint32)EFIND_METHOD::EqualBase);
 }
 
 void SScanWidget::SetupSignalSlot()
@@ -241,8 +263,7 @@ void SScanWidget::SetupSignalSlot()
 	auto pProcess = SEngine.GetSelectedProcess();
 	if (pProcess)
 	{
-		connect(pProcess, SIGNAL(sgSearchDone(quint32)),
-			this, SLOT(OnSearchDone(quint32)), Qt::QueuedConnection);
+		connect(pProcess, &SProcess::sgSearchDone, this, &SScanWidget::OnSearchDone, Qt::QueuedConnection);
 	}
 }
 
@@ -280,11 +301,34 @@ void SScanWidget::OnTimingSearch()
 		return;
 	}
 
-	quint64 nReadedBytes = 0;
-	quint64 nTotalBytes = 0;
-	pProcess->GetSearchProgress(nReadedBytes, nTotalBytes);
-	quint64 nPercentage = double(nReadedBytes) / double(nTotalBytes) * 100;
-	ui.ScanProgress->setValue(nPercentage);
+	ui.ScanProgress->setMaximum(pProcess->NumberOfVirtualMemory);
+	ui.ScanProgress->setValue(pProcess->NumberOfSearch);
+	//quint64 nReadedBytes = 0;
+	//quint64 nTotalBytes = 0;
+	//pProcess->GetSearchProgress(nReadedBytes, nTotalBytes);
+	//quint64 nPercentage = double(nReadedBytes) / double(nTotalBytes) * 100;
+	//ui.ScanProgress->setValue(nPercentage);
+}
+
+void SScanWidget::OnTimingUpdateFound()
+{
+	auto maxSize = ui.TableFound->maximumViewportSize();
+	auto row = ui.TableFound->visualRow(0);
+
+	for (int r = 0; r < ui.TableFound->rowCount(); r++)
+	{
+		auto pos = ui.TableFound->rowViewportPosition(r);
+		if (0 <= pos && pos <= ui.TableFound->height())
+		{
+			auto pItem1 = ui.TableFound->item(r, 1);
+			auto pItem2 = ui.TableFound->item(r, 2);
+			auto& buff = pItem1->data(Qt::UserRole).value<SMemoryBuffer>();
+			buff.Update();
+			auto newValue = buff.ToString();
+			pItem1->setText(newValue);
+			pItem1->setTextColor(newValue == pItem2->text() ? Qt::white : Qt::yellow);
+		}
+	}
 }
 
 void SScanWidget::OnButtonClickSearch()
@@ -312,11 +356,14 @@ void SScanWidget::OnButtonClickSearch()
 	ui.ButtonSearch->setEnabled(false);
 
 	_SearchTimer.start(10);
+	_FoundUpdateTimer.stop();
 }
 
 void SScanWidget::OnButtonClickRestart()
 {
-
+	ShowStateOpened();
+	SetupFindMethod();
+	SEngine.Restart();
 }
 
 void SScanWidget::OnButtonClickUndo()
@@ -324,44 +371,71 @@ void SScanWidget::OnButtonClickUndo()
 
 }
 
-void SScanWidget::OnSearchDone(quint32 count)
+void SScanWidget::OnFindMethodChanged(int index)
 {
-	SMemorySearch* pSearch = qobject_cast<SMemorySearch*>(QObject::sender());
+	switch (GetFindMethod())
+	{
+	case EFIND_METHOD::Between:
+		ui.TargetValueA->setEnabled(true);
+		ui.TargetValueB->setVisible(true);
+		break;
+	case EFIND_METHOD::Changed:
+	case EFIND_METHOD::Unchanged:
+	case EFIND_METHOD::EqualBase:
+	case EFIND_METHOD::Bigger:
+	case EFIND_METHOD::Smaller:
+		ui.TargetValueA->setEnabled(false);
+		ui.TargetValueB->setVisible(false);
+		break;
+	default:
+		ui.TargetValueA->setEnabled(true);
+		ui.TargetValueB->setVisible(false);
+		break;
+	};
+}
+
+void SScanWidget::OnSearchDone(SMemoryAction* pAction, quint32 nCount)
+{
 	ui.TargetValueA->setEnabled(true);
 	ui.TargetValueB->setEnabled(true);
 	ui.FindMethod->setEnabled(true);
 	ui.ButtonSearch->setEnabled(true);
 	ui.ButtonRestart->setEnabled(true);
 	ui.ScanProgress->setValue(0);
-
 	_SearchTimer.stop();
 
-	if (pSearch == nullptr)
+	ShowStateSearchDone();
+
+	if (pAction == nullptr)
 		return;
 
 	const static auto MAX_SHOW_COUNT = 5000;
 	auto nRow = 0;
-	auto nCount = count;
+
 	if (nCount > MAX_SHOW_COUNT)
 	{
 		ui.FoundCount->setText(QString("显示%1(%2)").arg(MAX_SHOW_COUNT).arg(nCount));
 		nCount = MAX_SHOW_COUNT;
-	} 
+	}
 	else
 	{
 		ui.FoundCount->setText(QString::number(nCount));
 	}
 
 	ui.TableFound->setRowCount(nCount);
-	for (auto& what : pSearch->GetWhatList())
+	for (auto& what : pAction->GetWhatList())
 	{
 		for (int i = 0; i < what.GetFoundCount(); i++)
 		{
-			AppendFoundAddress(nRow++, what.GetBuffer(i));
+			auto buff = what.GetBuffer(i);
+			AppendFoundAddress(nRow++, buff);
 			if (nRow >= nCount)
-				return;
+				goto SEARCH_DONE_END;
 		}
 	}
+
+SEARCH_DONE_END:
+	_FoundUpdateTimer.start(200);
 }
 
 void SScanWidget::showEvent(QShowEvent* e)

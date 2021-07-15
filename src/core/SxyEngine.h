@@ -47,6 +47,11 @@ public:
 		const QString& valueB = QString());
 
 	//
+	// 清空搜索结果，重新开始新的搜索
+	//
+	void Restart();
+
+	//
 	// 查询地址是否是模块的静态地址
 	// [OUT] qModuleName 返回模块名字，如果为空，则是私有内存页
 	// [IN]  address 输入要查询的地址

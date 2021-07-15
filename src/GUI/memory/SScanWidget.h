@@ -16,12 +16,14 @@ public:
 	SScanWidget(QWidget *parent = Q_NULLPTR);
 	~SScanWidget();
 
+	void SetupSignalSlot();
+
 	// Show
 	void ShowModules();
 
 	// States
 	void ShowStateOpened();
-	void SetupSignalSlot();
+	void ShowStateSearchDone();
 
 protected:
 	//
@@ -43,7 +45,7 @@ protected:
 	void SetupFoundTable();
 	void SetupModuleTable();
 
-	void AppendFoundAddress(quint32 row, const SMemoryBuffer& buffer);
+	void AppendFoundAddress(quint32 row, SMemoryBuffer& buffer);
 
 	EFIND_TYPE GetFindType();
 	EFIND_METHOD GetFindMethod();
@@ -52,13 +54,15 @@ private slots:
 	void OnSelectAllModule(bool checked);
 	void OnBaseChanged(QAbstractButton*);
 	void OnTimingSearch();
+	void OnTimingUpdateFound();
 
 	void OnButtonClickSearch();
 	void OnButtonClickRestart();
 	void OnButtonClickUndo();
+	void OnFindMethodChanged(int);
 
 public slots:
-	void OnSearchDone(quint32 count);
+	void OnSearchDone(SMemoryAction* pAction, quint32 nCount);
 
 protected:
 	void showEvent(QShowEvent* e) override;
@@ -69,4 +73,5 @@ private:
 	QString      _InputMask;
 	QButtonGroup _ButtonGroup;
 	QTimer       _SearchTimer;
+	QTimer       _FoundUpdateTimer;
 };

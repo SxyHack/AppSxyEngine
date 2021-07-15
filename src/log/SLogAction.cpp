@@ -6,9 +6,7 @@
 #include <iostream>
 #include <windows.h>
 
-static QFile gLogFile;
-
-
+QFile gLogFile;
 
 SLogAction::SLogAction(const QString& msg)
 	: _Message(msg)

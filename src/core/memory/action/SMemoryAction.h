@@ -31,22 +31,23 @@ public:
 	quint32 GetFoundCount();
 
 	// Get _VirtualMemorySearchedSize
-	quint64 GetSearchedSize();
+	//quint64 GetSearchedSize();
 	// Get _VirtualMemorySize
-	quint64 GetMemorySize();
+	//quint64 GetMemorySize();
 
 signals:
-	void sgSearchDone(quint32 count);
+	//void sgSearchDone(quint32 count);
+	void sgSearchDone(SMemoryAction* pAction, quint32 count);
 
 protected:
 	SWHAT_LIST   _FindWhats;
 	SFindMethod* _Method;
-	SProcess* _Process;
+	SProcess*    _Process;
 	quint32      _NumberOfProcessors;
 	quint64      _ProcessBegAddress;
 	quint64      _ProcessEndAddress;
-	quint64      _VirtualMemorySize;          // 虚拟内存空间总大小
-	quint64      _VirtualMemorySearchedSize;  // 虚拟内存空间已搜索大小
+	//quint64      _VirtualMemorySize;          // 虚拟内存空间总大小
+	//quint64      _VirtualMemorySearchedSize;  // 虚拟内存空间已搜索大小
 	QSemaphore   _Stop;
 };
 

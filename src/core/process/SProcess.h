@@ -89,15 +89,17 @@ public:
 	// 搜索
 	//
 	void Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b);
-	void GetSearchProgress(quint64& readed, quint64& total);
 	void PushMemoryAction(SMemoryAction* pAction);
+	void RemoveAllMemoryAction();
 	SMemoryAction* GetPrevAction();
 
 signals:
-	void sgSearchDone(quint32 count);
+	void sgSearchDone(SMemoryAction* pAction, quint32 count);
 
 public:
 	PROCESSENTRY32 Content;
+	quint32 NumberOfVirtualMemory;  // 进程的虚拟内存总大小
+	quint32 NumberOfSearch;         // 进程的搜索进度
 
 protected:
 	quint64 _ID;

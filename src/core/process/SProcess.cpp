@@ -14,6 +14,8 @@ static QMutex mxAppendModule;
 SProcess::SProcess(const PROCESSENTRY32& entry)
 	: QObject(nullptr)
 	, Content(entry)
+	, NumberOfVirtualMemory(0)
+	, NumberOfSearch(0)
 	, _Error(0)
 	, _ID(entry.th32ProcessID)
 	, _Handle(NULL)
@@ -345,7 +347,7 @@ void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, co
 	SMemoryAction* pAction = nullptr;
 	if (_Actions.isEmpty())
 		pAction = new SMemorySearch(this);
-	else
+	else 
 		pAction = new SMemoryFilter(this);
 
 	pAction->FindMethod(SFindMethod::Create(method));
@@ -361,16 +363,19 @@ void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, co
 	pAction->start();
 }
 
-void SProcess::GetSearchProgress(quint64& readed, quint64& total)
-{
-	readed = 0; // _Search.GetSearchedSize();
-	total = 0;  // _Search.GetMemorySize();
-}
-
 void SProcess::PushMemoryAction(SMemoryAction* pAction)
 {
 	QMutexLocker locker(&_ActionMutex);
 	_Actions.push_back(pAction);
+}
+
+void SProcess::RemoveAllAction()
+{
+	for (auto pAction : _Actions) {
+		delete pAction;
+	}
+
+	_Actions.clear();
 }
 
 SMemoryAction* SProcess::GetPrevAction()

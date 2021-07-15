@@ -90,6 +90,19 @@ void SScanWidget::SetupFindMethod()
 	ui.FindMethod->setCurrentIndex(0); // 默认使用精确查找
 }
 
+void SScanWidget::ShowStateSearchDone()
+{
+	ui.FindMethod->removeItem(ui.FindMethod->count() - 1);
+	ui.FindMethod->addItem("数值增加了N", (qint32)EFIND_METHOD::IncreaseN);
+	ui.FindMethod->addItem("数值减少了N", (qint32)EFIND_METHOD::DecreaseN);
+	ui.FindMethod->addItem("增加的数值", (qint32)EFIND_METHOD::Bigger);
+	ui.FindMethod->addItem("减少的数值", (qint32)EFIND_METHOD::Smaller);
+	ui.FindMethod->addItem("变动的数值", (qint32)EFIND_METHOD::Changed);
+	ui.FindMethod->addItem("未变的数值", (qint32)EFIND_METHOD::Unchanged);
+	ui.FindMethod->addItem("对比首次搜索", (qint32)EFIND_METHOD::EqualBase);
+}
+
+
 void SScanWidget::SetupFoundTable()
 {
 	QStringList tableHead;
@@ -246,17 +259,6 @@ void SScanWidget::ShowStateOpened()
 	ui.TableFound->setRowCount(0);
 }
 
-void SScanWidget::ShowStateSearchDone()
-{
-	ui.FindMethod->removeItem(ui.FindMethod->count() - 1);
-	ui.FindMethod->addItem("数值增加了N", (qint32)EFIND_METHOD::IncreaseN);
-	ui.FindMethod->addItem("数值减少了N", (qint32)EFIND_METHOD::DecreaseN);
-	ui.FindMethod->addItem("增加的数值", (qint32)EFIND_METHOD::Bigger);
-	ui.FindMethod->addItem("减少的数值", (qint32)EFIND_METHOD::Smaller);
-	ui.FindMethod->addItem("变动的数值", (qint32)EFIND_METHOD::Changed);
-	ui.FindMethod->addItem("未变的数值", (qint32)EFIND_METHOD::Unchanged);
-	ui.FindMethod->addItem("等于首次扫描", (qint32)EFIND_METHOD::EqualBase);
-}
 
 void SScanWidget::SetupSignalSlot()
 {

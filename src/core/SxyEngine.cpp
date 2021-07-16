@@ -1,6 +1,5 @@
 #include "SxyEngine.h"
 #include "SEnumProcess.h"
-#include "SAbstractAction.h"
 
 #include <QMutex>
 
@@ -39,7 +38,11 @@ void SxyEngine::AppendProcess(SProcess* pProcess)
 
 void SxyEngine::SelectProcess(SProcess* pProcess)
 {
+	if (_AttachProcess)
+		delete _AttachProcess;
+
 	_AttachProcess = pProcess;
+	_ProcessList.removeOne(pProcess);
 }
 
 void SxyEngine::RemoveAllProcess()
@@ -59,7 +62,6 @@ LST_PROCESS& SxyEngine::GetProcessList()
 
 bool SxyEngine::AttachSelectedProcess()
 {
-	
 	if (!_AttachProcess->NtOpen())
 	{
 		return false;
@@ -75,7 +77,29 @@ SProcess* SxyEngine::GetSelectedProcess()
 	return _AttachProcess;
 }
 
-void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD compare, const QString& valueA, const QString& valueB /*= QString()*/)
+void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& valueA, const QString& valueB /*= QString()*/)
 {
+	if (_AttachProcess)
+		_AttachProcess->Search(type, method, valueA, valueB);
+}
 
+void SxyEngine::Restart()
+{
+	if (_AttachProcess) {
+		_AttachProcess->RemoveAllMemoryAction();
+	}
+}
+
+qint64 SxyEngine::QueryModuleOffset(QString& qModuleName, quint64 address)
+{
+	if (_AttachProcess)
+	{
+		auto pModule = _AttachProcess->GetModuleName(address, qModuleName);
+		if (pModule)
+		{
+			return address - pModule->ModBase;
+		}
+	}
+
+	return -1;
 }

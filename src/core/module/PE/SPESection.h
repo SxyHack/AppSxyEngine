@@ -13,6 +13,8 @@ public:
 	SPESection(const SPESection& src);
 	~SPESection();
 
+	quint64 GetFixedSize();
+
 public:
 	PIMAGE_SECTION_HEADER Header;
 	QString Name;

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
+#include <QTimer>
+
 #include "ui_MainWindow.h"
 #include "GUI\memory\QHexView\qhexview.h"
 
@@ -14,8 +16,8 @@ public:
 
 protected:
 	void SetupToolBar();
-	void SetupHexView();
 	void SetupScanView();
+	void SetupAddressList();
 
 protected:
 	void closeEvent(QCloseEvent* event) override;

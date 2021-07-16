@@ -9,8 +9,16 @@ SFindMethodExact::~SFindMethodExact()
 {
 }
 
-bool SFindMethodExact::Match(const QByteArray& bytes, const SFindWhat& what)
+bool SFindMethodExact::Match(char* pContent, const SFindWhat& what)
 {
-	//qDebug("WhatType:%d %s", what.A.type(), what.A.typeName());
-	return false;
+	auto v = ToQVariant(pContent, what);
+	//auto a = what.A.toUInt();
+	//auto b = v.toUInt();
+	//return a == b;
+	return v == what.A;
+}
+
+bool SFindMethodExact::Match(const SMemoryBuffer& buff, const SFindWhat& what)
+{
+	return buff.Content == what.A;
 }

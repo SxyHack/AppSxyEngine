@@ -2,13 +2,13 @@
 
 #include "SFindMethod.h"
 
-class SFindMethodExact : public SFindMethod
+class SFindMethodBetween : public SFindMethod
 {
 	Q_OBJECT
 
 public:
-	SFindMethodExact();
-	~SFindMethodExact();
+	SFindMethodBetween();
+	~SFindMethodBetween();
 
 	bool Match(char* pContent, const SFindWhat& what) override;
 	bool Match(const SMemoryBuffer& buff, const SFindWhat& what) override;

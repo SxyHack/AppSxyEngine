@@ -1,4 +1,5 @@
 #include "SPESection.h"
+#include "module_types.h"
 
 SPESection::SPESection()
 	: QObject(nullptr)
@@ -38,4 +39,15 @@ SPESection::SPESection(const SPESection& src)
 
 SPESection::~SPESection()
 {
+}
+
+quint64 SPESection::GetFixedSize()
+{
+	quint64 nFixedSize = ImageSize;
+	if (nFixedSize % REGION_ALIGN_SIZE)
+	{
+		nFixedSize += REGION_ALIGN_SIZE - (ImageSize % REGION_ALIGN_SIZE);
+	}
+
+	return nFixedSize;
 }

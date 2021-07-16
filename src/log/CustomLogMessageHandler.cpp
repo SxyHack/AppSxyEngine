@@ -12,9 +12,9 @@
 
 static QMutex gMutex;
 static QMutex gLogMutex;
-static QFile  gLogFile;
 static FILE*  gFile;
 
+static SQUEUE_LOG gQueue;
 
 CustomLogMessageHandler::CustomLogMessageHandler()
 {
@@ -30,18 +30,17 @@ CustomLogMessageHandler& CustomLogMessageHandler::Instance()
 {
 	QMutexLocker lock(&gMutex);
 	static CustomLogMessageHandler instance;
+	instance.start();
 	return instance;
 }
 
 void CustomLogMessageHandler::handle(QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
 {
-	QMutexLocker lock(&gLogMutex);
-
 	if (msg.isEmpty())
 		return;
 
 	QString log;
-	QString func("");
+	QString func;
 	QFileInfo file_info(ctx.file);
 	auto file_name = file_info.fileName();
 	auto now = QDateTime::currentDateTime();
@@ -71,8 +70,8 @@ void CustomLogMessageHandler::handle(QtMsgType type, const QMessageLogContext& c
 
 	log = QString("%1 %2 %3 %4(%5)")
 		.arg(level)
-		.arg(tid)
 		.arg(time)
+		.arg(tid, 6, 10, QLatin1Char('0'))
 		.arg(file_name)
 		.arg(ctx.line);
 
@@ -85,32 +84,35 @@ void CustomLogMessageHandler::handle(QtMsgType type, const QMessageLogContext& c
 	log.append(msg);
 	log.append("\n");
 
-	if (!gLogFile.isOpen()) {
-		auto dir = QDir::current();
-		dir.mkdir("logs");
-		dir.cd("logs");
+	gLogMutex.lock();
+	gQueue.enqueue(new SLogAction(log));
+	gLogMutex.unlock();
+}
 
-		QString log_file_name = QString("%1.log")
-			.arg(now.toString("yyyy-MM-dd-HH"));
-		auto log_file_dir = dir.absoluteFilePath(log_file_name);
-		gLogFile.setFileName(log_file_dir);
-		gLogFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+void CustomLogMessageHandler::Stop()
+{
+	if (isInterruptionRequested())
+		return;
+
+	requestInterruption();
+	if (_ExitSemaphore.tryAcquire(1, 5000))
+		_ExitSemaphore.release();
+}
+
+void CustomLogMessageHandler::run()
+{
+	while (!isInterruptionRequested())
+	{
+		if (gQueue.isEmpty())
+		{
+			QThread::msleep(1);
+			continue;
+		}
+
+		auto pAction = gQueue.dequeue();
+		pAction->Execute();
+		delete pAction;
 	}
 
-	QTextStream stm(&gLogFile);
-	stm.setCodec("UTF-8");
-	stm << log;
-	stm.flush();
-
-#if ENABLE_CONSOLE
-	std::cout << log.toLocal8Bit().constData();
-#elif ENABLE_DEBUGVIEW
-#ifdef _UNICODE
-	TCHAR tszLog[1024] = { 0 };
-	log.toWCharArray(tszLog);
-	OutputDebugString(tszLog);
-#else
-	OutputDebugString(log.toLocal8Bit().constData());
-#endif
-#endif
+	_ExitSemaphore.release();
 }

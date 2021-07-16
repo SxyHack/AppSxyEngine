@@ -7,6 +7,7 @@
 #include "global.h"
 
 #define MAX_MODULE_SIZE 1024
+#define REGION_ALIGN_SIZE 0x1000
 
 // Macros to safely access IMAGE_NT_HEADERS fields since the compile-time typedef of this struct may not match the actual file bitness.
 // Never access OptionalHeader.xx values directly unless they have the same size and offset on 32 and 64 bit. 

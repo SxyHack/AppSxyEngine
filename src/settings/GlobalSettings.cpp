@@ -7,7 +7,7 @@ GlobalSettings& GlobalSettings::Instance()
 	return instance;
 }
 
-void GlobalSettings::SetSearchCodeRegionEnable(bool enabled)
+void GlobalSettings::EnableCodeRegion(bool enabled)
 {
 	Save("Search", "CodeRegionEnable", enabled);
 }
@@ -15,6 +15,26 @@ void GlobalSettings::SetSearchCodeRegionEnable(bool enabled)
 bool GlobalSettings::IsEnableSearchCodeRegin()
 {
 	return Load("Search", "CodeRegionEnable", false).toBool();
+}
+
+void GlobalSettings::EnableMappedRegion(bool bEnable)
+{
+	Save("Search", "MappedRegionEnable", bEnable);
+}
+
+bool GlobalSettings::IsEnableMappedRegion()
+{
+	return Load("Search", "MappedRegionEnable", false).toBool();
+}
+
+void GlobalSettings::SetSearchBufferSize(long nSize)
+{
+	Save("Search", "BuffSize", nSize);
+}
+
+long GlobalSettings::GetSearchBufferSize()
+{
+	return Load("Search", "BuffSize", 0x2000).toLongLong();
 }
 
 GlobalSettings::GlobalSettings()

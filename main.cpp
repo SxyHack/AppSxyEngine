@@ -2,7 +2,7 @@
 #include "DarkStyle.h"
 #include "framelesswindow.h"
 #include "MainWindow.h"
-#include "src/log/CustomLogMessageHandler.h"
+#include "log/CustomLogMessageHandler.h"
 #include "utility/Random.h"
 
 #include <QtWidgets/QApplication>
@@ -23,7 +23,7 @@ const QString gWelcome = R"(
 
 int main(int argc, char *argv[])
 {
-	CustomLogMessageHandler::Instance();
+	auto& handler = CustomLogMessageHandler::Instance();
 	qInstallMessageHandler(CustomLogMessageHandler::handle);
 	qDebug() << gWelcome.toUtf8().data();
 
@@ -57,5 +57,8 @@ int main(int argc, char *argv[])
 	// add the mainwindow to our custom frameless window
 	//framelessWindow.setContent(mainWindow);
 	//framelessWindow.showMaximized();
-	return a.exec();
+	a.exec();
+	handler.Stop();
+
+	return 0;
 }

@@ -27,4 +27,4 @@ private:
 };
 
 
-typedef QList<SMemoryRegion> LST_MEMORY_REGION;
+typedef QList<SMemoryRegion> LIST_MEMORY_REGION;

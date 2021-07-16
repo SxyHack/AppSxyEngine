@@ -123,7 +123,7 @@ NTSTATUS SPEParser::ParseSection()
 		qsLog += QString().sprintf("\t%s: Image:%p(%x) Raw:%p(%x)\n",
 			section.Name.toUtf8().data(),
 			section.ImageAddress,
-			section.ImageSize,
+			section.GetFixedSize(),
 			section.RawAddress,
 			section.RawSize);
 #endif 

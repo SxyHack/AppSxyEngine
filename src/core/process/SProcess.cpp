@@ -14,11 +14,12 @@ static QMutex mxAppendModule;
 SProcess::SProcess(const PROCESSENTRY32& entry)
 	: QObject(nullptr)
 	, Content(entry)
+	, NumberOfVirtualMemory(0)
+	, NumberOfSearch(0)
 	, _Error(0)
 	, _ID(entry.th32ProcessID)
 	, _Handle(NULL)
 	, _EnumModules(this)
-	, _Search(this)
 {
 	_Name = QString::fromWCharArray(entry.szExeFile);
 }
@@ -100,7 +101,7 @@ BOOL SProcess::Close()
 BOOL SProcess::IsWow64()
 {
 	BOOL bIsWow64 = FALSE;
-	if (!IsWow64Process(_Handle, &bIsWow64))
+	if (!::IsWow64Process(_Handle, &bIsWow64))
 		return FALSE;
 
 	return bIsWow64;
@@ -217,6 +218,7 @@ SModule* SProcess::GetModuleName(quint64 address, QString& name)
 		return found->second;
 	}
 
+	// TODO: 尝试用QMap实现 _ModuleRangeMap 的功能
 	//if (_ModuleRangeMap.contains(key)) {
 	//	auto pModule = _ModuleRangeMap.value(key);
 	//	name = pModule->FileName;
@@ -299,25 +301,6 @@ bool SProcess::LoadVMRegions()
 			qsMemState.toUtf8().data(),
 			qsMemType.toUtf8().data());
 
-		//BYTE buffer[4] = { 0 };
-		//SIZE_T nReadBufferCount = 0;
-		//if (!ReadProcessMemory(_Handle, mbi.BaseAddress, buffer, 4, &nReadBufferCount))
-		//	goto LOOP_END;
-
-		//SModule* lpModule = GetModule(qsModuleName);
-		//GetModuleName(ulQueryAddr, qsModuleName);
-		//if (lpModule == nullptr)
-		//{
-		//	TCHAR szMappedName[MAX_MODULE_SIZE] = L"";
-		//	if (bMapped && (GetMappedFileName(_Handle, mbi.AllocationBase, szMappedName, MAX_MODULE_SIZE) != 0))
-		//	{
-		//		qsModuleName = QString::fromWCharArray(szMappedName);
-		//		lpModule = GetModule(qsModuleName);
-		//	}
-		//}
-
-		//_MemRegionList.append(SMemoryRegion(mbi, lpModule));
-
 	LOOP_END:
 		quint64 ulNextRegionAddr = (quint64)mbi.BaseAddress + mbi.RegionSize;
 		if (ulNextRegionAddr <= ulQueryAddr)
@@ -329,13 +312,13 @@ bool SProcess::LoadVMRegions()
 	return true;
 }
 
-bool SProcess::ReadMemory(QByteArray& bytes, LPVOID base, quint32 length)
+bool SProcess::ReadMemory(QByteArray& bytes, LPVOID address, quint32 length)
 {
 	//SElapsed elapse("ReadMemory");
 	quint64 nReadedLength = 0;
 	char* pBuffer = new char[length];
 	ZeroMemory(pBuffer, length);
-	if (!::ReadProcessMemory(_Handle, base, pBuffer, length, &nReadedLength))
+	if (!::ReadProcessMemory(_Handle, address, pBuffer, length, &nReadedLength))
 	{
 		return false;
 	}
@@ -345,16 +328,71 @@ bool SProcess::ReadMemory(QByteArray& bytes, LPVOID base, quint32 length)
 	return true;
 }
 
-bool SProcess::IsCodeRegion(LPVOID address)
+bool SProcess::IsCodeRegion(const MEMORY_BASIC_INFORMATION& mbi)
 {
-	auto pModule = GetModule((quint64)address);
-	if (pModule == nullptr)
-		return false;
+	bool bExecute = (mbi.Protect & PAGE_EXECUTE) ||
+		(mbi.Protect & PAGE_EXECUTE_READ) ||
+		(mbi.Protect & PAGE_EXECUTE_READWRITE) ||
+		(mbi.Protect & PAGE_EXECUTE_WRITECOPY);
 
-	return pModule->IsCodeRegion((quint64)address);
+	auto pModule = GetModule((quint64)mbi.BaseAddress);
+	if (pModule)
+		return pModule->IsCodeRegion((quint64)mbi.BaseAddress) || bExecute;
+
+	return bExecute;
 }
 
-SMemorySearch& SProcess::Search()
+void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, const QString& b)
 {
-	return _Search;
+	SMemoryAction* pAction = nullptr;
+	if (_Actions.isEmpty())
+		pAction = new SMemorySearch(this);
+	else 
+		pAction = new SMemoryFilter(this);
+
+	pAction->FindMethod(SFindMethod::Create(method, this));
+	if (type == EFIND_TYPE::All)
+	{
+
+	}
+	else
+	{
+		pAction->FindWhat(SFindWhat::Create(a, b, type));
+	}
+
+	pAction->start();
+}
+
+void SProcess::PushMemoryAction(SMemoryAction* pAction)
+{
+	QMutexLocker locker(&_ActionMutex);
+	_Actions.push_back(pAction);
+}
+
+void SProcess::RemoveAllMemoryAction()
+{
+	QMutexLocker locker(&_ActionMutex);
+	for (auto pAction : _Actions) {
+		delete pAction;
+	}
+
+	_Actions.clear();
+}
+
+SMemoryAction* SProcess::GetPrevAction()
+{
+	QMutexLocker locker(&_ActionMutex);
+	if (_Actions.isEmpty())
+		return nullptr;
+
+	return _Actions.last();
+}
+
+SMemoryAction* SProcess::GetBaseAction()
+{
+	QMutexLocker locker(&_ActionMutex);
+	if (_Actions.isEmpty())
+		return nullptr;
+
+	return _Actions.first();
 }

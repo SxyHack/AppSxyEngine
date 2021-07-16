@@ -1,12 +1,13 @@
 #include "SElapsed.h"
 
-SElapsed::SElapsed(const QString& qsLog)
+SElapsed::SElapsed(const QString& qMessage)
 {
 	_Time.start();
-	_Log = qsLog;
+	_Message = qMessage;
 }
 
 SElapsed::~SElapsed()
 {
-	qDebug("%s, 耗时:%d(ms)", _Log.toUtf8().data(), _Time.elapsed());
+	auto elapse = _Time.elapsed();
+	qDebug("%s, 耗时:%d(ms)", _Message.toUtf8().data(), elapse);
 }

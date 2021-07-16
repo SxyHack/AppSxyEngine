@@ -1,18 +1,24 @@
 #pragma once
 
-#include <QObject>
+#include <QThread>
+#include <QQueue>
+#include <QSemaphore>
 
-// 开启控制台窗口
-#define ENABLE_CONSOLE 1
-#define ENABLE_DEBUGVIEW 0
+#include "SLogAction.h"
 
-
-class CustomLogMessageHandler
+class CustomLogMessageHandler : public QThread
 {
 public:
 	static CustomLogMessageHandler& Instance();
 	static void handle(QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
 	
+	void Stop();
+
+protected:
+	void run() override;
+
 private:
 	CustomLogMessageHandler();
+
+	QSemaphore _ExitSemaphore;
 };

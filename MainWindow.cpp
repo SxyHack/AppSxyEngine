@@ -30,29 +30,17 @@ void MainWindow::SetupToolBar()
 	//connect(actMemory, &QAction::triggered, this, &MainWindow::OnActionOpenMemory);
 }
 
-void MainWindow::SetupHexView()
-{
-	//for (int r = 0; r < 200; r++)
-	//{
-	//	for (int c = 0; c < 16; c++)
-	//	{
-	//		_ByteArray.append(0x01);
-	//	}
-	//}
-	//auto document = QHexDocument::fromMemory<QMemoryBuffer>(_ByteArray);
-	//_HexView = new QHexView(this);
-	//_HexView->setReadOnly(true);
-	//_HexView->setDocument(document);
-
-	//setCentralWidget(_HexView);
-}
-
 void MainWindow::SetupScanView()
 {
 	auto pDefaultTab = new SScanWidget(this);
 	auto nDefaultIndex = ui.tabWidget->addTab(pDefaultTab, "默认");
 	ui.tabWidget->setCurrentIndex(nDefaultIndex);
 	ui.tabWidget->setTabBarAutoHide(true);
+}
+
+void MainWindow::SetupAddressList()
+{
+	
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)

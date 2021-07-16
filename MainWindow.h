@@ -16,8 +16,8 @@ public:
 
 protected:
 	void SetupToolBar();
-	void SetupHexView();
 	void SetupScanView();
+	void SetupAddressList();
 
 protected:
 	void closeEvent(QCloseEvent* event) override;

@@ -46,5 +46,6 @@ protected:
 };
 
 typedef QMap<quint64, SMemoryBuffer> MEMORY_BUFF_MAP;
+typedef QList<SMemoryBuffer>         MEMORY_BUFF_LIST;
 
 Q_DECLARE_METATYPE(SMemoryBuffer);

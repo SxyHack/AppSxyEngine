@@ -1,6 +1,5 @@
 #include "SxyEngine.h"
 #include "SEnumProcess.h"
-#include "SAbstractAction.h"
 
 #include <QMutex>
 

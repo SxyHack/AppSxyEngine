@@ -5,9 +5,12 @@
 #include "SFindMethodExact.h"
 
 #include <QMessageBox>
+#include <QClipboard>
+#include <QtDebug>
 
 SScanWidget::SScanWidget(QWidget* parent)
 	: QWidget(parent)
+	, _MenuFound(this)
 {
 	ui.setupUi(this);
 	_ButtonGroup.addButton(ui.Base2, (qint32)EVALUE_BASE::Base2);
@@ -17,6 +20,7 @@ SScanWidget::SScanWidget(QWidget* parent)
 
 	SetupFoundTable();
 	SetupModuleTable();
+	SetupFoundTableMenu();
 
 	SetupFindWhat();
 	SetupFindMethod();
@@ -39,6 +43,8 @@ SScanWidget::SScanWidget(QWidget* parent)
 	connect(ui.ButtonSearch, SIGNAL(clicked()), this, SLOT(OnButtonClickSearch()));
 	connect(ui.ButtonRestart, SIGNAL(clicked()), this, SLOT(OnButtonClickRestart()));
 	connect(ui.ButtonUndo, SIGNAL(clicked()), this, SLOT(OnButtonClickUndo()));
+	connect(ui.TableFound, SIGNAL(customContextMenuRequested(const QPoint&)), 
+		this, SLOT(OnRightClickTableFound(const QPoint&)));
 
 	// Timer
 	connect(&_SearchTimer, SIGNAL(timeout()), this, SLOT(OnTimingSearch()));
@@ -86,13 +92,17 @@ void SScanWidget::SetupFindMethod()
 	ui.FindMethod->addItem("小于输入值", (qint32)EFIND_METHOD::LessThan);
 	ui.FindMethod->addItem("介于..两数之间", (qint32)EFIND_METHOD::Between);
 	ui.FindMethod->addItem("未知初始值", (qint32)EFIND_METHOD::Unknown);
-
 	ui.FindMethod->setCurrentIndex(0); // 默认使用精确查找
 }
 
 void SScanWidget::ShowStateSearchDone()
 {
-	ui.FindMethod->removeItem(ui.FindMethod->count() - 1);
+	auto nSelectIndex = ui.FindMethod->currentIndex();
+	ui.FindMethod->clear();
+	ui.FindMethod->addItem("精确数值", (qint32)EFIND_METHOD::Exact);
+	ui.FindMethod->addItem("大于输入值", (qint32)EFIND_METHOD::MoreThan);
+	ui.FindMethod->addItem("小于输入值", (qint32)EFIND_METHOD::LessThan);
+	ui.FindMethod->addItem("介于..两数之间", (qint32)EFIND_METHOD::Between);
 	ui.FindMethod->addItem("数值增加了N", (qint32)EFIND_METHOD::IncreaseN);
 	ui.FindMethod->addItem("数值减少了N", (qint32)EFIND_METHOD::DecreaseN);
 	ui.FindMethod->addItem("增加的数值", (qint32)EFIND_METHOD::Bigger);
@@ -100,6 +110,13 @@ void SScanWidget::ShowStateSearchDone()
 	ui.FindMethod->addItem("变动的数值", (qint32)EFIND_METHOD::Changed);
 	ui.FindMethod->addItem("未变的数值", (qint32)EFIND_METHOD::Unchanged);
 	ui.FindMethod->addItem("对比首次搜索", (qint32)EFIND_METHOD::EqualBase);
+	ui.FindMethod->setCurrentIndex(nSelectIndex); // 默认使用精确查找
+	ui.TargetValueA->setEnabled(true);
+	ui.TargetValueB->setEnabled(true);
+	ui.FindMethod->setEnabled(true);
+	ui.ButtonSearch->setEnabled(true);
+	ui.ButtonRestart->setEnabled(true);
+	ui.ScanProgress->setValue(0);
 }
 
 
@@ -185,6 +202,25 @@ void SScanWidget::SetupModuleTable()
 	}
 }
 
+
+void SScanWidget::SetupFoundTableMenu()
+{
+	QAction* pAction = nullptr;
+
+	ui.TableFound->setContextMenuPolicy(Qt::CustomContextMenu);
+
+	_MenuActionAppend = _MenuFound.addAction("添加到地址列表");
+	_MenuActionRemove = _MenuFound.addAction("删除选定的条目");
+
+	_MenuFound.addSeparator();
+	_MenuActionCopyAddress = _MenuFound.addAction("复制地址到剪切板");
+	_MenuActionWhatAccess = _MenuFound.addAction("找出是什么访问了这个地址");
+	_MenuActionWhatWrite = _MenuFound.addAction("找出是什么写入了这个地址");
+
+	// connects
+	connect(_MenuActionAppend, SIGNAL(triggered(bool)), this, SLOT(OnMenuActionAppendAddress(bool)));
+	connect(_MenuActionCopyAddress, SIGNAL(triggered(bool)), this, SLOT(OnMenuActionCopyAddress(bool)));
+}
 
 EFIND_TYPE SScanWidget::GetFindType()
 {
@@ -396,14 +432,45 @@ void SScanWidget::OnFindMethodChanged(int index)
 	};
 }
 
+void SScanWidget::OnRightClickTableFound(const QPoint& pos)
+{
+	auto gPos = ui.TableFound->mapToGlobal(pos);
+	auto offset = QPoint(6, 20);
+
+	auto item = ui.TableFound->itemAt(pos);
+	if (item == nullptr)
+	{
+		return;
+	}
+
+	_MenuFound.move(gPos + offset);
+	_MenuFound.show();
+}
+
+void SScanWidget::OnMenuActionCopyAddress(bool checked)
+{
+	auto clip = QApplication::clipboard();
+	if (clip == nullptr)
+		return;
+
+	auto items = ui.TableFound->selectedItems();
+	if (items.isEmpty())
+		return;
+
+	auto itemSelected = items.at(0);
+	auto itemText = itemSelected->text();
+	qDebug() << "复制的内容:" << itemText;
+	clip->setText(itemText);
+}
+
+void SScanWidget::OnMenuActionAppendAddress(bool checked)
+{
+
+}
+
 void SScanWidget::OnSearchDone(SMemoryAction* pAction, quint32 nCount)
 {
-	ui.TargetValueA->setEnabled(true);
-	ui.TargetValueB->setEnabled(true);
-	ui.FindMethod->setEnabled(true);
-	ui.ButtonSearch->setEnabled(true);
-	ui.ButtonRestart->setEnabled(true);
-	ui.ScanProgress->setValue(0);
+
 	_SearchTimer.stop();
 
 	ShowStateSearchDone();

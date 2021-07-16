@@ -1,3 +1,186 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\core\extras\NtExtras.cpp" />
+    <ClCompile Include="src\core\memory\action\SMemoryAction.cpp" />
+    <ClCompile Include="src\core\memory\action\SMemoryFilter.cpp" />
+    <ClCompile Include="src\core\memory\filter\SFilteWorker.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindMethod.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindMethodExact.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindWhat.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindWorker.cpp" />
+    <ClCompile Include="src\core\memory\SMemoryBuffer.cpp" />
+    <ClCompile Include="src\core\memory\action\SMemorySearch.cpp" />
+    <ClCompile Include="src\core\memory\SMemoryRegion.cpp" />
+    <ClCompile Include="src\core\module\PE\SPEParser.cpp" />
+    <ClCompile Include="src\core\module\PE\SPESection.cpp" />
+    <ClCompile Include="src\core\module\SModule.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumModule.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumProcess.cpp" />
+    <ClCompile Include="src\core\process\SProcess.cpp" />
+    <ClCompile Include="src\core\SxyEngine.cpp" />
+    <ClCompile Include="src\GUI\controls\SHeaderView.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\hexcommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\insertcommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\removecommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\commands\replacecommand.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexcursor.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexdocument.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexmetadata.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\document\qhexrenderer.cpp" />
+    <ClCompile Include="src\GUI\memory\QHexView\qhexview.cpp" />
+    <ClCompile Include="src\GUI\memory\SScanWidget.cpp" />
+    <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
+    <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
+    <ClCompile Include="src\log\SLogAction.cpp" />
+    <ClCompile Include="src\settings\GlobalSettings.cpp" />
+    <ClCompile Include="src\utility\Random.cpp" />
+    <ClCompile Include="src\utility\SElapsed.cpp" />
+    <ClCompile Include="themes\dark\DarkStyle.cpp" />
+    <ClCompile Include="themes\dark\framelesswindow\framelesswindow.cpp" />
+    <ClCompile Include="themes\dark\framelesswindow\windowdragger.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\core\memory\find\SFindMethodMoreThan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\find\SFindMethodLessThan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\find\SFindMethodBetween.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\find\SFindMethodUnknown.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory\SMemoryAddressManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\log\SLogAction.h" />
+    <ClInclude Include="src\utility\SElapsed.h" />
+    <ClInclude Include="libs\ntdll\ntdll.h" />
+    <ClInclude Include="src\core\extras\NtExtras.h" />
+    <ClInclude Include="src\core\memory\find\SFindWhat.h" />
+    <ClInclude Include="src\core\memory\find\SFindWorker.h" />
+    <ClInclude Include="src\core\memory\memory_define.h" />
+    <ClInclude Include="src\core\module\module_types.h" />
+    <ClInclude Include="src\global.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\hexcommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\insertcommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\removecommand.h" />
+    <ClInclude Include="src\GUI\memory\QHexView\document\commands\replacecommand.h" />
+    <ClInclude Include="src\log\CustomLogMessageHandler.h" />
+    <ClInclude Include="src\settings\GlobalSettings.h" />
+    <ClInclude Include="src\utility\assert.h" />
+    <ClInclude Include="src\utility\Random.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="themes\dark\darkstyle\icon_branch_closed.png" />
+    <Image Include="themes\dark\darkstyle\icon_branch_end.png" />
+    <Image Include="themes\dark\darkstyle\icon_branch_more.png" />
+    <Image Include="themes\dark\darkstyle\icon_branch_open.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_checked.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_checked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_checked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_indeterminate.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_indeterminate_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_indeterminate_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_unchecked.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_unchecked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_checkbox_unchecked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_close.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_checked.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_checked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_checked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_unchecked.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_unchecked_disabled.png" />
+    <Image Include="themes\dark\darkstyle\icon_radiobutton_unchecked_pressed.png" />
+    <Image Include="themes\dark\darkstyle\icon_restore.png" />
+    <Image Include="themes\dark\darkstyle\icon_undock.png" />
+    <Image Include="themes\dark\darkstyle\icon_vline.png" />
+    <Image Include="themes\dark\images\icon_window_close.png" />
+    <Image Include="themes\dark\images\icon_window_maximize.png" />
+    <Image Include="themes\dark\images\icon_window_minimize.png" />
+    <Image Include="themes\dark\images\icon_window_restore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="MainWindow.h" />
+    <QtMoc Include="themes\dark\DarkStyle.h" />
+    <QtMoc Include="themes\dark\framelesswindow\framelesswindow.h" />
+    <QtMoc Include="themes\dark\framelesswindow\windowdragger.h" />
+    <QtMoc Include="src\core\memory\filter\SFilteWorker.h" />
+    <QtMoc Include="src\core\memory\action\SMemoryAction.h" />
+    <QtMoc Include="src\core\memory\action\SMemoryFilter.h" />
+    <QtMoc Include="src\core\process\SProcess.h" />
+    <QtMoc Include="src\core\module\SModule.h" />
+    <QtMoc Include="src\core\memory\SMemoryBuffer.h" />
+    <QtMoc Include="src\core\memory\SMemoryRegion.h" />
+    <QtMoc Include="src\core\memory\action\SMemorySearch.h" />
+    <QtMoc Include="src\core\memory\find\SFindMethod.h" />
+    <QtMoc Include="src\core\memory\find\SFindMethodExact.h" />
+    <QtMoc Include="src\core\process\enum\SEnumModule.h" />
+    <QtMoc Include="src\core\module\PE\SPEParser.h" />
+    <QtMoc Include="src\core\module\PE\SPESection.h" />
+    <QtMoc Include="src\core\SxyEngine.h" />
+    <QtMoc Include="src\core\process\enum\SEnumProcess.h" />
+    <QtMoc Include="src\GUI\process\DialogSelectProcess.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\qhexview.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexcursor.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexdocument.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexmetadata.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\qhexrenderer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemorybuffer.h" />
+    <QtMoc Include="src\GUI\memory\QHexView\document\buffer\qmemoryrefbuffer.h" />
+    <QtMoc Include="src\GUI\controls\SHeaderView.h" />
+    <QtMoc Include="src\GUI\memory\SScanWidget.h" />
+    <QtMoc Include="src\core\memory\find\SFindMethodMoreThan.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\find\SFindMethodLessThan.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\find\SFindMethodBetween.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\find\SFindMethodUnknown.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\SMemoryAddressManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="MainWindow.qrc" />
+    <QtRcc Include="themes\dark\darkstyle.qrc" />
+    <QtRcc Include="themes\dark\framelesswindow.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui" />
+    <QtUic Include="src\GUI\memory\SScanWidget.ui" />
+    <QtUic Include="src\GUI\process\DialogSelectProcess.ui" />
+    <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="themes\dark\darkstyle\darkstyle.qss" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+  </ItemGroup>
 </Project>

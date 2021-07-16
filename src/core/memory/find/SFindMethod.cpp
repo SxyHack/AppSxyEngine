@@ -1,8 +1,19 @@
 #include "SFindMethod.h"
 #include "SFindMethodExact.h"
+#include "SFindMethodLessThan.h"
+#include "SFindMethodMoreThan.h"
+#include "SFindMethodBetween.h"
+#include "SFindMethodUnknown.h"
 
 SFindMethod::SFindMethod()
 	: QObject(nullptr)
+	, _Process(nullptr)
+{
+}
+
+SFindMethod::SFindMethod(SProcess* pProcess)
+	: QObject(nullptr)
+	, _Process(pProcess)
 {
 }
 
@@ -10,20 +21,20 @@ SFindMethod::~SFindMethod()
 {
 }
 
-SFindMethod* SFindMethod::Create(EFIND_METHOD method)
+SFindMethod* SFindMethod::Create(EFIND_METHOD method, SProcess* pProcess)
 {
 	switch (method)
 	{
 	case EFIND_METHOD::Exact:
 		return new SFindMethodExact();
 	case EFIND_METHOD::MoreThan:
-		break;
+		return new SFindMethodMoreThan();
 	case EFIND_METHOD::LessThan:
-		break;
+		return new SFindMethodLessThan();
 	case EFIND_METHOD::Between:
-		break;
+		return new SFindMethodBetween();
 	case EFIND_METHOD::Unknown:
-		break;
+		return new SFindMethodUnknown();
 	case EFIND_METHOD::Bigger:
 		break;
 	case EFIND_METHOD::Smaller:

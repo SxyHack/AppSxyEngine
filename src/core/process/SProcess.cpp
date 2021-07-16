@@ -350,7 +350,7 @@ void SProcess::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& a, co
 	else 
 		pAction = new SMemoryFilter(this);
 
-	pAction->FindMethod(SFindMethod::Create(method));
+	pAction->FindMethod(SFindMethod::Create(method, this));
 	if (type == EFIND_TYPE::All)
 	{
 
@@ -369,8 +369,9 @@ void SProcess::PushMemoryAction(SMemoryAction* pAction)
 	_Actions.push_back(pAction);
 }
 
-void SProcess::RemoveAllAction()
+void SProcess::RemoveAllMemoryAction()
 {
+	QMutexLocker locker(&_ActionMutex);
 	for (auto pAction : _Actions) {
 		delete pAction;
 	}
@@ -385,4 +386,13 @@ SMemoryAction* SProcess::GetPrevAction()
 		return nullptr;
 
 	return _Actions.last();
+}
+
+SMemoryAction* SProcess::GetBaseAction()
+{
+	QMutexLocker locker(&_ActionMutex);
+	if (_Actions.isEmpty())
+		return nullptr;
+
+	return _Actions.first();
 }

@@ -93,6 +93,9 @@ public:
 	void RemoveAllMemoryAction();
 	SMemoryAction* GetPrevAction();
 
+	// 返回首次搜索指针
+	SMemoryAction* GetBaseAction();
+
 signals:
 	void sgSearchDone(SMemoryAction* pAction, quint32 count);
 

@@ -17,5 +17,6 @@ bool SFindMethodBetween::Match(char* pContent, const SFindWhat& what)
 
 bool SFindMethodBetween::Match(const SMemoryBuffer& buff, const SFindWhat& what)
 {
-	return what.A <= buff.Content && buff.Content <= what.B;
+	auto v = ToQVariant(buff.Bytes, buff.GetWhat());
+	return what.A <= v && v <= what.B;
 }

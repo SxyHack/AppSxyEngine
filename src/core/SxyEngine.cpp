@@ -77,7 +77,7 @@ SProcess* SxyEngine::GetSelectedProcess()
 	return _AttachProcess;
 }
 
-void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& valueA, const QString& valueB /*= QString()*/)
+void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& valueA, const QString& valueB)
 {
 	if (_AttachProcess)
 		_AttachProcess->Search(type, method, valueA, valueB);
@@ -85,9 +85,8 @@ void SxyEngine::Search(EFIND_TYPE type, EFIND_METHOD method, const QString& valu
 
 void SxyEngine::Restart()
 {
-	if (_AttachProcess) {
+	if (_AttachProcess) 
 		_AttachProcess->RemoveAllMemoryAction();
-	}
 }
 
 qint64 SxyEngine::QueryModuleOffset(QString& qModuleName, quint64 address)

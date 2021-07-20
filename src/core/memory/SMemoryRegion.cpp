@@ -4,15 +4,15 @@ SMemoryRegion::SMemoryRegion(const MEMORY_BASIC_INFORMATION& mbi, SModule* pModu
 	: QObject(nullptr)
 	, _Module(pModule)
 {
-	ZeroMemory(&Content, sizeof(MEMORY_BASIC_INFORMATION));
-	CopyMemory(&Content, &mbi, sizeof(mbi));
+	ZeroMemory(&Mbi, sizeof(MEMORY_BASIC_INFORMATION));
+	CopyMemory(&Mbi, &mbi, sizeof(mbi));
 }
 
 SMemoryRegion::SMemoryRegion(const SMemoryRegion& src)
 {
 	_Module = src._Module;
 	Desc = src.Desc;
-	CopyMemory(&Content, &src.Content, sizeof(MEMORY_BASIC_INFORMATION));
+	CopyMemory(&Mbi, &src.Mbi, sizeof(MEMORY_BASIC_INFORMATION));
 }
 
 SMemoryRegion::~SMemoryRegion()

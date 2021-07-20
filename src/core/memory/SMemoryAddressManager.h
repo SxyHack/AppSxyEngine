@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QObject>
-#include "SMemoryBuffer.h"
+#include "SMemoryAddress.h"
 
 class SMemoryAddressManager : public QObject
 {
@@ -11,9 +11,10 @@ public:
 	SMemoryAddressManager();
 	~SMemoryAddressManager();
 
-	void AppendAddress(const SMemoryBuffer& buff);
+	SMemoryAddress* AppendAddress(const SMemoryBuffer& buff);
 	void RemoveAddress(int i);
+	void RemoveAll();
 
 protected:
-	MEMORY_BUFF_LIST _List;
+	PADDRESS_LIST _List;
 };

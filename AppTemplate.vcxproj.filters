@@ -60,6 +60,15 @@
     <ClCompile Include="src\core\memory\SMemoryAddressManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\memory\SMemoryAddress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\SDialogEditAddress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\memory\SAddressOffsetWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log\SLogAction.h" />
@@ -156,6 +165,15 @@
     <QtMoc Include="src\core\memory\SMemoryAddressManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="src\core\memory\SMemoryAddress.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\SDialogEditAddress.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\GUI\memory\SAddressOffsetWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="MainWindow.qrc" />
@@ -167,6 +185,12 @@
     <QtUic Include="src\GUI\memory\SScanWidget.ui" />
     <QtUic Include="src\GUI\process\DialogSelectProcess.ui" />
     <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui" />
+    <QtUic Include="src\GUI\memory\SDialogEditAddress.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="src\GUI\memory\SAddressOffsetWidget.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <None Include="themes\dark\darkstyle\darkstyle.qss" />
@@ -180,6 +204,11 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
       <ParseFiles>true</ParseFiles>
     </Filter>
   </ItemGroup>

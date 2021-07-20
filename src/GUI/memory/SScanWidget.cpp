@@ -43,8 +43,12 @@ SScanWidget::SScanWidget(QWidget* parent)
 	connect(ui.ButtonSearch, SIGNAL(clicked()), this, SLOT(OnButtonClickSearch()));
 	connect(ui.ButtonRestart, SIGNAL(clicked()), this, SLOT(OnButtonClickRestart()));
 	connect(ui.ButtonUndo, SIGNAL(clicked()), this, SLOT(OnButtonClickUndo()));
-	connect(ui.TableFound, SIGNAL(customContextMenuRequested(const QPoint&)), 
+	connect(ui.TableFound, SIGNAL(customContextMenuRequested(const QPoint&)),
 		this, SLOT(OnRightClickTableFound(const QPoint&)));
+	connect(ui.TableFound, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), 
+		this, SLOT(OnDClickTableFound(QTableWidgetItem*)));
+	connect(ui.TargetValueA, SIGNAL(returnPressed()), this, SLOT(OnButtonClickSearch()));
+	connect(ui.TargetValueB, SIGNAL(returnPressed()), this, SLOT(OnButtonClickSearch()));
 
 	// Timer
 	connect(&_SearchTimer, SIGNAL(timeout()), this, SLOT(OnTimingSearch()));
@@ -382,6 +386,8 @@ void SScanWidget::OnButtonClickSearch()
 	auto method = EFIND_METHOD(ui.FindMethod->currentData().toInt());
 	auto va = ui.TargetValueA->text();
 	auto vb = ui.TargetValueB->text();
+
+	// TODO: 检查输入的参数
 	pProcess->Search(type, method, va, vb);
 
 	// 启动进度条更新计时器
@@ -447,6 +453,13 @@ void SScanWidget::OnRightClickTableFound(const QPoint& pos)
 	_MenuFound.show();
 }
 
+void SScanWidget::OnDClickTableFound(QTableWidgetItem* pItem)
+{
+	auto buff = pItem->data(Qt::UserRole).value<SMemoryBuffer>();
+	auto pAddress = SEngine.AddressManager.AppendAddress(buff);
+	emit sgAppendAddress(pAddress);
+}
+
 void SScanWidget::OnMenuActionCopyAddress(bool checked)
 {
 	auto clip = QApplication::clipboard();
@@ -465,14 +478,26 @@ void SScanWidget::OnMenuActionCopyAddress(bool checked)
 
 void SScanWidget::OnMenuActionAppendAddress(bool checked)
 {
+	auto items = ui.TableFound->selectedItems();
+	if (items.isEmpty())
+		return;
 
+	auto nColCount = ui.TableFound->columnCount();
+	for (int i = 0; i < items.count(); i++)
+	{
+		if (i % nColCount == 0)
+		{
+			auto pItem = items.at(i);
+			auto buff = pItem->data(Qt::UserRole).value<SMemoryBuffer>();
+			auto pAddress = SEngine.AddressManager.AppendAddress(buff);
+			emit sgAppendAddress(pAddress);
+		}
+	}
 }
 
 void SScanWidget::OnSearchDone(SMemoryAction* pAction, quint32 nCount)
 {
-
 	_SearchTimer.stop();
-
 	ShowStateSearchDone();
 
 	if (pAction == nullptr)

@@ -17,5 +17,6 @@ bool SFindMethodLessThan::Match(char* pContent, const SFindWhat& what)
 
 bool SFindMethodLessThan::Match(const SMemoryBuffer& buff, const SFindWhat& what)
 {
-	return buff.Content <= what.A;
+	auto v = ToQVariant(buff.Bytes, buff.GetWhat());
+	return v <= what.A;
 }

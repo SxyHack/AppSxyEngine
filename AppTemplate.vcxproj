@@ -126,6 +126,7 @@
     <ClCompile Include="src\core\memory\find\SFindMethodUnknown.cpp" />
     <ClCompile Include="src\core\memory\find\SFindWhat.cpp" />
     <ClCompile Include="src\core\memory\find\SFindWorker.cpp" />
+    <ClCompile Include="src\core\memory\SMemoryAddress.cpp" />
     <ClCompile Include="src\core\memory\SMemoryAddressManager.cpp" />
     <ClCompile Include="src\core\memory\SMemoryBuffer.cpp" />
     <ClCompile Include="src\core\memory\action\SMemorySearch.cpp" />
@@ -151,6 +152,8 @@
     <ClCompile Include="src\GUI\memory\QHexView\document\qhexmetadata.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\qhexrenderer.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\qhexview.cpp" />
+    <ClCompile Include="src\GUI\memory\SAddressOffsetWidget.cpp" />
+    <ClCompile Include="src\GUI\memory\SDialogEditAddress.cpp" />
     <ClCompile Include="src\GUI\memory\SScanWidget.cpp" />
     <ClCompile Include="src\GUI\process\DialogSelectProcess.cpp" />
     <ClCompile Include="src\log\CustomLogMessageHandler.cpp" />
@@ -168,6 +171,8 @@
     <QtMoc Include="MainWindow.h" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="src\GUI\memory\SAddressOffsetWidget.ui" />
+    <QtUic Include="src\GUI\memory\SDialogEditAddress.ui" />
     <QtUic Include="src\GUI\memory\SScanWidget.ui" />
     <QtUic Include="src\GUI\process\DialogSelectProcess.ui" />
     <QtUic Include="themes\dark\framelesswindow\framelesswindow.ui" />
@@ -222,6 +227,9 @@
     <QtMoc Include="src\core\memory\find\SFindMethodBetween.h" />
     <QtMoc Include="src\core\memory\find\SFindMethodUnknown.h" />
     <QtMoc Include="src\core\memory\SMemoryAddressManager.h" />
+    <QtMoc Include="src\core\memory\SMemoryAddress.h" />
+    <QtMoc Include="src\GUI\memory\SDialogEditAddress.h" />
+    <QtMoc Include="src\GUI\memory\SAddressOffsetWidget.h" />
     <ClInclude Include="src\log\SLogAction.h" />
     <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />

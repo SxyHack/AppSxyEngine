@@ -100,7 +100,7 @@ signals:
 	void sgSearchDone(SMemoryAction* pAction, quint32 count);
 
 public:
-	PROCESSENTRY32 Content;
+	PROCESSENTRY32 TlhEntry32;
 	quint32 NumberOfVirtualMemory;  // 进程的虚拟内存总大小
 	quint32 NumberOfSearch;         // 进程的搜索进度
 

@@ -9,6 +9,11 @@
 #include "memory_define.h"
 #include "SMemorySearch.h"
 
+class SMemoryAddress;
+
+//
+// class SScanWidget
+// 
 class SScanWidget : public QWidget
 {
 	Q_OBJECT
@@ -63,12 +68,16 @@ private slots:
 	void OnButtonClickUndo();
 	void OnFindMethodChanged(int);
 	void OnRightClickTableFound(const QPoint& pos);
+	void OnDClickTableFound(QTableWidgetItem* pItem);
 
 	void OnMenuActionCopyAddress(bool checked);
 	void OnMenuActionAppendAddress(bool checked);
 
 public slots:
 	void OnSearchDone(SMemoryAction* pAction, quint32 nCount);
+
+signals:
+	void sgAppendAddress(SMemoryAddress* pAddress);
 
 protected:
 	void showEvent(QShowEvent* e) override;

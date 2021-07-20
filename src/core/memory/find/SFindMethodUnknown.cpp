@@ -17,5 +17,6 @@ bool SFindMethodUnknown::Match(char* pContent, const SFindWhat& what)
 
 bool SFindMethodUnknown::Match(const SMemoryBuffer& buff, const SFindWhat& what)
 {
-	return buff.Content != 0;
+	auto v = ToQVariant(buff.Bytes, buff.GetWhat());
+	return v != 0;
 }

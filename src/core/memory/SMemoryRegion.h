@@ -19,7 +19,7 @@ public:
 	~SMemoryRegion();
 
 public:
-	MEMORY_BASIC_INFORMATION Content;
+	MEMORY_BASIC_INFORMATION Mbi;
 	QString Desc;
 
 private:

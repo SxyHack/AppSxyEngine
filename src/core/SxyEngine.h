@@ -5,6 +5,7 @@
 
 #include "SProcess.h"
 #include "SMemoryBuffer.h"
+#include "SMemoryAddressManager.h"
 
 class SAbstractAction;
 
@@ -67,7 +68,10 @@ private:
 	SxyEngine();
 
 	LST_PROCESS _ProcessList;
-	SProcess* _AttachProcess;
+	SProcess*   _AttachProcess;
+
+public:
+	SMemoryAddressManager AddressManager;
 };
 
 

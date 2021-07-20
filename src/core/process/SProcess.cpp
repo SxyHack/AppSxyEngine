@@ -13,7 +13,7 @@ static QMutex mxAppendModule;
 
 SProcess::SProcess(const PROCESSENTRY32& entry)
 	: QObject(nullptr)
-	, Content(entry)
+	, TlhEntry32(entry)
 	, NumberOfVirtualMemory(0)
 	, NumberOfSearch(0)
 	, _Error(0)
@@ -285,7 +285,7 @@ bool SProcess::LoadVMRegions()
 		bool bMapped = (mbi.Type == MEM_MAPPED);
 		bool bReserved = (mbi.State == MEM_RESERVE);
 		bool bPrevReserved = (_MemRegionList.length() > 0)
-			? _MemRegionList.last().Content.State == MEM_RESERVE
+			? _MemRegionList.last().Mbi.State == MEM_RESERVE
 			: false;
 
 		TCHAR szModuleName[MAX_MODULE_SIZE] = { 0 };

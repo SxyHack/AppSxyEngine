@@ -51,11 +51,6 @@ void SMemorySearch::FindInRange(quint64 nBegAddr, quint64 nEndAddr, SFindWhat& w
 				char* pOffset = pBuffer + i;
 				auto nOffsetAddr = nBegAddr + i;
 
-				if (0x7FF77BEF6AC0 <= nOffsetAddr && nOffsetAddr <= 0x7FF77BEF6AD8)
-				{
-					qDebug("Address:%p, %x", nOffsetAddr, nReadedSize);
-				}
-
 				if (_Method && _Method->Match(pOffset, what))
 				{
 					what.AppendBuff(SMemoryBuffer(nOffsetAddr, pOffset, &what, pModule, _Process));

@@ -11,6 +11,8 @@ SMemoryBuffer::SMemoryBuffer()
 	, _What(nullptr)
 	, _Process(nullptr)
 	, Address(0)
+	, Offset(0)
+	, Bytes(nullptr)
 {
 }
 
@@ -19,22 +21,24 @@ SMemoryBuffer::SMemoryBuffer(quint64 nAddr, char* pBuffer, SFindWhat* pWhat, SMo
 	, _Module(pModule)
 	, _What(pWhat)
 	, _Process(pProcess)
+	, Bytes(new char[pWhat->Size])
 	, Address(nAddr)
+	, Offset(0)
 {
-	Content = SFindMethod::ToQVariant(pBuffer, *pWhat);
+	CopyMemory(Bytes, pBuffer, pWhat->Size);
 }
 
 SMemoryBuffer::SMemoryBuffer(const SMemoryBuffer& src)
 	: QObject(nullptr)
+	, Bytes(new char[src._What->Size])
 {
 	_Module = src._Module;
 	_What = src._What;
 	_Process = src._Process;
 	Address = src.Address;
-	Content = src.Content;
+	Offset = src.Offset;
+	CopyMemory(Bytes, src.Bytes, _What->Size);
 }
-
-
 
 SMemoryBuffer::~SMemoryBuffer()
 {
@@ -46,37 +50,81 @@ SMemoryBuffer& SMemoryBuffer::operator=(const SMemoryBuffer& src)
 	_Process = src._Process;
 	_Module = src._Module;
 	Address = src.Address;
-	Content = src.Content;
+	Offset = src.Offset;
+
+	if (Bytes) delete Bytes;
+
+	Bytes = new char[src._What->Size];
+	CopyMemory(Bytes, src.Bytes, _What->Size);
+
 	return *this;
 }
 
 QString SMemoryBuffer::ToString() const
 {
-	return Content.toString();
+	return SFindMethod::ToQVariant(Bytes, *_What).toString();
+}
+
+QString SMemoryBuffer::ToHex() const
+{
+	auto nNumber = SFindMethod::ToQVariant(Bytes, *_What).toUInt();
+	return QString::number(nNumber, 16);
+}
+
+QString SMemoryBuffer::GetTypeFormatString() const
+{
+	switch (_What->Type)
+	{
+	case EFIND_TYPE::Byte:
+		return "1字节";
+	case EFIND_TYPE::Byte_2:
+		return "2字节";
+	case EFIND_TYPE::Byte_4:
+		return "4字节";
+	case EFIND_TYPE::Byte_8:
+		return "8字节";
+	case EFIND_TYPE::Float:
+		return "单浮点";
+	case EFIND_TYPE::Double:
+		return "双浮点";
+	case EFIND_TYPE::String:
+		return "字符串";
+	}
+
+	return "??";
+}
+
+quint8 SMemoryBuffer::ToByte()
+{
+	return *(quint8*)Bytes;
 }
 
 bool SMemoryBuffer::Update()
 {
 	if (_What == nullptr || _Process == nullptr)
 	{
-		qFatal("��������");
+		qFatal("致命错误");
 		return false;
 	}
 
+	auto nOffsetAddr = Address + Offset;
 	auto nReadedSize = (SIZE_T)0;
-	auto pBuffer = new char[_What->Size];
+	return ReadProcessMemory(_Process->GetHandle(), (LPVOID)nOffsetAddr, Bytes, _What->Size, &nReadedSize);
+}
 
-	if (ReadProcessMemory(_Process->GetHandle(), (LPVOID)Address, pBuffer, _What->Size, &nReadedSize))
-	{
-		Content = SFindMethod::ToQVariant(pBuffer, *_What);
-	}
-	else
-	{
-		Content.clear();
-	}
+EFIND_TYPE SMemoryBuffer::GetType()
+{
+	return _What->Type;
+}
 
-	delete[] pBuffer;
-	return true;
+SFindWhat& SMemoryBuffer::GetWhat() const
+{
+	return *_What;
+}
+
+SProcess* SMemoryBuffer::GetProcess()
+{
+	return _Process;
 }
 
 bool SMemoryBuffer::IsCanonicalAddress(quint64 address)
@@ -94,21 +142,3 @@ bool SMemoryBuffer::IsCanonicalAddress(quint64 address)
 	return (((address & 0xFFFF800000000000) + 0x800000000000) & ~0x800000000000) == 0;
 #endif //_WIN64
 }
-
-//
-//long SMemoryBuffer::GetBufferLength(EFIND_TYPE value)
-//{
-//	switch (value)
-//	{
-//	case EFIND_TYPE::Byte: return 1;
-//	case EFIND_TYPE::Byte_2: return 2;
-//	case EFIND_TYPE::Byte_4: return 4;
-//	case EFIND_TYPE::Byte_8: return 8;
-//	case EFIND_TYPE::Float:  return sizeof(FLOAT);
-//	case EFIND_TYPE::Double: return sizeof(DOUBLE);
-//	case EFIND_TYPE::String: return 1;
-//	case EFIND_TYPE::All:    return 1;
-//	}
-//
-//	return 0;
-//}

@@ -206,6 +206,15 @@ void MainWindow::OnClickAddressList(QTreeWidgetItem* item, int column)
 void MainWindow::OnDClickAddressList(QTreeWidgetItem* item, int column)
 {
 	auto pAddress = item->data(0, Qt::UserRole).value<SMemoryAddress*>();
+	if (pAddress == nullptr)
+		return;
+
 	SDialogEditAddress dialog(pAddress);
-	dialog.exec();
+	if (QDialog::Rejected == dialog.exec())
+		return;
+
+	item->setText(1, pAddress->GetAddressHex());
+	item->setText(2, pAddress->GetTypeFormatString());
+	item->setText(3, pAddress->ToString());
+	item->setText(4, pAddress->GetDescription());
 }

@@ -14,7 +14,9 @@ public:
 
 protected:
 	void SetupTypes();
-	void UpdateOffsets();
+
+	// events
+	void closeEvent(QCloseEvent* e) override;
 
 private slots:
 	void OnButtonClickAppendOffset();

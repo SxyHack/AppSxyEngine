@@ -12,14 +12,20 @@ public:
 	SAddressOffsetWidget(SMemoryAddress* pAddress, QWidget *parent = Q_NULLPTR);
 	~SAddressOffsetWidget();
 
-	void UpdateOffsetPtr(int nIndex);
+	void UpdatePTO();
+
+	SMemoryAddress* GetMemoryAddress();
 
 signals:
 	void sgDelete();
 	void sgInsertBelow(); // 在自身下面插入新的
 
+private slots:
+	void OnOffsetChanged(int nOffset);
+
 private:
 	Ui::SAddressOffsetWidget ui;
+	SMemoryAddress* _BaseAddress;
 	SMemoryAddress* _Address;
 };
 

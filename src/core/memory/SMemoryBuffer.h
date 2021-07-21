@@ -31,6 +31,8 @@ public:
 	//
 	bool Update();
 
+	void SetType(EFIND_TYPE type);
+
 	EFIND_TYPE GetType();
 	SFindWhat& GetWhat() const;
 	SProcess* GetProcess();
@@ -78,9 +80,9 @@ bool SMemoryBuffer::ToNumber(T& ret)
 
 	if (_What->Size >= SIZE)
 	{
-		auto qByteArray = QByteArray(Bytes, _What->Size);
-		auto nInt = qByteArray.toUInt();
-		ret = nInt;
+		//auto qByteArray = QByteArray(Bytes, _What->Size);
+		//auto nInt = qByteArray.toUInt();
+		//ret = nInt;
 		ret = *(T*)Bytes;
 		return true;
 	}
@@ -97,7 +99,7 @@ bool SMemoryBuffer::ToNumber(T& ret)
 		return true;
 	}
 
-	delete pBuffer;
+	delete[] pBuffer;
 	return false;
 }
 

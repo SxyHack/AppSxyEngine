@@ -101,7 +101,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="OffsetPtrTo">
+    <widget class="QLabel" name="OffsetPTO">
      <property name="font">
       <font>
        <family>等距更纱黑体 SC</family>

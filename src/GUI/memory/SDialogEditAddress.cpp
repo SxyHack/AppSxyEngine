@@ -6,12 +6,14 @@ SDialogEditAddress::SDialogEditAddress(SMemoryAddress* pAddress, QWidget* parent
 {
 	ui.setupUi(this);
 	SetupTypes();
+	connect(ui.cbBase16,   SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForBase16(int)));
+	connect(ui.cbSign,     SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForSign(int)));
+	connect(ui.GroupPointer,   SIGNAL(toggled(bool)), this, SLOT(OnEnablePointer(bool)));
+	connect(ui.ButtonAccept,       SIGNAL(clicked()), this, SLOT(OnButtonClickAccept()));
+	connect(ui.ButtonCancel,       SIGNAL(clicked()), this, SLOT(OnButtonClickCancel()));
 	connect(ui.ButtonAppendOffset, SIGNAL(clicked()), this, SLOT(OnButtonClickAppendOffset()));
-	connect(ui.cbBase16, SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForBase16(int)));
-	connect(ui.cbSign, SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForSign(int)));
-	connect(ui.GroupPointer, SIGNAL(toggled(bool)), this, SLOT(OnEnablePointer(bool)));
 
-	ui.txtAddress->setText(QString::number(pAddress->GetAddress(), 16).toUpper());
+	ui.txtAddress->setText(pAddress->GetAddressHex());
 	ui.txtValue->setText("=" + pAddress->ToString());
 }
 
@@ -32,17 +34,15 @@ void SDialogEditAddress::SetupTypes()
 	ui.cbType->setCurrentIndex((int)_Address->GetType());
 }
 
-void SDialogEditAddress::UpdateOffsets()
+void SDialogEditAddress::closeEvent(QCloseEvent* e)
 {
-	for (int i = 0; i < _OffsetList.count(); i++)
-	{
-		auto pOffsetWidget = _OffsetList[i];
-	}
+	_Address->RemoveOffsets();
 }
 
 void SDialogEditAddress::OnButtonClickAppendOffset()
 {
-	auto pOffsetWidget = new SAddressOffsetWidget(_Address, ui.GroupPointer);
+	auto pLast = _Address->GetLast();
+	auto pOffsetWidget = new SAddressOffsetWidget(pLast, ui.GroupPointer);
 	connect(pOffsetWidget, SIGNAL(sgDelete()), this, SLOT(OnButtonClickDeleteOffset()));
 	connect(pOffsetWidget, SIGNAL(sgInsertBelow()), this, SLOT(OnButtonClickInsertOffset()));
 	_OffsetList.append(pOffsetWidget);
@@ -66,7 +66,7 @@ void SDialogEditAddress::OnButtonClickInsertOffset()
 	if (pWidget)
 	{
 		auto index = ui.verticalLayout->indexOf(pWidget);
-		auto pOffsetWidget = new SAddressOffsetWidget(_Address, ui.GroupPointer);
+		auto pOffsetWidget = new SAddressOffsetWidget(pWidget->GetMemoryAddress(), ui.GroupPointer);
 		connect(pOffsetWidget, SIGNAL(sgDelete()), this, SLOT(OnButtonClickDeleteOffset()));
 		connect(pOffsetWidget, SIGNAL(sgInsertBelow()), this, SLOT(OnButtonClickInsertOffset()));
 		_OffsetList.append(pOffsetWidget);
@@ -77,12 +77,18 @@ void SDialogEditAddress::OnButtonClickInsertOffset()
 
 void SDialogEditAddress::OnButtonClickAccept()
 {
-
+	_Address->SetDescription(ui.txtDesc->text());
+	_Address->SetPointer(ui.GroupPointer->isChecked());
+	_Address->SetNewAddress(ui.txtAddress->text().toULongLong(nullptr, 16));
+	_Address->SetType(EFIND_TYPE(ui.cbType->currentData().toInt()));
+	
+	accept();
 }
 
 void SDialogEditAddress::OnButtonClickCancel()
 {
-
+	_Address->RemoveOffsets();
+	reject();
 }
 
 void SDialogEditAddress::OnCheckStateChangedForBase16(int nState)

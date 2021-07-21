@@ -112,6 +112,11 @@ bool SMemoryBuffer::Update()
 	return ReadProcessMemory(_Process->GetHandle(), (LPVOID)nOffsetAddr, Bytes, _What->Size, &nReadedSize);
 }
 
+void SMemoryBuffer::SetType(EFIND_TYPE type)
+{
+	_What->Type = type;
+}
+
 EFIND_TYPE SMemoryBuffer::GetType()
 {
 	return _What->Type;

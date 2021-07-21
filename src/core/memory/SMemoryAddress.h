@@ -15,7 +15,9 @@ public:
 	EFIND_TYPE GetType();
 	quint64 GetAddress();
 	QString GetAddressHex();
+	QString GetOffsetHex();
 	QString GetTypeFormatString();
+	QString GetDescription();
 	//
 	// 将地址指向的内存数值转换成字符串
 	//
@@ -24,12 +26,23 @@ public:
 	// 将地址指向的内存数值转换成HEX
 	// 
 	QString ToHex();
-
 	quint8 ToByte();
 
+	SMemoryAddress* GetLast();
+	SMemoryAddress* GetNext();
+	SMemoryAddress* GetPrev();
+
+	void SetPrev(SMemoryAddress* pAddress);
+	void SetNext(SMemoryAddress* pAddress);
 	void SetDescription(const QString& text);
 	void SetPointer(bool bPointer);
-	bool Read(qint32 nOffset);
+	void SetNewAddress(quint64 nAddress);
+	void SetType(EFIND_TYPE type);
+
+	void RemoveOffsets();
+
+	bool Read(qint32 nOffset = 0);
+	bool IsValid();
 	//
 	// 转换成数字，包括Integer, Float, Double
 	//
@@ -40,10 +53,13 @@ protected:
 	void run() override;
 
 private:
-	SMemoryBuffer  _Buffer;
-	bool           _Locking;
-	bool           _Pointer;
-	QString        _Description;
+	SMemoryBuffer   _Buffer;
+	bool            _Locking;
+	bool            _Pointer;
+	bool            _Valid;
+	QString         _Description;
+	SMemoryAddress* _Prev;
+	SMemoryAddress* _Next;
 };
 
 typedef QList<SMemoryAddress*> PADDRESS_LIST;

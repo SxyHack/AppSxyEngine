@@ -20,6 +20,7 @@ SProcess::SProcess(const PROCESSENTRY32& entry)
 	, _ID(entry.th32ProcessID)
 	, _Handle(NULL)
 	, _EnumModules(this)
+	, _EnumThreads(this)
 {
 	_Name = QString::fromWCharArray(entry.szExeFile);
 }
@@ -237,6 +238,34 @@ void SProcess::ExecuteEnumModules()
 	_EnumModules.WaitForInit();
 }
 
+void SProcess::AppendThread(SThread* pThread)
+{
+	QMutexLocker lock(&_ThreadMapMutex);
+	_ThreadMap.insert(pThread->GetID(), pThread);
+}
+
+void SProcess::RemoveThread(SThread* pThread)
+{
+	QMutexLocker lock(&_ThreadMapMutex);
+	_ThreadMap.remove(pThread->GetID());
+}
+
+bool SProcess::ThreadIsExist(qint32 nThreadID)
+{
+	return _ThreadMap.contains(nThreadID);
+}
+
+void SProcess::ExecuteEnumThreads(quint64 nAddress, bool bReadOrWrite)
+{
+	_AddressOfRipAccess = nAddress;
+	_RipReadOrWrite = bReadOrWrite;
+
+	if (_EnumThreads.isRunning())
+		return;
+
+	_EnumThreads.start(QThread::NormalPriority);
+}
+
 void SProcess::AppendModuleToWhitelist(SModule* pModule)
 {
 	_ModuleWhiteList.insert(pModule->FileName, pModule);
@@ -330,7 +359,8 @@ bool SProcess::ReadMemory(QByteArray& bytes, LPVOID address, quint32 length)
 
 bool SProcess::IsCodeRegion(const MEMORY_BASIC_INFORMATION& mbi)
 {
-	bool bExecute = (mbi.Protect & PAGE_EXECUTE) ||
+	bool bExecute = 
+		(mbi.Protect & PAGE_EXECUTE) ||
 		(mbi.Protect & PAGE_EXECUTE_READ) ||
 		(mbi.Protect & PAGE_EXECUTE_READWRITE) ||
 		(mbi.Protect & PAGE_EXECUTE_WRITECOPY);

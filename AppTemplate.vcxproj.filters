@@ -69,6 +69,12 @@
     <ClCompile Include="src\GUI\memory\SAddressOffsetWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\thread\SThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\process\enum\SEnumThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log\SLogAction.h" />
@@ -172,6 +178,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\GUI\memory\SAddressOffsetWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\thread\SThread.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\process\enum\SEnumThread.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

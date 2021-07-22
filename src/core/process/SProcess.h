@@ -6,7 +6,10 @@
 #include <QMutex>
 
 #include "SModule.h"
+#include "SThread.h"
 #include "SEnumModule.h"
+#include "SEnumThread.h"
+
 #include "SMemoryRegion.h"
 #include "SMemorySearch.h"
 #include "SMemoryFilter.h"
@@ -46,6 +49,14 @@ public:
 	SModule* GetModule(quint64 address);
 	SModule* GetModuleName(quint64 address, QString& name);
 	void ExecuteEnumModules();
+
+	//
+	// about thread
+	// 
+	void AppendThread(SThread* pThread);
+	void RemoveThread(SThread* pThread);
+	bool ThreadIsExist(qint32 nThreadID);
+	void ExecuteEnumThreads();
 
 	// 
 	// 添加模块到扫描白名单
@@ -93,7 +104,9 @@ public:
 	void RemoveAllMemoryAction();
 	SMemoryAction* GetPrevAction();
 
+	//
 	// 返回首次搜索指针
+	//
 	SMemoryAction* GetBaseAction();
 
 signals:
@@ -105,25 +118,30 @@ public:
 	quint32 NumberOfSearch;         // 进程的搜索进度
 
 protected:
-	quint64 _ID;
-	HANDLE  _Handle;
-	QString _Name;
-	QString _FilePath;
-	QIcon   _FileICON;
+	quint64             _ID;
+	HANDLE              _Handle;
+	QString             _Name;
+	QString             _FilePath;
+	QIcon               _FileICON;
+	quint32             _Error;
+	QString             _ErrMessage;
 
-	quint32 _Error;
-	QString _ErrMessage;
+	// About Module
+	RANGE_MAP_MOUDLE    _ModuleRangeMap;
+	NAME_MAP_MODULE     _ModuleNameMap;
+	NAME_MAP_MODULE     _ModuleWhiteList;  // 内存扫描白名单
+	QStringList         _ModuleNameList;   // 模块有序列表
+	SEnumModule         _EnumModules;
 
-	RANGE_MAP_MOUDLE   _ModuleRangeMap;
-	NAME_MAP_MODULE    _ModuleNameMap;
-	NAME_MAP_MODULE    _ModuleWhiteList;  // 内存扫描白名单
-	LIST_MEMORY_REGION _MemRegionList;    // 内存页列表
-	QStringList        _ModuleNameList;   // 模块有序列表
-	SEnumModule        _EnumModules;
+	// About Thread
+	STHREAD_MAP         _ThreadMap;
+	SEnumThread         _EnumThreads;
+	QMutex              _ThreadMapMutex;
 
 	// 内存相关
 	SMEMORY_ACTION_LIST _Actions;
-	QMutex _ActionMutex;
+	LIST_MEMORY_REGION  _MemRegionList;    // 内存页列表
+	QMutex              _ActionMutex;
 };
 
 

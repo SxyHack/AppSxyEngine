@@ -67,7 +67,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;.\src\core\memory\filter;.\src\core\memory\action;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;.\src\core\memory\filter;.\src\core\memory\action;.\src\core\thread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -78,7 +78,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;.\src\core\memory\filter;.\src\core\memory\action;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>themes\dark\framelesswindow;themes\dark;.\;src\;.\src\core\process;.\src\core\module;.\src\core\memory;.\src\core\module\PE;.\src\GUI\process;.\src\core;.\src\core\process\enum;.\src\core\system;.\src\GUI\memory;.\src\core\memory\find;.\src\utility;.\src\log;.\src\core\memory\filter;.\src\core\memory\action;.\src\core\thread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
     </ClCompile>
@@ -136,8 +136,10 @@
     <ClCompile Include="src\core\module\SModule.cpp" />
     <ClCompile Include="src\core\process\enum\SEnumModule.cpp" />
     <ClCompile Include="src\core\process\enum\SEnumProcess.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumThread.cpp" />
     <ClCompile Include="src\core\process\SProcess.cpp" />
     <ClCompile Include="src\core\SxyEngine.cpp" />
+    <ClCompile Include="src\core\thread\SThread.cpp" />
     <ClCompile Include="src\GUI\controls\SHeaderView.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.cpp" />
@@ -230,6 +232,8 @@
     <QtMoc Include="src\core\memory\SMemoryAddress.h" />
     <QtMoc Include="src\GUI\memory\SDialogEditAddress.h" />
     <QtMoc Include="src\GUI\memory\SAddressOffsetWidget.h" />
+    <QtMoc Include="src\core\thread\SThread.h" />
+    <QtMoc Include="src\core\process\enum\SEnumThread.h" />
     <ClInclude Include="src\log\SLogAction.h" />
     <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />

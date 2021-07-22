@@ -23,12 +23,11 @@ void SEnumModule::Stop()
 		return;
 	}
 
-	qDebug("Stopping...");
-
 	requestInterruption();
-	if (_ExitSemaphore.tryAcquire(1, 1000L))
-		_ExitSemaphore.release();
-
+	quit();
+	wait();
+	/*if (_ExitSemaphore.tryAcquire(1, 1000L))
+		_ExitSemaphore.release();*/
 	qInfo("Stopped");
 }
 
@@ -84,6 +83,6 @@ void SEnumModule::run()
 	}
 
 	CloseHandle(hSnap);
-	_ExitSemaphore.release();
+	//_ExitSemaphore.release();
 	qDebug("Exit EnumModule");
 }

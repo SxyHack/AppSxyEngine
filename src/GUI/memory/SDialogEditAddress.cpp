@@ -6,11 +6,11 @@ SDialogEditAddress::SDialogEditAddress(SMemoryAddress* pAddress, QWidget* parent
 {
 	ui.setupUi(this);
 	SetupTypes();
-	connect(ui.cbBase16,   SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForBase16(int)));
-	connect(ui.cbSign,     SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForSign(int)));
-	connect(ui.GroupPointer,   SIGNAL(toggled(bool)), this, SLOT(OnEnablePointer(bool)));
-	connect(ui.ButtonAccept,       SIGNAL(clicked()), this, SLOT(OnButtonClickAccept()));
-	connect(ui.ButtonCancel,       SIGNAL(clicked()), this, SLOT(OnButtonClickCancel()));
+	connect(ui.cbBase16, SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForBase16(int)));
+	connect(ui.cbSign, SIGNAL(stateChanged(int)), this, SLOT(OnCheckStateChangedForSign(int)));
+	connect(ui.GroupPointer, SIGNAL(toggled(bool)), this, SLOT(OnEnablePointer(bool)));
+	connect(ui.ButtonAccept, SIGNAL(clicked()), this, SLOT(OnButtonClickAccept()));
+	connect(ui.ButtonCancel, SIGNAL(clicked()), this, SLOT(OnButtonClickCancel()));
 	connect(ui.ButtonAppendOffset, SIGNAL(clicked()), this, SLOT(OnButtonClickAppendOffset()));
 
 	ui.txtAddress->setText(pAddress->GetAddressHex());
@@ -81,7 +81,7 @@ void SDialogEditAddress::OnButtonClickAccept()
 	_Address->SetPointer(ui.GroupPointer->isChecked());
 	_Address->SetNewAddress(ui.txtAddress->text().toULongLong(nullptr, 16));
 	_Address->SetType(EFIND_TYPE(ui.cbType->currentData().toInt()));
-	
+
 	accept();
 }
 

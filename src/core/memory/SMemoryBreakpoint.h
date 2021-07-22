@@ -2,6 +2,8 @@
 
 #include <QObject>
 
+
+
 class SMemoryBreakpoint : public QObject
 {
 	Q_OBJECT

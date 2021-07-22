@@ -75,6 +75,9 @@
     <ClCompile Include="src\core\process\enum\SEnumThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\memory\SMemoryBreakpoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log\SLogAction.h" />
@@ -184,6 +187,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\core\process\enum\SEnumThread.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\memory\SMemoryBreakpoint.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

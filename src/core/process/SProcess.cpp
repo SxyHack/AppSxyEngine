@@ -255,11 +255,8 @@ bool SProcess::ThreadIsExist(qint32 nThreadID)
 	return _ThreadMap.contains(nThreadID);
 }
 
-void SProcess::ExecuteEnumThreads(quint64 nAddress, bool bReadOrWrite)
+void SProcess::ExecuteEnumThreads()
 {
-	_AddressOfRipAccess = nAddress;
-	_RipReadOrWrite = bReadOrWrite;
-
 	if (_EnumThreads.isRunning())
 		return;
 

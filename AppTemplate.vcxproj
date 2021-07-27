@@ -72,8 +72,8 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ntdll_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;$(ProjectDir)libs\capstone;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ntdll_x64.lib;capstone.lib;capstone_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -83,8 +83,8 @@
       <DisableSpecificWarnings>4005;4828</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ntdll_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)libs\ntdll;$(ProjectDir)libs\capstone;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ntdll_x64.lib;capstone.lib;capstone_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -236,6 +236,21 @@
     <QtMoc Include="src\core\thread\SThread.h" />
     <QtMoc Include="src\core\process\enum\SEnumThread.h" />
     <QtMoc Include="src\core\memory\SMemoryBreakpoint.h" />
+    <ClInclude Include="libs\capstone\include\capstone\arm.h" />
+    <ClInclude Include="libs\capstone\include\capstone\arm64.h" />
+    <ClInclude Include="libs\capstone\include\capstone\capstone.h" />
+    <ClInclude Include="libs\capstone\include\capstone\evm.h" />
+    <ClInclude Include="libs\capstone\include\capstone\m680x.h" />
+    <ClInclude Include="libs\capstone\include\capstone\m68k.h" />
+    <ClInclude Include="libs\capstone\include\capstone\mips.h" />
+    <ClInclude Include="libs\capstone\include\capstone\platform.h" />
+    <ClInclude Include="libs\capstone\include\capstone\ppc.h" />
+    <ClInclude Include="libs\capstone\include\capstone\sparc.h" />
+    <ClInclude Include="libs\capstone\include\capstone\systemz.h" />
+    <ClInclude Include="libs\capstone\include\capstone\tms320c64x.h" />
+    <ClInclude Include="libs\capstone\include\capstone\x86.h" />
+    <ClInclude Include="libs\capstone\include\capstone\xcore.h" />
+    <ClInclude Include="libs\capstone\include\platform.h" />
     <ClInclude Include="src\log\SLogAction.h" />
     <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />

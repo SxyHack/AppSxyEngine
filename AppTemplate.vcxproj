@@ -140,9 +140,12 @@
     <ClCompile Include="src\core\process\enum\SEnumModule.cpp" />
     <ClCompile Include="src\core\process\enum\SEnumProcess.cpp" />
     <ClCompile Include="src\core\process\enum\SEnumThread.cpp" />
+    <ClCompile Include="src\core\process\enum\SEnumThreadNT.cpp" />
+    <ClCompile Include="src\core\process\enum\SSnapThread.cpp" />
     <ClCompile Include="src\core\process\SProcess.cpp" />
     <ClCompile Include="src\core\SxyEngine.cpp" />
     <ClCompile Include="src\core\thread\SThread.cpp" />
+    <ClCompile Include="src\core\thread\SThreadRiper.cpp" />
     <ClCompile Include="src\GUI\controls\SHeaderView.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qfilebuffer.cpp" />
     <ClCompile Include="src\GUI\memory\QHexView\document\buffer\qhexbuffer.cpp" />
@@ -255,6 +258,9 @@
     <ClInclude Include="libs\capstone\include\platform.h" />
     <QtMoc Include="src\core\capstone\SCapstone.h" />
     <QtMoc Include="src\core\capstone\SDisassemblerX86.h" />
+    <QtMoc Include="src\core\thread\SThreadRiper.h" />
+    <QtMoc Include="src\core\process\enum\SSnapThread.h" />
+    <QtMoc Include="src\core\process\enum\SEnumThreadNT.h" />
     <ClInclude Include="src\log\SLogAction.h" />
     <ClInclude Include="src\utility\SElapsed.h" />
     <QtMoc Include="src\core\process\SProcess.h" />

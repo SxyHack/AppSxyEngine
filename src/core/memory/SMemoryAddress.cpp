@@ -137,7 +137,7 @@ void SMemoryAddress::SetType(EFIND_TYPE type)
 
 void SMemoryAddress::RemoveOffsets()
 {
-	if (GetPrev() == nullptr && GetNext() == nullptr)
+	if (_Prev == nullptr && _Next == nullptr)
 		return;
 
 	auto pNext = GetNext();

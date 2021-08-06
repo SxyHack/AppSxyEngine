@@ -84,6 +84,15 @@
     <ClCompile Include="src\core\capstone\SDisassemblerX86.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\thread\SThreadRiper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\process\enum\SSnapThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\process\enum\SEnumThreadNT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log\SLogAction.h" />
@@ -247,6 +256,15 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\core\capstone\SDisassemblerX86.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\thread\SThreadRiper.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\process\enum\SSnapThread.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\core\process\enum\SEnumThreadNT.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -2,25 +2,56 @@
 #include "SProcess.h"
 #include "core\extras\NtExtras.h"
 
-SThread::SThread(const THREADENTRY32& entry, SProcess* pProcess)
+//SThread::SThread(const THREADENTRY32& entry, SProcess* pProcess)
+//	: QThread()
+//	, _Process(pProcess)
+//	, _Entry(entry)
+//	, _Data(NULL)
+//	, _Riper(this)
+//	, _AddressOfOpcodeAccess(0)
+//	, _Index(-1)
+//{
+//}
+
+SThread::SThread(PSYSTEM_THREAD_INFORMATION pData, SProcess* pProcess)
 	: QThread()
 	, _Process(pProcess)
-	, _Entry(entry)
-	, _LastRIP(0)
+	, _Riper(this)
+	, _AddressOfOpcodeAccess(0)
+	, _Index(-1)
 {
+	CopyMemory(&_Data, pData, sizeof(_Data));
 }
 
 SThread::~SThread()
 {
 }
 
-qint32 SThread::GetID()
+qint64 SThread::GetID()
 {
-	return _Entry.th32ThreadID;
+	//return _Entry.th32ThreadID;
+	return (qint64)_Data.ClientId.UniqueThread;
+}
+
+qint32 SThread::GetIndex()
+{
+	return _Index;
+}
+
+void SThread::SetIndex(qint32 nIndex)
+{
+	_Index = nIndex;
+}
+
+void SThread::FindOpcodeAccess(quint64 nAddress)
+{
+	_AddressOfOpcodeAccess = nAddress;
+	_Riper.start();
 }
 
 void SThread::run()
 {
+	quint64 nLastRIP = 0;
 	HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT, FALSE, GetID());
 	if (hThread == NULL)
 	{
@@ -30,6 +61,7 @@ void SThread::run()
 		_Process->RemoveThread(this);
 		return;
 	}
+	qDebug("OpenThread[%d]", GetID());
 
 	while (!isInterruptionRequested())
 	{
@@ -37,20 +69,26 @@ void SThread::run()
 		context.ContextFlags = CONTEXT_ALL | CONTEXT_FLOATING_POINT;
 		if (!GetThreadContext(hThread, &context)) 
 		{
-			//ResumeThread(hThread);
-			continue;
+			auto dwError = GetLastError();
+			auto qsMessage = FormatLastError(dwError);
+			qWarning("GetThreadContext(%d) Failed. %s(%d)", GetID(), qsMessage.toUtf8().data(), dwError);
+			break;
 		}
 
-		if (_LastRIP != context.Rip) 
+		if (nLastRIP != context.Rip)
 		{
-			_LastRIP = context.Rip;
+			nLastRIP = context.Rip;
 			_ListRIP.append(context);
-			qDebug("Ïß³Ì[%d] RIP:%X", GetID(), _LastRIP);
+			if (_Index >= 9) {
+				qDebug("çº¿ç¨‹[%d:%d] RIP:0x%X", GetID(), _Index, nLastRIP);
+			}
 		}
 
-		QThread::msleep(1);
+		//QThread::msleep(1);
 	}
 
 	CloseHandle(hThread);
-	qDebug("¸ú×ÙÏß³Ì[%d]½áÊø.", GetID());
+
+	qDebug("è·Ÿè¸ªçº¿ç¨‹[%d]ç»“æŸ.", GetID());
+	_Process->RemoveThread(this);
 }

@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 	mainWindow.setWindowTitle(Random::GenerateString(16));
 	mainWindow.setMinimumWidth(1248);
 	mainWindow.setMinimumHeight(950);
+	mainWindow.setWindowIcon(a.style()->standardIcon(QStyle::SP_DesktopIcon));
 	mainWindow.show();
 
 	// screen

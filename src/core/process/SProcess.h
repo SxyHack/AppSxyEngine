@@ -8,7 +8,7 @@
 #include "SModule.h"
 #include "SThread.h"
 #include "SEnumModule.h"
-#include "SEnumThread.h"
+#include "SEnumThreadNT.h"
 
 #include "SMemoryRegion.h"
 #include "SMemorySearch.h"
@@ -52,10 +52,15 @@ public:
 
 	//
 	// about thread
+	// 添加线程
+	// [IN] @pThread 类 SThread 指针
 	// 
 	void AppendThread(SThread* pThread);
+	//
+	// 移除线程
+	//
 	void RemoveThread(SThread* pThread);
-	bool ThreadIsExist(qint32 nThreadID);
+	bool ThreadIsExist(qint64 nThreadID);
 	void ExecuteEnumThreads();
 
 	// 
@@ -135,7 +140,7 @@ protected:
 
 	// About Thread
 	STHREAD_MAP         _ThreadMap;
-	SEnumThread         _EnumThreads;
+	SEnumThreadNT       _EnumThreads;
 	QMutex              _ThreadMapMutex;
 
 	// 内存相关

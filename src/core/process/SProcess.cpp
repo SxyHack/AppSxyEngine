@@ -241,7 +241,9 @@ void SProcess::ExecuteEnumModules()
 void SProcess::AppendThread(SThread* pThread)
 {
 	QMutexLocker lock(&_ThreadMapMutex);
+
 	_ThreadMap.insert(pThread->GetID(), pThread);
+	pThread->SetIndex(_ThreadMap.count() - 1);
 }
 
 void SProcess::RemoveThread(SThread* pThread)
@@ -250,7 +252,7 @@ void SProcess::RemoveThread(SThread* pThread)
 	_ThreadMap.remove(pThread->GetID());
 }
 
-bool SProcess::ThreadIsExist(qint32 nThreadID)
+bool SProcess::ThreadIsExist(qint64 nThreadID)
 {
 	return _ThreadMap.contains(nThreadID);
 }
@@ -260,7 +262,7 @@ void SProcess::ExecuteEnumThreads()
 	if (_EnumThreads.isRunning())
 		return;
 
-	_EnumThreads.start(QThread::NormalPriority);
+	_EnumThreads.start(QThread::HighPriority);
 }
 
 void SProcess::AppendModuleToWhitelist(SModule* pModule)

@@ -4,7 +4,6 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <iostream>
-#include <windows.h>
 
 QFile gLogFile;
 
@@ -69,6 +68,11 @@ void SLogAction::SetConsoleColor(WORD nColor)
 	GetConsoleScreenBufferInfo(_hSTD, &csbi);
 	_OriginColors = *(&csbi.wAttributes);
 
-	SetConsoleTextAttribute(_hSTD, 13);
+	SetConsoleTextAttribute(_hSTD, nColor);
+}
+
+void SLogAction::ResetConsoleColor()
+{
+
 }
 

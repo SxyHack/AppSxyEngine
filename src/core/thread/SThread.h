@@ -42,7 +42,8 @@ protected:
 	SThreadRiper    _Riper;
 	qint32          _Index;
 	quint64         _AddressOfOpcodeAccess;  // 执行代码访问的地址
-	PSYSTEM_THREAD_INFORMATION _Data;
+	SYSTEM_THREAD_INFORMATION _Data;
 };
 
 typedef QMap<qint64, SThread*> STHREAD_MAP;
+typedef QList<qint64> RIP_LIST;

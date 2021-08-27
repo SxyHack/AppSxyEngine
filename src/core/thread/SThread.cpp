@@ -61,7 +61,8 @@ void SThread::run()
 		_Process->RemoveThread(this);
 		return;
 	}
-	qDebug("OpenThread[%d]", GetID());
+
+	RIP_LIST lstRIP;
 
 	while (!isInterruptionRequested())
 	{
@@ -78,17 +79,21 @@ void SThread::run()
 		if (nLastRIP != context.Rip)
 		{
 			nLastRIP = context.Rip;
-			_ListRIP.append(context);
-			if (_Index >= 9) {
-				qDebug("线程[%d:%d] RIP:0x%X", GetID(), _Index, nLastRIP);
-			}
+			lstRIP.append(nLastRIP);
+			//_ListRIP.append(context);
 		}
+	}
 
-		//QThread::msleep(1);
+	QString qLog;// = QString("线程[%1]").arg(GetID());
+	for (auto rip: lstRIP)
+	{
+		qLog += QString::number(rip, 16).toUpper();
+		qLog += "\n";
 	}
 
 	CloseHandle(hThread);
 
-	qDebug("跟踪线程[%d]结束.", GetID());
+	qDebug("跟踪线程[%d] RIP:%d \n%s", GetID(), lstRIP.count(), qLog.toUtf8().data());
 	_Process->RemoveThread(this);
+	lstRIP.clear();
 }

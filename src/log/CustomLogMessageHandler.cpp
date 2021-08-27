@@ -68,24 +68,24 @@ void CustomLogMessageHandler::handle(QtMsgType type, const QMessageLogContext& c
 		break;
 	}
 
-	log = QString("%1 %2 %3 %4(%5)")
-		.arg(level)
-		.arg(time)
-		.arg(tid, 6, 10, QLatin1Char('0'))
-		.arg(file_name)
-		.arg(ctx.line);
-
-	if (!func.isEmpty()) {
-		log.append(" ");
-		log.append(func);
-	}
-
-	log.append("> ");
-	log.append(msg);
-	log.append("\n");
+	//log = QString("%1 %2 %3 %4(%5)")
+	//	.arg(level)
+	//	.arg(time)
+	//	.arg(tid, 6, 10, QLatin1Char('0'))
+	//	.arg(file_name)
+	//	.arg(ctx.line);
+	// 
+	//if (!func.isEmpty()) {
+	//	log.append(" ");
+	//	log.append(func);
+	//}
+	// 
+	//log.append("> ");
+	//log.append(msg);
+	//log.append("\n");
 
 	gLogMutex.lock();
-	gQueue.enqueue(new SLogAction(log));
+	gQueue.enqueue(new SLogAction(level, time, file_name, func, ctx.line, tid));
 	gLogMutex.unlock();
 }
 

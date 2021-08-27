@@ -52,6 +52,7 @@ void SThread::FindOpcodeAccess(quint64 nAddress)
 void SThread::run()
 {
 	quint64 nLastRIP = 0;
+	RIP_LIST lstRIP;
 	HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT, FALSE, GetID());
 	if (hThread == NULL)
 	{
@@ -62,8 +63,6 @@ void SThread::run()
 		return;
 	}
 
-	RIP_LIST lstRIP;
-
 	while (!isInterruptionRequested())
 	{
 		CONTEXT context;
@@ -71,6 +70,9 @@ void SThread::run()
 		if (!GetThreadContext(hThread, &context)) 
 		{
 			auto dwError = GetLastError();
+			if (dwError == ERROR_GEN_FAILURE)
+				continue;
+
 			auto qsMessage = FormatLastError(dwError);
 			qWarning("GetThreadContext(%d) Failed. %s(%d)", GetID(), qsMessage.toUtf8().data(), dwError);
 			break;
@@ -84,14 +86,14 @@ void SThread::run()
 		}
 	}
 
+	CloseHandle(hThread);
+
 	QString qLog;// = QString("线程[%1]").arg(GetID());
 	for (auto rip: lstRIP)
 	{
 		qLog += QString::number(rip, 16).toUpper();
 		qLog += "\n";
 	}
-
-	CloseHandle(hThread);
 
 	qDebug("跟踪线程[%d] RIP:%d \n%s", GetID(), lstRIP.count(), qLog.toUtf8().data());
 	_Process->RemoveThread(this);

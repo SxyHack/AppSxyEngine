@@ -8,9 +8,20 @@
 
 QFile gLogFile;
 
-SLogAction::SLogAction(const QString& msg)
-	: _Message(msg)
+SLogAction::SLogAction(const QString& level,
+	const QString& time, 
+	const QString& fileName, 
+	const QString& function,
+	qint32 fileLine, 
+	qint32 threadID)
+	: _Level(level)
+	, _Time(time)
+	, _FileName(fileName)
+	, _FileLine(fileLine)
+	, _Function(function)
+	, _ThreadID(threadID)
 {
+	_hSTD = GetStdHandle(STD_OUTPUT_HANDLE);
 }
 
 SLogAction::~SLogAction()
@@ -34,7 +45,6 @@ void SLogAction::Execute()
 
 	QTextStream stm(&gLogFile);
 	stm.setCodec("UTF-8");
-	stm << _Message;
 	stm.flush();
 
 #if ENABLE_CONSOLE
@@ -48,5 +58,17 @@ void SLogAction::Execute()
 	OutputDebugString(_Message.toLocal8Bit().constData());
 #endif
 #endif
+}
+
+void SLogAction::SetConsoleColor(WORD nColor)
+{
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	SecureZeroMemory(&csbi, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
+
+	/* Save the original console color */
+	GetConsoleScreenBufferInfo(_hSTD, &csbi);
+	_OriginColors = *(&csbi.wAttributes);
+
+	SetConsoleTextAttribute(_hSTD, 13);
 }
 

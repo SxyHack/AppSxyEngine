@@ -37,7 +37,7 @@ void SEnumThreadNT::run()
 		PSYSTEM_PROCESS_INFORMATION pBuffer = (PSYSTEM_PROCESS_INFORMATION)malloc(nBufferLength);
 		if (pBuffer == NULL)
 		{
-			qDebug("ÎÞ·¨»ñÈ¡½ø³ÌÐÅÏ¢£¬ÄÚ´æ²»×ã");
+			qDebug("æ— æ³•èŽ·å–è¿›ç¨‹ä¿¡æ¯ï¼Œå†…å­˜ä¸è¶³");
 			continue;
 		}
 
@@ -66,6 +66,8 @@ void SEnumThreadNT::run()
 		{
 			if (pspi->UniqueProcessId == (HANDLE)_Process->GetID())
 			{
+				//qDebug("%X : %X", pBuffer, pspi);
+
 				PSYSTEM_THREAD_INFORMATION pThreadData = &pspi->Threads[0];
 				//qDebug("ThreadNum:%d", pspi->NumberOfThreads);
 
@@ -74,6 +76,7 @@ void SEnumThreadNT::run()
 					auto nThreadID = (qint64)pThreadData->ClientId.UniqueThread;
 					if (!_Process->ThreadIsExist(nThreadID))
 					{
+						qDebug("å‘çŽ°æ–°çº¿ç¨‹: %d", nThreadID);
 						SThread* pThread = new SThread(pThreadData, _Process);
 						_Process->AppendThread(pThread);
 						pThread->start(HighestPriority);

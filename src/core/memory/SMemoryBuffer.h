@@ -59,8 +59,6 @@ public:
 	char*    Bytes;
 	qint32   Offset;
 
-	//QVariant Content;
-
 protected:
 	SProcess*  _Process;
 	SModule*   _Module;

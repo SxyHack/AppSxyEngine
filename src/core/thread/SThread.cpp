@@ -66,12 +66,14 @@ void SThread::run()
 	while (!isInterruptionRequested())
 	{
 		CONTEXT context;
-		context.ContextFlags = CONTEXT_ALL | CONTEXT_FLOATING_POINT;
+		context.ContextFlags = CONTEXT_ALL;
 		if (!GetThreadContext(hThread, &context)) 
 		{
 			auto dwError = GetLastError();
-			if (dwError == ERROR_GEN_FAILURE)
+			if (dwError == ERROR_GEN_FAILURE) {
+				QThread::msleep(500);
 				continue;
+			}
 
 			auto qsMessage = FormatLastError(dwError);
 			qWarning("GetThreadContext(%d) Failed. %s(%d)", GetID(), qsMessage.toUtf8().data(), dwError);

@@ -3,7 +3,8 @@
 #include <QRandomGenerator>
 #include <QDateTime>
 
-static QString RANDOM_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+{}[]<>,./?'~`\"";
+//static QString RANDOM_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+{}[]<>,./?'~`\"";
+static QString RANDOM_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@-+*.";
 
 QByteArray Random::GenerateString(qint32 count, int sp)
 {

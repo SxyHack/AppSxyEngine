@@ -47,7 +47,7 @@ void CustomLogMessageHandler::handle(QtMsgType type, const QMessageLogContext& c
 	auto time = now.toString("hh:mm:ss.zzz");
 	auto tid = (qint64)QThread::currentThreadId();
 	auto level = "U";
-
+	auto color = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED;
 	switch (type)
 	{
 	case QtDebugMsg:
@@ -55,37 +55,25 @@ void CustomLogMessageHandler::handle(QtMsgType type, const QMessageLogContext& c
 		break;
 	case QtWarningMsg:
 		level = "W";
+		color = FOREGROUND_RED | FOREGROUND_GREEN;
 		break;
 	case QtCriticalMsg:
 		level = "E";
+		color = FOREGROUND_RED;
 		break;
 	case QtFatalMsg:
 		level = "F";
 		func = ctx.function;
+		color = FOREGROUND_RED | FOREGROUND_INTENSITY;
 		break;
 	case QtInfoMsg:
 		level = "I";
+		color = FOREGROUND_GREEN;
 		break;
 	}
 
-	//log = QString("%1 %2 %3 %4(%5)")
-	//	.arg(level)
-	//	.arg(time)
-	//	.arg(tid, 6, 10, QLatin1Char('0'))
-	//	.arg(file_name)
-	//	.arg(ctx.line);
-	// 
-	//if (!func.isEmpty()) {
-	//	log.append(" ");
-	//	log.append(func);
-	//}
-	// 
-	//log.append("> ");
-	//log.append(msg);
-	//log.append("\n");
-
 	gLogMutex.lock();
-	gQueue.enqueue(new SLogAction(level, time, file_name, func, ctx.line, tid));
+	gQueue.enqueue(new SLogAction(color, level, time, file_name, func, msg, ctx.line, tid));
 	gLogMutex.unlock();
 }
 

@@ -12,10 +12,13 @@
 class SLogAction
 {
 public:
-	SLogAction(const QString& level, 
+	SLogAction(
+		WORD color,
+		const QString& level, 
 		const QString& time, 
 		const QString& fileName, 
 		const QString& function,
+		const QString& msg,
 		qint32 fileLine, 
 		qint32 threadID);
 
@@ -25,17 +28,19 @@ public:
 
 private:
 	void SetConsoleColor(WORD nColor);
-	void ResetConsoleColor();
+	void RestoreConsoleAttribute();
 
 private:
 	QString _Level;
 	QString _Time;
 	QString _FileName;
 	QString _Function;
+	QString _Message;
 	qint32  _FileLine;
 	qint32  _ThreadID;
 	HANDLE  _hSTD;
 	WORD    _OriginColors;
+	WORD    _Color;
 };
 
 typedef QQueue<SLogAction*> SQUEUE_LOG;

@@ -68,7 +68,7 @@ bool SxyEngine::AttachSelectedProcess()
 	}
 
 	_AttachProcess->ExecuteEnumModules();
-	_AttachProcess->ExecuteEnumThreads();
+	//_AttachProcess->ExecuteEnumThreads();
 	//_AttachProcess->LoadVMRegions();
 	return true;
 }

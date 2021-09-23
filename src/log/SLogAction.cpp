@@ -7,17 +7,21 @@
 
 QFile gLogFile;
 
-SLogAction::SLogAction(const QString& level,
+SLogAction::SLogAction(WORD color,
+	const QString& level,
 	const QString& time, 
 	const QString& fileName, 
 	const QString& function,
+	const QString& msg,
 	qint32 fileLine, 
 	qint32 threadID)
 	: _Level(level)
+	, _Color(color)
 	, _Time(time)
 	, _FileName(fileName)
 	, _FileLine(fileLine)
 	, _Function(function)
+	, _Message(msg)
 	, _ThreadID(threadID)
 {
 	_hSTD = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -47,7 +51,27 @@ void SLogAction::Execute()
 	stm.flush();
 
 #if ENABLE_CONSOLE
-	std::cout << _Message.toLocal8Bit().constData();
+	auto qThreadID = QString("%1").arg(_ThreadID, 5, 10, QLatin1Char('0'));
+	auto qFileInfo = QString("%1:%2").arg(_FileName).arg(_FileLine);
+
+	SetConsoleColor(_Color);
+	std::cout << _Level.toLocal8Bit().data() << " "
+		<< qThreadID.toLocal8Bit().constData() << " "
+		<< _Time.toLocal8Bit().data() << "> ";
+
+	SetConsoleColor(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+	std::cout << _Message.toLocal8Bit().data();
+
+	SetConsoleColor(FOREGROUND_BLUE);
+	std::cout << "\t" << "(" << qFileInfo.toLocal8Bit().constData();
+	if (!_Function.isEmpty())
+	{
+		std::cout << ":" << _Function.toLocal8Bit().data();
+	}
+
+	std::cout << ")" << std::endl;
+	RestoreConsoleAttribute();
+
 #elif ENABLE_DEBUGVIEW
 #ifdef _UNICODE
 	TCHAR tszLog[1024] = { 0 };
@@ -71,8 +95,8 @@ void SLogAction::SetConsoleColor(WORD nColor)
 	SetConsoleTextAttribute(_hSTD, nColor);
 }
 
-void SLogAction::ResetConsoleColor()
+void SLogAction::RestoreConsoleAttribute()
 {
-
+	SetConsoleTextAttribute(_hSTD, _OriginColors);
 }
 

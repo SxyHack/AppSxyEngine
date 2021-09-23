@@ -31,7 +31,6 @@ void SEnumThreadNT::run()
 {
 	while (!isInterruptionRequested())
 	{
-		//SElapsed elapse("NtEnumThread");
 		ULONG nReturnLength = 0;
 		ULONG nBufferLength = 1;
 		PSYSTEM_PROCESS_INFORMATION pBuffer = (PSYSTEM_PROCESS_INFORMATION)malloc(nBufferLength);
@@ -55,7 +54,7 @@ void SEnumThreadNT::run()
 
 			if (NtQuerySystemInformation(SystemProcessInformation, pBuffer, nBufferLength, &nReturnLength) != STATUS_SUCCESS)
 			{
-				qWarning("NtQuerySystemInformation Failed.");
+				qWarning("NtQuerySystemInformation Failed, %d - %d", nBufferLength, nReturnLength);
 				free(pBuffer);
 				continue;
 			}

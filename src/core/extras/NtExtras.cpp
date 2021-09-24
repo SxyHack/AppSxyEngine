@@ -19,7 +19,6 @@ QString FormatLastError(DWORD lastErr)
 #else
 	return QString::fromLocal8Bit(lpMsgBuf);
 #endif
-
 }
 
 DWORD NtErrToWinError(NTSTATUS status)

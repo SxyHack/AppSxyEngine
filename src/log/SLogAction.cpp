@@ -23,6 +23,7 @@ SLogAction::SLogAction(WORD color,
 	, _Function(function)
 	, _Message(msg)
 	, _ThreadID(threadID)
+	, _OriginColors(0)
 {
 	_hSTD = GetStdHandle(STD_OUTPUT_HANDLE);
 }

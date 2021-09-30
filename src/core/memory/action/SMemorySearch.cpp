@@ -129,9 +129,7 @@ void SMemorySearch::run()
 				return;
 			}
 
-			QByteArray qByteArray;
 			QString qModuleName;
-			quint32 nRetryCount = 1;
 			quint32 nErrorNum = 0;
 			quint64 nBegRegionAddr = (quint64)mbi.BaseAddress;
 			quint64 nEndRegionAddr = (quint64)mbi.BaseAddress + mbi.RegionSize - 1;
